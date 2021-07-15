@@ -5,9 +5,9 @@ import reactor.core.publisher.Mono;
 
 public interface FormService {
 
-    <T extends Form> Mono<T> createForm(T origin);
+    Mono<Form> createForm(Form origin);
 
-    <T extends Form> Mono<T> updateForm(T target);
+    Mono<Form> updateForm(Form target);
 
     Mono<Void> deleteForm(String id);
 }

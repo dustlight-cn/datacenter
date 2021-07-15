@@ -1,0 +1,149 @@
+# 创建命名空间 datacenter
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: datacenter
+---
+# 创建镜像拉取密钥
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aliyun-docker-secret
+  namespace: datacenter
+data:
+  .dockerconfigjson: >-
+    eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1oYW5nemhvdS5hbGl5dW5jcy5jb20iOnsidXNlcm5hbWUiOiJoYW5zaW5AMTcwOTc4NDEzMDAwOTU4MCIsInBhc3N3b3JkIjoibGI4NDU2MTI1MDAiLCJhdXRoIjoiYUdGdWMybHVRREUzTURrM09EUXhNekF3TURrMU9EQTZiR0k0TkRVMk1USTFNREE9In19fQ==
+type: kubernetes.io/dockerconfigjson
+---
+# 创建 datacenter-service 配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datacenter-service-config
+  namespace: datacenter
+data:
+  application.yaml: |-
+    plus:
+      oauth2:
+        resource-server:
+          jwk-set-uri: http://auth-service.auth/v1/jwk
+          client-secret: none
+          client-id: none
+          uri: http://auth-service.auth/v1/token/validity
+          token-type: jwt
+    spring:
+      data:
+        mongodb:
+          host: database-mongodb.database
+          username: my-user
+          password: MTIzNDU2
+          authentication-database: admin
+          database: datacenter
+    springdoc:
+      api-docs:
+        enabled: on
+        path: /doc
+      swagger-ui:
+        path: /doc.html
+        oauth:
+          client-id: 86c3e34e2030000
+          additional-query-string-params:
+            jwt: true
+---
+# 创建 Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datacenter-service
+  namespace: datacenter
+  labels:
+    app: datacenter-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datacenter-service
+  template:
+    metadata:
+      labels:
+        app: datacenter-service
+    spec:
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: aliyun-docker-secret
+      containers:
+        - name: datacenter-service
+          image: ${SERVICE_IMAGE}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 70
+            periodSeconds: 70
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+      initContainers:
+        - name: init-database
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "until nc -z database-mongodb.database 27017; do echo waiting for mongodb; sleep 2; done"]
+      volumes:
+        - name: config
+          configMap:
+            name: datacenter-service-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+---
+# 创建服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: datacenter-service
+  namespace: datacenter
+  labels:
+    app: datacenter-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: datacenter-service
+  type: ClusterIP
+---
+# 创建 Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: datacenter-service
+  namespace: datacenter
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: datacenter-service
+              servicePort: 80
+      host: api.datacenter.wgv

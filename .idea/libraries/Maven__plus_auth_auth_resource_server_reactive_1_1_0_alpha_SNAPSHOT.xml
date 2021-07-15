@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: plus.auth:auth-resource-server-reactive:1.1.0-alpha-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/plus/auth/auth-resource-server-reactive/1.1.0-alpha-SNAPSHOT/auth-resource-server-reactive-1.1.0-alpha-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/plus/auth/auth-resource-server-reactive/1.1.0-alpha-SNAPSHOT/auth-resource-server-reactive-1.1.0-alpha-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/plus/auth/auth-resource-server-reactive/1.1.0-alpha-SNAPSHOT/auth-resource-server-reactive-1.1.0-alpha-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

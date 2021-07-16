@@ -30,8 +30,10 @@ public class MongoFormService implements FormService {
         if (!StringUtils.hasText(origin.getName()))
             ErrorEnum.CREATE_FORM_FAILED.details("form name can't not be null!").throwException();
         FormMeta meta = new FormMeta();
-        meta.setName(origin.getName());
+        meta.setName(getMetaName(origin));
         meta.setVersion(0);
+        meta.setOwner(origin.getOwner());
+        meta.setClientId(origin.getClientId());
         return operations.insert(meta, getMetaCollectionName())
                 .onErrorMap(throwable -> {
                     if (throwable instanceof DuplicateKeyException)
@@ -52,7 +54,11 @@ public class MongoFormService implements FormService {
     public Mono<Form> updateForm(Form target) {
         Update update = new Update();
         update.inc("version", 1);
-        return operations.findAndModify(Query.query(Criteria.where("name").is(target.getName())),
+        if (target.getOwner() != null)
+            update.set("owner", target.getOwner());
+
+        return operations.findAndModify(Query.query(Criteria.where("_id").is(getMetaName(target))
+                        .and("clientId").is(target.getClientId())),
                 update,
                 FormMeta.class,
                 getMetaCollectionName())
@@ -68,24 +74,37 @@ public class MongoFormService implements FormService {
     }
 
     @Override
-    public Mono<Void> deleteForm(String name) {
-        return operations.findAndRemove(Query.query(Criteria.where("_id").is(name)), Form.class, getMetaCollectionName())
+    public Mono<Void> deleteForm(String name, String clientId) {
+        return operations.findAndRemove(
+                Query.query(Criteria.where("_id").is(getMetaName(clientId, name))
+                        .and("clientId").is(clientId))
+                , Form.class,
+                getMetaCollectionName())
                 .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
-                .flatMap(formMeta -> operations.remove(Query.query(Criteria.where("name").is(name)), Form.class, collectionName)
+                .flatMap(formMeta -> operations.remove(Query.query(Criteria.where("name").is(name)
+                                .and("clientId").is(clientId)),
+                        Form.class,
+                        collectionName)
                         .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException()))
                 .then();
     }
 
     @Override
-    public Mono<Form> getForm(String name) {
-        return operations.findOne(Query.query(Criteria.where("name").is(name)),
+    public Mono<Form> getForm(String name, String clientId) {
+        return operations.findOne(
+                Query.query(Criteria.where("name").is(getMetaName(clientId, name))
+                        .and("clientId").is(clientId)),
                 FormMeta.class,
-                getMetaCollectionName())
+                getMetaCollectionName()
+        )
                 .onErrorMap(throwable -> ErrorEnum.FORM_NOT_FOUND.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
                 .flatMap(formMeta -> operations.findOne(Query.query(Criteria.where("name").is(name)
-                        .and("version").is(formMeta.version)), Form.class, collectionName)
+                                .and("version").is(formMeta.version)
+                                .and("clientId").is(clientId)),
+                        Form.class,
+                        collectionName)
                         .onErrorMap(throwable -> ErrorEnum.FORM_NOT_FOUND.details(throwable.getMessage()).getException())
                         .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException())));
     }
@@ -101,12 +120,22 @@ public class MongoFormService implements FormService {
         return collectionName + "_meta";
     }
 
+    protected String getMetaName(Form form) {
+        return form.getClientId() + ":" + form.getName();
+    }
+
+    protected String getMetaName(String clientId, String formName) {
+        return clientId + ":" + formName;
+    }
+
     @Getter
     @Setter
     public static class FormMeta {
 
         @Id
         private String name;
+        private String clientId;
+        private String owner;
         private int version = 0;
 
     }

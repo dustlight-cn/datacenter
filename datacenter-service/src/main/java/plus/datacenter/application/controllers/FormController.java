@@ -26,23 +26,31 @@ public class FormController {
                                  AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
         form.setClientId(principal.getClientId());
-        form.setOwner(principal.getUid().toString());
+        form.setOwner(principal.getUidString());
         return formService.createForm(form);
     }
 
     @GetMapping
-    public Mono<Form> getForm(@RequestParam String name) {
-        return formService.getForm(name);
+    public Mono<Form> getForm(@RequestParam String name,
+                              AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        return formService.getForm(name, principal.getClientId());
     }
 
     @PutMapping
-    public Mono<Form> updateForm(@RequestBody Form form) {
+    public Mono<Form> updateForm(@RequestBody Form form,
+                                 AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        form.setOwner(principal.getUidString());
+        form.setClientId(principal.getClientId());
         return formService.updateForm(form);
     }
 
     @DeleteMapping("")
-    public Mono<Void> deleteForm(@RequestParam(name = "name") String name) {
-        return formService.deleteForm(name);
+    public Mono<Void> deleteForm(@RequestParam(name = "name") String name,
+                                 AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        return formService.deleteForm(name, principal.getClientId());
     }
 
     @GetMapping("/{id}")

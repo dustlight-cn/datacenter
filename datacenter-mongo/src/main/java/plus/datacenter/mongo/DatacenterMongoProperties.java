@@ -11,4 +11,6 @@ public class DatacenterMongoProperties {
 
     private String formCollection = "form";
 
+    private String formRecordCollection = "form_record";
+
 }

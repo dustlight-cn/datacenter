@@ -7,7 +7,7 @@ import plus.datacenter.core.entities.forms.items.*;
 public class FormUtils {
 
     public static Class<? extends Item> getItemClass(ItemType type) {
-        switch (type){
+        switch (type) {
             case INT:
                 return IntItem.class;
             case DOUBLE:
@@ -22,6 +22,8 @@ public class FormUtils {
                 return FormItem.class;
             case DATE:
                 return DateItem.class;
+            case BOOLEAN:
+                return BooleanItem.class;
             default:
                 return Item.class;
         }

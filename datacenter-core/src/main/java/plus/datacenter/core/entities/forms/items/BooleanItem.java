@@ -8,21 +8,16 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class FormItem extends Item {
+public class BooleanItem extends Item {
 
-    /**
-     * 当 type 为 FORM 时，对应的表单 id。
-     */
-    private String formId;
-
-    @Schema(defaultValue = "FORM")
+    @Schema(defaultValue = "BOOLEAN")
     @Override
     public ItemType getType() {
-        return ItemType.FORM;
+        return ItemType.BOOLEAN;
     }
 
     @Override
     public void setType(ItemType type) {
-        super.setType(ItemType.FORM);
+        super.setType(ItemType.BOOLEAN);
     }
 }

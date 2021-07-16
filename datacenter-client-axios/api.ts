@@ -21,6 +21,664 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
 
+/**
+ * 
+ * @export
+ * @interface BooleanItem
+ */
+export interface BooleanItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    type?: BooleanItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BooleanItem
+     */
+    array?: boolean;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum BooleanItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface DateItem
+ */
+export interface DateItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    type?: DateItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {RangeableDate}
+     * @memberof DateItem
+     */
+    range?: RangeableDate;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DateItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface DoubleItem
+ */
+export interface DoubleItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    type?: DoubleItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DoubleItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {RangeableDouble}
+     * @memberof DoubleItem
+     */
+    range?: RangeableDouble;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DoubleItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface FileItem
+ */
+export interface FileItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    type?: FileItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FileItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    mime?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum FileItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface Form
+ */
+export interface Form {
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    id?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Form
+     */
+    version?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    createdAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    updatedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    clientId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    owner?: string;
+    /**
+     * 
+     * @type {Array<ItemGroup>}
+     * @memberof Form
+     */
+    groups?: Array<ItemGroup>;
+}
+/**
+ * 
+ * @export
+ * @interface FormItem
+ */
+export interface FormItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    type?: FormItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FormItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    formId?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum FormItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface IntItem
+ */
+export interface IntItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    type?: IntItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof IntItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {RangeableInteger}
+     * @memberof IntItem
+     */
+    range?: RangeableInteger;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum IntItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * @type Item
+ * @export
+ */
+export type Item = BooleanItem | DateItem | DoubleItem | FileItem | FormItem | IntItem | SelectItem | StringItem;
+
+/**
+ * 
+ * @export
+ * @interface ItemGroup
+ */
+export interface ItemGroup {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemGroup
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemGroup
+     */
+    description?: string;
+    /**
+     * 
+     * @type {Array<Item>}
+     * @memberof ItemGroup
+     */
+    items?: Array<Item>;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableDate
+ */
+export interface RangeableDate {
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableDate
+     */
+    min?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableDate
+     */
+    max?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableDate
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableDouble
+ */
+export interface RangeableDouble {
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableDouble
+     */
+    min?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableDouble
+     */
+    max?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableDouble
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableInteger
+ */
+export interface RangeableInteger {
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableInteger
+     */
+    min?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableInteger
+     */
+    max?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableInteger
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface SelectItem
+ */
+export interface SelectItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    type?: SelectItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SelectItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof SelectItem
+     */
+    max?: number;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof SelectItem
+     */
+    options?: { [key: string]: string; };
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum SelectItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface StringItem
+ */
+export interface StringItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    type?: StringItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    multiline?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    html?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    regex?: string;
+    /**
+     * 
+     * @type {StringItemPattern}
+     * @memberof StringItem
+     */
+    pattern?: StringItemPattern;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum StringItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface StringItemPattern
+ */
+export interface StringItemPattern {
+    /**
+     * 
+     * @type {number}
+     * @memberof StringItemPattern
+     */
+    cursor?: number;
+}
 
 /**
  * FormsApi - axios parameter creator
@@ -30,13 +688,89 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'form' is not null or undefined
+            assertParamExists('createForm', 'form', form)
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(form, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        test: async (id: string, options: any = {}): Promise<RequestArgs> => {
+        deleteForm: async (id: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('test', 'id', id)
+            assertParamExists('deleteForm', 'id', id)
+            const localVarPath = `/v1/forms/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForm: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getForm', 'id', id)
             const localVarPath = `/v1/forms/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -65,6 +799,45 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'form' is not null or undefined
+            assertParamExists('updateForm', 'form', form)
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(form, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -77,12 +850,42 @@ export const FormsApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createForm(form, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async test(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.test(id, options);
+        async deleteForm(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForm(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getForm(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForm(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateForm(form, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -97,12 +900,39 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForm(form: Form, options?: any): AxiosPromise<Form> {
+            return localVarFp.createForm(form, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        test(id: string, options?: any): AxiosPromise<string> {
-            return localVarFp.test(id, options).then((request) => request(axios, basePath));
+        deleteForm(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteForm(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForm(id: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getForm(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateForm(form: Form, options?: any): AxiosPromise<Form> {
+            return localVarFp.updateForm(form, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -116,13 +946,46 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
 export class FormsApi extends BaseAPI {
     /**
      * 
+     * @param {Form} form 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public createForm(form: Form, options?: any) {
+        return FormsApiFp(this.configuration).createForm(form, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    public test(id: string, options?: any) {
-        return FormsApiFp(this.configuration).test(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteForm(id: string, options?: any) {
+        return FormsApiFp(this.configuration).deleteForm(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getForm(id: string, options?: any) {
+        return FormsApiFp(this.configuration).getForm(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {Form} form 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public updateForm(form: Form, options?: any) {
+        return FormsApiFp(this.configuration).updateForm(form, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

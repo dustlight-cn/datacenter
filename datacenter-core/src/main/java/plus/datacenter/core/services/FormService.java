@@ -7,6 +7,8 @@ public interface FormService {
 
     Mono<Form> createForm(Form origin);
 
+    Mono<Form> getForm(String id);
+
     Mono<Form> updateForm(Form target);
 
     Mono<Void> deleteForm(String id);

@@ -10,6 +10,8 @@ import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormService;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,11 +23,15 @@ public class MongoFormService implements FormService {
     @Override
     public Mono<Form> createForm(Form origin) {
         origin.setId(null);
+        Date t = new Date();
+        origin.setCreatedAt(t);
+        origin.setUpdatedAt(t);
         return operations.insert(origin, collectionName);
     }
 
     @Override
     public Mono<Form> updateForm(Form target) {
+        target.setUpdatedAt(new Date());
         return operations.save(target, collectionName);
     }
 
@@ -33,6 +39,11 @@ public class MongoFormService implements FormService {
     public Mono<Void> deleteForm(String id) {
         return operations.remove(Query.query(Criteria.where("_id").is(id)), Form.class, collectionName)
                 .then();
+    }
+
+    @Override
+    public Mono<Form> getForm(String id) {
+        return operations.findById(id, Form.class, collectionName);
     }
 
 }

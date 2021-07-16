@@ -5,18 +5,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Rangeable<T extends Comparable> {
+public class Rangeable<T extends Comparable> implements Validatable<T> {
 
     private T min;
     private T max;
     private boolean openInterval;
 
-    public Boolean check(T value) {
-        if(value == null)
+    @Override
+    public Boolean validate(T value) {
+        if (value == null)
             return null;
-        if(min != null && openInterval ? (value.compareTo(min) > 0) : (value.compareTo(min) >= 0))
+        if (min != null && openInterval ? (value.compareTo(min) > 0) : (value.compareTo(min) >= 0))
             return false;
-        if(max != null && openInterval ? (value.compareTo(max) < 0) : (value.compareTo(max) <= 0))
+        if (max != null && openInterval ? (value.compareTo(max) < 0) : (value.compareTo(max) <= 0))
             return false;
         return true;
     }

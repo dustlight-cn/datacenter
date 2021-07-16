@@ -280,12 +280,6 @@ export interface Form {
      * @type {string}
      * @memberof Form
      */
-    updatedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Form
-     */
     clientId?: string;
     /**
      * 
@@ -293,6 +287,24 @@ export interface Form {
      * @memberof Form
      */
     owner?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    description?: string;
     /**
      * 
      * @type {Array<ItemGroup>}
@@ -727,15 +739,14 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteForm: async (id: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteForm', 'id', id)
-            const localVarPath = `/v1/forms/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        deleteForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('deleteForm', 'name', name)
+            const localVarPath = `/v1/forms`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -750,6 +761,50 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             // authentication auth required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getForm', 'name', name)
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
 
 
     
@@ -768,9 +823,9 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForm: async (id: string, options: any = {}): Promise<RequestArgs> => {
+        getFormById: async (id: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('getForm', 'id', id)
+            assertParamExists('getFormById', 'id', id)
             const localVarPath = `/v1/forms/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -860,12 +915,22 @@ export const FormsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteForm(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForm(id, options);
+        async deleteForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForm(name, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForm(name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -874,8 +939,8 @@ export const FormsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getForm(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getForm(id, options);
+        async getFormById(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFormById(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -909,12 +974,21 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteForm(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteForm(id, options).then((request) => request(axios, basePath));
+        deleteForm(name: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteForm(name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForm(name: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getForm(name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -922,8 +996,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForm(id: string, options?: any): AxiosPromise<Form> {
-            return localVarFp.getForm(id, options).then((request) => request(axios, basePath));
+        getFormById(id: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getFormById(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -957,13 +1031,24 @@ export class FormsApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} id 
+     * @param {string} name 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    public deleteForm(id: string, options?: any) {
-        return FormsApiFp(this.configuration).deleteForm(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteForm(name: string, options?: any) {
+        return FormsApiFp(this.configuration).deleteForm(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getForm(name: string, options?: any) {
+        return FormsApiFp(this.configuration).getForm(name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -973,8 +1058,8 @@ export class FormsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    public getForm(id: string, options?: any) {
-        return FormsApiFp(this.configuration).getForm(id, options).then((request) => request(this.axios, this.basePath));
+    public getFormById(id: string, options?: any) {
+        return FormsApiFp(this.configuration).getFormById(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

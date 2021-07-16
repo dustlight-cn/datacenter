@@ -2,7 +2,6 @@ package plus.datacenter.application.controllers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +30,9 @@ public class FormController {
         return formService.createForm(form);
     }
 
-    @GetMapping("/{id}")
-    public Mono<Form> getForm(@PathVariable String id) {
-        return formService.getForm(id);
+    @GetMapping
+    public Mono<Form> getForm(@RequestParam String name) {
+        return formService.getForm(name);
     }
 
     @PutMapping
@@ -41,8 +40,14 @@ public class FormController {
         return formService.updateForm(form);
     }
 
-    @DeleteMapping("/{id}")
-    public Mono<Void> deleteForm(@PathVariable String id) {
-        return formService.deleteForm(id);
+    @DeleteMapping("")
+    public Mono<Void> deleteForm(@RequestParam(name = "name") String name) {
+        return formService.deleteForm(name);
     }
+
+    @GetMapping("/{id}")
+    public Mono<Form> getFormById(@PathVariable String id) {
+        return formService.getFormById(id);
+    }
+
 }

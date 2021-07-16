@@ -12,7 +12,6 @@ public enum ErrorEnum {
     RESOURCE_NOT_FOUND(2000, "Resource not found"),
     FORM_NOT_FOUND(2001, "Form not found"),
 
-
     RESOURCE_EXISTS(3000, "Resource already exists"),
     FORM_EXISTS(3001, "Form already exists"),
 

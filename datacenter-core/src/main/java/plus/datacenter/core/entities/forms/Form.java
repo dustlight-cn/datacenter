@@ -13,9 +13,12 @@ public class Form {
     private String id;
     private Integer version;
     private Date createdAt;
-    private Date updatedAt;
     private String clientId;
     private String owner;
+
+    private String name;
+    private String label;
+    private String description;
 
     private Collection<ItemGroup> groups;
 }

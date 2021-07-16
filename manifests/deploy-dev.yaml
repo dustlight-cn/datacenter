@@ -23,19 +23,19 @@ metadata:
   namespace: datacenter
 data:
   application.yaml: |-
-      # OAuth 配置
+    # OAuth 配置
     plus:
       oauth2:
         client:
           client-id: 877ce1dd5030000
           client-secret: 1283d148237af330152929cfe05ec045b0a4e92d
-          api-endpoint: http://api.wgv
-          token-uri: http://api.wgv/v1/oauth/token
+          api-endpoint: http://auth-service.auth
+          token-uri: http://auth-service.auth/v1/oauth/token
         resource-server:
-          jwk-set-uri: http://api.wgv/v1/jwk
+          jwk-set-uri: http://auth-service.auth/v1/jwk
           client-secret: none
           client-id: none
-          uri: http://api.wgv/v1/token/validity
+          uri: http://auth-service.auth/v1/token/validity
           token-type: jwt
       datacenter:
         mongo:
@@ -54,7 +54,7 @@ data:
     spring:
       data:
         mongodb:
-          host: mongodb.svc
+          host: database-mongodb.database
           username: my-user
           password: MTIzNDU2
           authentication-database: admin

@@ -1,13 +1,54 @@
 package plus.datacenter.core.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
+import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.forms.items.*;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 public class FormUtils {
+
+    public static Form transformForm(Map<String, Object> form) {
+        if (form == null)
+            return null;
+        try {
+            ObjectMapper mapper = Json.mapper();
+            return mapper.readValue(mapper.writeValueAsString(form), Form.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Item transformItem(Map<String, Object> item) {
+        if (item == null)
+            return null;
+        try {
+            Class<? extends Item> targetClass = item.get("type") == null ? Item.class : getItemClass(getItemType(item.get("type").toString()));
+            ObjectMapper mapper = Json.mapper();
+            return mapper.readValue(mapper.writeValueAsString(item), targetClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object transformItemValue(Object value, ItemType type) {
+        if (value == null)
+            return null;
+        try {
+            Class<?> targetClass = getItemValueClass(type);
+            if (targetClass == value.getClass())
+                return value;
+            ObjectMapper mapper = Json.mapper();
+            return mapper.readValue(mapper.writeValueAsString(value), targetClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Class<? extends Item> getItemClass(ItemType type) {
         switch (type) {
@@ -43,7 +84,7 @@ public class FormUtils {
             case FILE:
                 return String.class;
             case SELECT:
-                return Collection.class;
+                return SelectItem.Selected.class;
             case FORM:
                 return String.class;
             case DATE:
@@ -52,6 +93,31 @@ public class FormUtils {
                 return Boolean.class;
             default:
                 return String.class;
+        }
+    }
+
+    public static ItemType getItemType(String type) {
+        if (type == null)
+            return ItemType.STRING;
+        switch (type.toUpperCase()) {
+            case "INT":
+                return ItemType.INT;
+            case "DOUBLE":
+                return ItemType.DOUBLE;
+            case "STRING":
+                return ItemType.STRING;
+            case "FILE":
+                return ItemType.FILE;
+            case "SELECT":
+                return ItemType.SELECT;
+            case "FORM":
+                return ItemType.FORM;
+            case "DATE":
+                return ItemType.DATE;
+            case "BOOLEAN":
+                return ItemType.BOOLEAN;
+            default:
+                return ItemType.STRING;
         }
     }
 }

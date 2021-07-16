@@ -8,12 +8,12 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class FormItem extends Item {
+public class FormItem extends Item<String> {
 
     /**
-     * 当 type 为 FORM 时，对应的表单 id。
+     * 当 type 为 FORM 时，对应的表单名称。
      */
-    private String formId;
+    private String form;
 
     @Schema(defaultValue = "FORM")
     @Override

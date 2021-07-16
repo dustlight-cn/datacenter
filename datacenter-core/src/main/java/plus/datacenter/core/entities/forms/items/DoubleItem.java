@@ -9,9 +9,14 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class DoubleItem extends Item {
+public class DoubleItem extends Item<Double> {
 
     private Rangeable<Double> range;
+
+    @Override
+    public Boolean validate(Double value) {
+        return super.validate(value) && (range == null || range.validate(value));
+    }
 
     @Schema(defaultValue = "DOUBLE")
     @Override

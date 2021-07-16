@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import plus.datacenter.mongo.services.MongoFormRecordService;
 import plus.datacenter.mongo.services.MongoFormService;
 
 @Configuration
@@ -19,4 +20,10 @@ public class DatacenterMongoConfiguration {
         return new MongoFormService(operations, properties.getFormCollection());
     }
 
+    @Bean
+    @ConditionalOnBean(ReactiveMongoOperations.class)
+    public MongoFormRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
+                                                         @Autowired ReactiveMongoOperations operations) {
+        return new MongoFormRecordService(operations, properties.getFormRecordCollection());
+    }
 }

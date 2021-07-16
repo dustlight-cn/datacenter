@@ -12,10 +12,13 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Form;
+import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.services.FormService;
+import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -78,7 +81,7 @@ public class MongoFormService implements FormService {
         return operations.findAndRemove(
                 Query.query(Criteria.where("_id").is(getMetaName(clientId, name))
                         .and("clientId").is(clientId))
-                , Form.class,
+                , FormMeta.class,
                 getMetaCollectionName())
                 .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))

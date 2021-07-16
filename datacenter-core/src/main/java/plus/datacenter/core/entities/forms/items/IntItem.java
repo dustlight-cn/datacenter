@@ -9,9 +9,14 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class IntItem extends Item {
+public class IntItem extends Item<Integer> {
 
     private Rangeable<Integer> range;
+
+    @Override
+    public Boolean validate(Integer value) {
+        return super.validate(value) && (range == null || range.validate(value));
+    }
 
     @Schema(defaultValue = "INT")
     @Override

@@ -57,6 +57,12 @@ export interface BooleanItem {
      * @memberof BooleanItem
      */
     array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BooleanItem
+     */
+    required?: boolean;
 }
 
 /**
@@ -110,6 +116,12 @@ export interface DateItem {
      * @memberof DateItem
      */
     array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateItem
+     */
+    required?: boolean;
     /**
      * 
      * @type {RangeableDate}
@@ -171,6 +183,12 @@ export interface DoubleItem {
     array?: boolean;
     /**
      * 
+     * @type {boolean}
+     * @memberof DoubleItem
+     */
+    required?: boolean;
+    /**
+     * 
      * @type {RangeableDouble}
      * @memberof DoubleItem
      */
@@ -228,6 +246,12 @@ export interface FileItem {
      * @memberof FileItem
      */
     array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FileItem
+     */
+    required?: boolean;
     /**
      * 
      * @type {string}
@@ -350,10 +374,16 @@ export interface FormItem {
     array?: boolean;
     /**
      * 
+     * @type {boolean}
+     * @memberof FormItem
+     */
+    required?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof FormItem
      */
-    formId?: string;
+    form?: string;
 }
 
 /**
@@ -371,6 +401,55 @@ export enum FormItemTypeEnum {
     Select = 'SELECT'
 }
 
+/**
+ * 
+ * @export
+ * @interface FormRecord
+ */
+export interface FormRecord {
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    formId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    clientId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    owner?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    createdAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    updatedAt?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof FormRecord
+     */
+    data?: { [key: string]: object; };
+}
 /**
  * 
  * @export
@@ -407,6 +486,12 @@ export interface IntItem {
      * @memberof IntItem
      */
     array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof IntItem
+     */
+    required?: boolean;
     /**
      * 
      * @type {RangeableInteger}
@@ -574,6 +659,12 @@ export interface SelectItem {
     array?: boolean;
     /**
      * 
+     * @type {boolean}
+     * @memberof SelectItem
+     */
+    required?: boolean;
+    /**
+     * 
      * @type {number}
      * @memberof SelectItem
      */
@@ -637,6 +728,12 @@ export interface StringItem {
      * @memberof StringItem
      */
     array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    required?: boolean;
     /**
      * 
      * @type {boolean}
@@ -1071,6 +1168,113 @@ export class FormsApi extends BaseAPI {
      */
     public updateForm(form: Form, options?: any) {
         return FormsApiFp(this.configuration).updateForm(form, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * RecordsApi - axios parameter creator
+ * @export
+ */
+export const RecordsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRecord: async (formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'formRecord' is not null or undefined
+            assertParamExists('createRecord', 'formRecord', formRecord)
+            const localVarPath = `/v1/records`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RecordsApi - functional programming interface
+ * @export
+ */
+export const RecordsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = RecordsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createRecord(formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createRecord(formRecord, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * RecordsApi - factory interface
+ * @export
+ */
+export const RecordsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = RecordsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRecord(formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.createRecord(formRecord, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * RecordsApi - object-oriented interface
+ * @export
+ * @class RecordsApi
+ * @extends {BaseAPI}
+ */
+export class RecordsApi extends BaseAPI {
+    /**
+     * 
+     * @param {FormRecord} formRecord 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public createRecord(formRecord: FormRecord, options?: any) {
+        return RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

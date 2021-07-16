@@ -3,7 +3,6 @@ package plus.datacenter.core.entities.forms.items;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import plus.datacenter.core.entities.Validatable;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 
@@ -11,7 +10,7 @@ import java.util.regex.Pattern;
 
 @Getter
 @Setter
-public class StringItem extends Item implements Validatable<String> {
+public class StringItem extends Item<String> {
 
     private Boolean multiline;
     private Boolean html;
@@ -20,6 +19,8 @@ public class StringItem extends Item implements Validatable<String> {
 
     @Override
     public Boolean validate(String value) {
+        if (!super.validate(value))
+            return false;
         if (regex == null)
             return true;
         return pattern.matcher(value).matches();

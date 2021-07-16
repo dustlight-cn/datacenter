@@ -8,7 +8,7 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class FileItem extends Item {
+public class FileItem extends Item<String> {
 
     private String mime;
 

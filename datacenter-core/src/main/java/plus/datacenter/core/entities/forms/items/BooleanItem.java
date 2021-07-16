@@ -8,7 +8,7 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 @Getter
 @Setter
-public class BooleanItem extends Item {
+public class BooleanItem extends Item<Boolean> {
 
     @Schema(defaultValue = "BOOLEAN")
     @Override

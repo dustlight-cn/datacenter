@@ -39,25 +39,26 @@ public class MongoFormService implements FormService {
         meta.setClientId(origin.getClientId());
         return Mono.from(client.startSession())
                 .flatMap(clientSession -> {
-                    clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .insert(meta, getMetaCollectionName())
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error((throwable instanceof DuplicateKeyException) ?
-                                ErrorEnum.FORM_EXISTS.details(throwable.getMessage()).getException() :
-                                ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .flatMap(formMeta -> {
-                            origin.setId(null);
-                            Date t = new Date();
-                            origin.setVersion(formMeta.version);
-                            origin.setCreatedAt(t);
-                            return operations.withSession(clientSession)
-                                    .insert(origin, collectionName);
-                        })
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .flatMap(val -> Mono.from(clientSession.commitTransaction()).then(Mono.just(val)))
-                        .doFinally(signalType -> clientSession.close())
+                            clientSession.startTransaction();
+                            ReactiveMongoOperations op = operations.withSession(clientSession);
+                            return op.withSession(clientSession)
+                                    .insert(meta, getMetaCollectionName())
+                                    .onErrorMap(throwable -> (throwable instanceof DuplicateKeyException) ?
+                                            ErrorEnum.FORM_EXISTS.details(throwable.getMessage()).getException() :
+                                            ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())
+                                    .flatMap(formMeta -> {
+                                        origin.setId(null);
+                                        Date t = new Date();
+                                        origin.setVersion(formMeta.version);
+                                        origin.setCreatedAt(t);
+                                        return op
+                                                .insert(origin, collectionName)
+                                                .onErrorMap(throwable -> ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException());
+                                    })
+                                    .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                                    .flatMap(val -> Mono.from(clientSession.commitTransaction()).then(Mono.just(val)))
+                                    .doFinally(signalType -> clientSession.close());
+                        }
                 );
     }
 
@@ -70,48 +71,51 @@ public class MongoFormService implements FormService {
         return Mono.from(client.startSession())
                 .flatMap(clientSession -> {
                     clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndModify(Query.query(Criteria.where("_id").is(getMetaName(target)).and("clientId").is(target.getClientId())),
-                                update,
-                                FormMeta.class,
-                                getMetaCollectionName())
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .switchIfEmpty(Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException())))
-                        .flatMap(formMeta -> {
-                            target.setId(null);
-                            target.setCreatedAt(new Date());
-                            target.setVersion(formMeta.version + 1);
-                            return operations.withSession(clientSession)
-                                    .insert(target, collectionName);
-                        })
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .flatMap(val -> Mono.from(clientSession.commitTransaction()).then(Mono.just(val)))
-                        .doFinally(signalType -> clientSession.close())
-                );
+                    ReactiveMongoOperations op = operations.withSession(clientSession);
+                    return op
+                            .findAndModify(Query.query(Criteria.where("_id").is(getMetaName(target)).and("clientId").is(target.getClientId())),
+                                    update,
+                                    FormMeta.class,
+                                    getMetaCollectionName())
+                            .onErrorMap(throwable -> ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException())
+                            .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
+                            .flatMap(formMeta -> {
+                                target.setId(null);
+                                target.setCreatedAt(new Date());
+                                target.setVersion(formMeta.version + 1);
+                                return op
+                                        .insert(target, collectionName)
+                                        .onErrorMap(throwable -> ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException());
+                            })
+                            .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                            .flatMap(val -> Mono.from(clientSession.commitTransaction()).then(Mono.just(val)))
+                            .doFinally(signalType -> clientSession.close());
+                });
     }
 
     @Override
     public Mono<Void> deleteForm(String name, String clientId) {
         return Mono.from(client.startSession())
                 .flatMap(clientSession -> {
-                    clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndRemove(Query.query(Criteria.where("_id").is(getMetaName(clientId, name)).and("clientId").is(clientId)),
-                                FormMeta.class,
-                                getMetaCollectionName())
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .switchIfEmpty(Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException())))
-                        .flatMap(formMeta -> operations.withSession(clientSession).
-                                remove(Query.query(Criteria.where("name").is(name).and("clientId").is(clientId)),
-                                        Form.class,
-                                        collectionName))
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())))
-                        .flatMap(val -> Mono.from(clientSession.commitTransaction()).then())
-                        .doFinally(signalType -> clientSession.close()));
+                            clientSession.startTransaction();
+                            ReactiveMongoOperations op = operations.withSession(clientSession);
+                            return op
+                                    .findAndRemove(Query.query(Criteria.where("_id").is(getMetaName(clientId, name)).and("clientId").is(clientId)),
+                                            FormMeta.class,
+                                            getMetaCollectionName())
+                                    .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())
+                                    .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
+                                    .flatMap(formMeta -> op
+                                            .remove(Query.query(Criteria.where("name").is(name).and("clientId").is(clientId)),
+                                                    Form.class,
+                                                    collectionName)
+                                            .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException())
+                                    )
+                                    .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                                    .flatMap(val -> Mono.from(clientSession.commitTransaction()).then())
+                                    .doFinally(signalType -> clientSession.close());
+                        }
+                );
     }
 
     @Override

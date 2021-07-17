@@ -1,5 +1,6 @@
 package plus.datacenter.mongo;
 
+import com.mongodb.reactivestreams.client.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,8 +17,9 @@ public class DatacenterMongoConfiguration {
     @Bean
     @ConditionalOnBean(ReactiveMongoOperations.class)
     public MongoFormService mongoFormService(@Autowired DatacenterMongoProperties properties,
-                                             @Autowired ReactiveMongoOperations operations) {
-        return new MongoFormService(operations, properties.getFormCollection());
+                                             @Autowired ReactiveMongoOperations operations,
+                                             @Autowired MongoClient mongoClient) {
+        return new MongoFormService(mongoClient, operations, properties.getFormCollection());
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package plus.datacenter.core.entities.forms.items;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class StringItem extends Item<String> {
     private Boolean multiline;
     private Boolean html;
     private String regex;
+    @JsonIgnore
     private Pattern pattern;
 
     @Override

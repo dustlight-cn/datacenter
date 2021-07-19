@@ -26,10 +26,10 @@ public class ElasticsearchFormSearcher implements FormSearcher {
     public Mono<QueryResult<Form>> search(String clientId, String query, int page, int size) {
 
         IndexCoordinates indexCoordinates = IndexCoordinates.of("datacenter.form");
-        return operations.searchForPage(new CriteriaQuery(Criteria.where("clientId").is(clientId)
-                        .and(Criteria.where("name").matches(query)
-                                .or("label").matches(query)
-                                .or("description").matches(query)))
+        return operations.searchForPage(new CriteriaQuery(
+                        Criteria.where("name").matches(query).and("clientId").is(clientId)
+                                .or("label").matches(query).and("clientId").is(clientId)
+                                .or("description").matches(query).and("clientId").is(clientId))
                         .setPageable(Pageable.ofSize(size).withPage(page))
                 , Form.class, indexCoordinates)
                 .map(searchHits ->

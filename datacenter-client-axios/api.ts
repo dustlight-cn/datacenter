@@ -549,6 +549,25 @@ export interface ItemGroup {
 /**
  * 
  * @export
+ * @interface QueryResultForm
+ */
+export interface QueryResultForm {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultForm
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<Form>}
+     * @memberof QueryResultForm
+     */
+    data?: Array<Form>;
+}
+/**
+ * 
+ * @export
  * @interface RangeableDouble
  */
 export interface RangeableDouble {
@@ -857,46 +876,6 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} name 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'name' is not null or undefined
-            assertParamExists('getForm', 'name', name)
-            const localVarPath = `/v1/forms`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-            if (name !== undefined) {
-                localVarQueryParameter['name'] = name;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -920,6 +899,59 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             // authentication auth required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForms: async (name?: string, query?: string, page?: number, size?: number, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (query !== undefined) {
+                localVarQueryParameter['query'] = query;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
 
 
     
@@ -1003,22 +1035,25 @@ export const FormsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} name 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getForm(name, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async getFormById(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getFormById(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getForms(name?: string, query?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultForm>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForms(name, query, page, size, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1061,21 +1096,24 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {string} name 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getForm(name: string, options?: any): AxiosPromise<Form> {
-            return localVarFp.getForm(name, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         getFormById(id: string, options?: any): AxiosPromise<Form> {
             return localVarFp.getFormById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForms(name?: string, query?: string, page?: number, size?: number, options?: any): AxiosPromise<QueryResultForm> {
+            return localVarFp.getForms(name, query, page, size, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1120,17 +1158,6 @@ export class FormsApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} name 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FormsApi
-     */
-    public getForm(name: string, options?: any) {
-        return FormsApiFp(this.configuration).getForm(name, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1138,6 +1165,20 @@ export class FormsApi extends BaseAPI {
      */
     public getFormById(id: string, options?: any) {
         return FormsApiFp(this.configuration).getFormById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} [name] 
+     * @param {string} [query] 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getForms(name?: string, query?: string, page?: number, size?: number, options?: any) {
+        return FormsApiFp(this.configuration).getForms(name, query, page, size, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1256,114 +1297,6 @@ export class RecordsApi extends BaseAPI {
      */
     public createRecord(formRecord: FormRecord, options?: any) {
         return RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-/**
- * TestControllerApi - axios parameter creator
- * @export
- */
-export const TestControllerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {string} q 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        search: async (q: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'q' is not null or undefined
-            assertParamExists('search', 'q', q)
-            const localVarPath = `/v1/test`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication auth required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
-
-            if (q !== undefined) {
-                localVarQueryParameter['q'] = q;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * TestControllerApi - functional programming interface
- * @export
- */
-export const TestControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = TestControllerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {string} q 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async search(q: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * TestControllerApi - factory interface
- * @export
- */
-export const TestControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = TestControllerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {string} q 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        search(q: string, options?: any): AxiosPromise<object> {
-            return localVarFp.search(q, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * TestControllerApi - object-oriented interface
- * @export
- * @class TestControllerApi
- * @extends {BaseAPI}
- */
-export class TestControllerApi extends BaseAPI {
-    /**
-     * 
-     * @param {string} q 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestControllerApi
-     */
-    public search(q: string, options?: any) {
-        return TestControllerApiFp(this.configuration).search(q, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

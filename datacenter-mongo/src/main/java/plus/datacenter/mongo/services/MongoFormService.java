@@ -12,18 +12,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import plus.auth.entities.QueryResult;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormService;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class MongoFormService implements FormService {
+
     private MongoClient client;
     private ReactiveMongoOperations operations;
     private String collectionName;
@@ -117,6 +119,25 @@ public class MongoFormService implements FormService {
                                     .doFinally(signalType -> clientSession.close());
                         }
                 );
+    }
+
+    @Override
+    public Mono<QueryResult<Form>> listForm(String clientId) {
+        return operations.find(Query.query(Criteria.where("clientId").is(clientId)), FormMeta.class, getMetaCollectionName())
+                .collectList()
+                .flatMapMany(formMetas -> {
+                    Criteria criteria1 = new Criteria("clientId").is(clientId);
+                    Criteria criteria2 = new Criteria();
+                    for (FormMeta meta : formMetas) {
+                        String[] part = meta.getName().split(":", 2);
+                        if (part == null || part.length < 2)
+                            continue;
+                        criteria2 = criteria2.orOperator(Criteria.where("name").is(part[1]).and("version").is(meta.version));
+                    }
+                    return operations.find(Query.query(criteria1.andOperator(criteria2)), Form.class, collectionName);
+                })
+                .collectList()
+                .map(forms -> new QueryResult<>(forms.size(), forms));
     }
 
     @Override

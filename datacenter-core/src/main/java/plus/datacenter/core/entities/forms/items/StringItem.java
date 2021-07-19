@@ -2,12 +2,14 @@ package plus.datacenter.core.entities.forms.items;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 
 import java.util.regex.Pattern;
+
 
 @Getter
 @Setter
@@ -16,8 +18,11 @@ public class StringItem extends Item<String> {
     private Boolean multiline;
     private Boolean html;
     private String regex;
+
     @JsonIgnore
-    private Pattern pattern;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private transient Pattern pattern;
 
     @Override
     public Boolean validate(String value) {

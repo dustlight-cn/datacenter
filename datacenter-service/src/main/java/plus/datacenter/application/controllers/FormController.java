@@ -48,7 +48,7 @@ public class FormController {
         if (StringUtils.hasText(name))
             return formService.getForm(name, principal.getClientId()).map(form -> new QueryResult(1, Arrays.asList(form)));
         else if (StringUtils.hasText(query))
-            return formSearcher.search(query, page, size);
+            return formSearcher.search(principal.getClientId(), query, page, size);
         return formService.listForm(principal.getClientId());
     }
 

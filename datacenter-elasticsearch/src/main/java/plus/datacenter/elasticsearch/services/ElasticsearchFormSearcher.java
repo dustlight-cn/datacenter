@@ -23,12 +23,13 @@ public class ElasticsearchFormSearcher implements FormSearcher {
     ReactiveElasticsearchOperations operations;
 
 
-    public Mono<QueryResult<Form>> search(String query, int page, int size) {
+    public Mono<QueryResult<Form>> search(String clientId, String query, int page, int size) {
 
         IndexCoordinates indexCoordinates = IndexCoordinates.of("datacenter.form");
-        return operations.searchForPage(new CriteriaQuery(Criteria.where("name").matches(query)
-                        .or("label").matches(query)
-                        .or("description").matches(query))
+        return operations.searchForPage(new CriteriaQuery(Criteria.where("clientId").is(clientId)
+                        .and(Criteria.where("name").matches(query)
+                                .or("label").matches(query)
+                                .or("description").matches(query)))
                         .setPageable(Pageable.ofSize(size).withPage(page))
                 , Form.class, indexCoordinates)
                 .map(searchHits ->

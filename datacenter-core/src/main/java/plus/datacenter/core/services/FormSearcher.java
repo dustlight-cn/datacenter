@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface FormSearcher {
 
-    Mono<QueryResult<Form>> search(String query, int page, int size);
+    Mono<QueryResult<Form>> search(String clientId, String query, int page, int size);
 
 }

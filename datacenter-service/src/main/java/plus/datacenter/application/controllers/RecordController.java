@@ -1,5 +1,6 @@
 package plus.datacenter.application.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class RecordController {
     private FormRecordService formRecordService;
 
     @PostMapping
+    @Operation(summary = "创建表单记录", description = "提交表单记录。")
     public Mono<FormRecord> createRecord(@RequestBody FormRecord record,
                                          AbstractOAuth2TokenAuthenticationToken token) {
         return formService.getFormById(record.getFormId())

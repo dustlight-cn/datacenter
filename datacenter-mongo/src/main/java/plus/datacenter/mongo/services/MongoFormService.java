@@ -16,7 +16,6 @@ import plus.auth.entities.QueryResult;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -137,7 +136,16 @@ public class MongoFormService implements FormService {
                     return operations.find(Query.query(criteria1.andOperator(criteria2)), Form.class, collectionName);
                 })
                 .collectList()
-                .map(forms -> new QueryResult<>(forms.size(), forms));
+                .map(forms -> new QueryResult<>(forms.size(), forms))
+                .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException());
+    }
+
+    @Override
+    public Mono<QueryResult<Form>> listForm(String clientId, String name) {
+        return operations.find(Query.query(Criteria.where("clientId").is(clientId).and("name").is(name)), Form.class, collectionName)
+                .collectList()
+                .map(forms -> new QueryResult<>(forms.size(), forms))
+                .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException());
     }
 
     @Override
@@ -146,20 +154,20 @@ public class MongoFormService implements FormService {
                 .findOne(Query.query(Criteria.where("name").is(getMetaName(clientId, name)).and("clientId").is(clientId)),
                         FormMeta.class,
                         getMetaCollectionName())
-                .onErrorMap(throwable -> ErrorEnum.FORM_NOT_FOUND.details(throwable.getMessage()).getException())
+                .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
                 .flatMap(formMeta -> operations
                         .findOne(Query.query(Criteria.where("name").is(name).and("version").is(formMeta.version).and("clientId").is(clientId)),
                                 Form.class,
                                 collectionName)
-                        .onErrorMap(throwable -> ErrorEnum.FORM_NOT_FOUND.details(throwable.getMessage()).getException())
+                        .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException())
                         .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException())));
     }
 
     @Override
     public Mono<Form> getFormById(String id) {
         return operations.findById(id, Form.class, collectionName)
-                .onErrorMap(throwable -> ErrorEnum.FORM_NOT_FOUND.details(throwable.getMessage()).getException())
+                .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()));
     }
 

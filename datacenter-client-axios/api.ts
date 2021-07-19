@@ -796,7 +796,8 @@ export enum StringItemTypeEnum {
 export const FormsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -804,7 +805,7 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         createForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'form' is not null or undefined
             assertParamExists('createForm', 'form', form)
-            const localVarPath = `/v1/forms`;
+            const localVarPath = `/v1/form`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -835,7 +836,8 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
+         * 通过名称删除所有表单。
+         * @summary 删除表单
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -875,7 +877,8 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -883,7 +886,7 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         getFormById: async (id: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getFormById', 'id', id)
-            const localVarPath = `/v1/forms/{id}`
+            const localVarPath = `/v1/form/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -912,7 +915,8 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
          * @param {string} [name] 
          * @param {string} [query] 
          * @param {number} [page] 
@@ -965,7 +969,49 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLatestForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getLatestForm', 'name', name)
+            const localVarPath = `/v1/form`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -973,7 +1019,7 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         updateForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'form' is not null or undefined
             assertParamExists('updateForm', 'form', form)
-            const localVarPath = `/v1/forms`;
+            const localVarPath = `/v1/form`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1014,7 +1060,8 @@ export const FormsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = FormsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1024,7 +1071,8 @@ export const FormsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * 通过名称删除所有表单。
+         * @summary 删除表单
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1034,7 +1082,8 @@ export const FormsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1044,7 +1093,8 @@ export const FormsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
          * @param {string} [name] 
          * @param {string} [query] 
          * @param {number} [page] 
@@ -1057,7 +1107,19 @@ export const FormsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLatestForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLatestForm(name, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1077,7 +1139,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = FormsApiFp(configuration)
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1086,7 +1149,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.createForm(form, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * 通过名称删除所有表单。
+         * @summary 删除表单
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1095,7 +1159,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.deleteForm(name, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1104,7 +1169,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.getFormById(id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
          * @param {string} [name] 
          * @param {string} [query] 
          * @param {number} [page] 
@@ -1116,7 +1182,18 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.getForms(name, query, page, size, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLatestForm(name: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getLatestForm(name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
          * @param {Form} form 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1135,7 +1212,8 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
  */
 export class FormsApi extends BaseAPI {
     /**
-     * 
+     * 创建一个表单，返回创建后的表单。
+     * @summary 创建表单
      * @param {Form} form 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1146,7 +1224,8 @@ export class FormsApi extends BaseAPI {
     }
 
     /**
-     * 
+     * 通过名称删除所有表单。
+     * @summary 删除表单
      * @param {string} name 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1157,7 +1236,8 @@ export class FormsApi extends BaseAPI {
     }
 
     /**
-     * 
+     * 通过 ID 获取表单结构。
+     * @summary 获取表单
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1168,7 +1248,8 @@ export class FormsApi extends BaseAPI {
     }
 
     /**
-     * 
+     * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+     * @summary 查询或列出表单
      * @param {string} [name] 
      * @param {string} [query] 
      * @param {number} [page] 
@@ -1182,7 +1263,20 @@ export class FormsApi extends BaseAPI {
     }
 
     /**
-     * 
+     * 通过名称获取最新版本的表单。
+     * @summary 获取最新的表单
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getLatestForm(name: string, options?: any) {
+        return FormsApiFp(this.configuration).getLatestForm(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 通过名称更新表单结构。
+     * @summary 更新表单
      * @param {Form} form 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1201,7 +1295,8 @@ export class FormsApi extends BaseAPI {
 export const RecordsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * 提交表单记录。
+         * @summary 创建表单记录
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1250,7 +1345,8 @@ export const RecordsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = RecordsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * 提交表单记录。
+         * @summary 创建表单记录
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1270,7 +1366,8 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = RecordsApiFp(configuration)
     return {
         /**
-         * 
+         * 提交表单记录。
+         * @summary 创建表单记录
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1289,7 +1386,8 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
  */
 export class RecordsApi extends BaseAPI {
     /**
-     * 
+     * 提交表单记录。
+     * @summary 创建表单记录
      * @param {FormRecord} formRecord 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

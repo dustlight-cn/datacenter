@@ -59,6 +59,11 @@ data:
           password: MTIzNDU2
           authentication-database: admin
           database: datacenter
+        elasticsearch:
+          client:
+            reactive:
+              endpoints:
+                - elasticsearch-master.default
 ---
 # 创建 Deployment
 apiVersion: apps/v1

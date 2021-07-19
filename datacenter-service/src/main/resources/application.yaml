@@ -34,3 +34,8 @@ spring:
       password: MTIzNDU2
       authentication-database: admin
       database: datacenter
+    elasticsearch:
+      client:
+        reactive:
+          endpoints:
+            - elasticsearch.svc

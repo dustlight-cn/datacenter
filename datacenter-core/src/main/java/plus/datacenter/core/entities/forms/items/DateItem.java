@@ -7,16 +7,16 @@ import plus.datacenter.core.entities.Rangeable;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Getter
 @Setter
-public class DateItem extends Item<Date> {
+public class DateItem extends Item<Instant> {
 
-    private Rangeable<Date> dateRange;
+    private Rangeable<Instant> dateRange;
 
     @Override
-    public Boolean validate(Date value) {
+    public Boolean validate(Instant value) {
         return super.validate(value) && (dateRange == null || dateRange.validate(value));
     }
 

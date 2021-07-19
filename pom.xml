@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <description>PLUS 数据中心服务</description>
 
     <properties>
@@ -30,6 +30,7 @@
     <modules>
         <module>datacenter-core</module>
         <module>datacenter-mongo</module>
+        <module>datacenter-elasticsearch</module>
         <module>datacenter-service</module>
     </modules>
 
@@ -51,6 +52,11 @@
             <dependency>
                 <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

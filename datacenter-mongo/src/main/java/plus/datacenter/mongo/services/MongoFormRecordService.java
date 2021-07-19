@@ -17,6 +17,7 @@ import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.services.FormRecordService;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Getter
@@ -33,7 +34,7 @@ public class MongoFormRecordService implements FormRecordService {
         if (!StringUtils.hasText(origin.getFormId()))
             ErrorEnum.CREATE_FORM_FAILED.details("form id can't not be null!").throwException();
         origin.setId(null);
-        Date t = new Date();
+        Instant t = Instant.now();
         origin.setCreatedAt(t);
         origin.setUpdatedAt(t);
         return operations.insert(origin, collectionName)

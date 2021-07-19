@@ -124,10 +124,10 @@ export interface DateItem {
     required?: boolean;
     /**
      * 
-     * @type {RangeableDate}
+     * @type {RangeableInstant}
      * @memberof DateItem
      */
-    range?: RangeableDate;
+    dateRange?: RangeableInstant;
 }
 
 /**
@@ -192,7 +192,7 @@ export interface DoubleItem {
      * @type {RangeableDouble}
      * @memberof DoubleItem
      */
-    range?: RangeableDouble;
+    doubleRange?: RangeableDouble;
 }
 
 /**
@@ -497,7 +497,7 @@ export interface IntItem {
      * @type {RangeableInteger}
      * @memberof IntItem
      */
-    range?: RangeableInteger;
+    intRange?: RangeableInteger;
 }
 
 /**
@@ -549,31 +549,6 @@ export interface ItemGroup {
 /**
  * 
  * @export
- * @interface RangeableDate
- */
-export interface RangeableDate {
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableDate
-     */
-    min?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableDate
-     */
-    max?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RangeableDate
-     */
-    openInterval?: boolean;
-}
-/**
- * 
- * @export
  * @interface RangeableDouble
  */
 export interface RangeableDouble {
@@ -593,6 +568,31 @@ export interface RangeableDouble {
      * 
      * @type {boolean}
      * @memberof RangeableDouble
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableInstant
+ */
+export interface RangeableInstant {
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    min?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    max?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableInstant
      */
     openInterval?: boolean;
 }
@@ -665,10 +665,10 @@ export interface SelectItem {
     required?: boolean;
     /**
      * 
-     * @type {number}
+     * @type {RangeableInteger}
      * @memberof SelectItem
      */
-    max?: number;
+    selectedRange?: RangeableInteger;
     /**
      * 
      * @type {{ [key: string]: string; }}
@@ -752,12 +752,6 @@ export interface StringItem {
      * @memberof StringItem
      */
     regex?: string;
-    /**
-     * 
-     * @type {StringItemPattern}
-     * @memberof StringItem
-     */
-    pattern?: StringItemPattern;
 }
 
 /**
@@ -775,19 +769,6 @@ export enum StringItemTypeEnum {
     Select = 'SELECT'
 }
 
-/**
- * 
- * @export
- * @interface StringItemPattern
- */
-export interface StringItemPattern {
-    /**
-     * 
-     * @type {number}
-     * @memberof StringItemPattern
-     */
-    cursor?: number;
-}
 
 /**
  * FormsApi - axios parameter creator
@@ -1275,6 +1256,114 @@ export class RecordsApi extends BaseAPI {
      */
     public createRecord(formRecord: FormRecord, options?: any) {
         return RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * TestControllerApi - axios parameter creator
+ * @export
+ */
+export const TestControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} q 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search: async (q: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'q' is not null or undefined
+            assertParamExists('search', 'q', q)
+            const localVarPath = `/v1/test`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TestControllerApi - functional programming interface
+ * @export
+ */
+export const TestControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TestControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} q 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async search(q: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * TestControllerApi - factory interface
+ * @export
+ */
+export const TestControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TestControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} q 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search(q: string, options?: any): AxiosPromise<object> {
+            return localVarFp.search(q, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TestControllerApi - object-oriented interface
+ * @export
+ * @class TestControllerApi
+ * @extends {BaseAPI}
+ */
+export class TestControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} q 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TestControllerApi
+     */
+    public search(q: string, options?: any) {
+        return TestControllerApiFp(this.configuration).search(q, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

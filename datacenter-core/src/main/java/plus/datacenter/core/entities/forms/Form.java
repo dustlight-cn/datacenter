@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class Form implements Serializable {
 
     private String id;
     private Integer version;
-    private Date createdAt;
+    private Instant createdAt;
     private String clientId;
     private String owner;
 

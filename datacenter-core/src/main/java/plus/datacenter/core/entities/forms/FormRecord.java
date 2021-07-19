@@ -3,7 +3,7 @@ package plus.datacenter.core.entities.forms;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 @Getter
@@ -15,8 +15,8 @@ public class FormRecord {
     private String clientId;
     private String owner;
 
-    private Date createdAt;
-    private Date updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     private Map<String, Object> data;
 

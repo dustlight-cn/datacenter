@@ -17,6 +17,7 @@ import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormService;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Getter
@@ -48,7 +49,7 @@ public class MongoFormService implements FormService {
                                             ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())
                                     .flatMap(formMeta -> {
                                         origin.setId(null);
-                                        Date t = new Date();
+                                        Instant t = Instant.now();
                                         origin.setVersion(formMeta.version);
                                         origin.setCreatedAt(t);
                                         return op
@@ -81,7 +82,7 @@ public class MongoFormService implements FormService {
                             .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
                             .flatMap(formMeta -> {
                                 target.setId(null);
-                                target.setCreatedAt(new Date());
+                                target.setCreatedAt(Instant.now());
                                 target.setVersion(formMeta.version + 1);
                                 return op
                                         .insert(target, collectionName)

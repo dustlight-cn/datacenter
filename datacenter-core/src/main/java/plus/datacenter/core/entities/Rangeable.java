@@ -1,11 +1,17 @@
 package plus.datacenter.core.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class Rangeable<T extends Comparable> implements Validatable<T> {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Rangeable<T extends Comparable> implements Validatable<T>, Serializable {
 
     private T min;
     private T max;

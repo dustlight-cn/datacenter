@@ -3,6 +3,7 @@ package plus.datacenter.core.entities.forms.items;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import plus.datacenter.core.entities.Rangeable;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 @Setter
 public class SelectItem extends Item<SelectItem.Selected> {
 
-    private Integer max;
+    private Rangeable<Integer> selectedRange = new Rangeable<>(1, 1, false);
     private Map<String, String> options;
 
     @Schema(defaultValue = "SELECT")

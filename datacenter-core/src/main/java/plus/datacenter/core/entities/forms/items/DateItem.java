@@ -13,11 +13,11 @@ import java.util.Date;
 @Setter
 public class DateItem extends Item<Date> {
 
-    private Rangeable<Date> range;
+    private Rangeable<Date> dateRange;
 
     @Override
     public Boolean validate(Date value) {
-        return super.validate(value) && (range == null || range.validate(value));
+        return super.validate(value) && (dateRange == null || dateRange.validate(value));
     }
 
     @Schema(defaultValue = "DATE")

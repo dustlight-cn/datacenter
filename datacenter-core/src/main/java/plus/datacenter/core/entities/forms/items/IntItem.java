@@ -11,11 +11,11 @@ import plus.datacenter.core.entities.forms.ItemType;
 @Setter
 public class IntItem extends Item<Integer> {
 
-    private Rangeable<Integer> range;
+    private Rangeable<Integer> intRange;
 
     @Override
     public Boolean validate(Integer value) {
-        return super.validate(value) && (range == null || range.validate(value));
+        return super.validate(value) && (intRange == null || intRange.validate(value));
     }
 
     @Schema(defaultValue = "INT")

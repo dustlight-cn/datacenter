@@ -23,16 +23,16 @@ public class ExceptionController {
     @ExceptionHandler(Throwable.class)
     public Mono<ErrorDetails> onException(Throwable e, ServerWebExchange exchange) {
         var response = exchange.getResponse();
-        var request = exchange.getRequest() ;
+        var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         logger.error(String.format("Error on path: %s, remote ip: %s", request.getURI(), request.getRemoteAddress()), e);
         return Mono.just(logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNKNOWN.getDetails());
     }
 
     @ExceptionHandler(DatacenterException.class)
-    public Mono<ErrorDetails>  onErrorException(DatacenterException e,ServerWebExchange exchange) {
+    public Mono<ErrorDetails> onErrorException(DatacenterException e, ServerWebExchange exchange) {
         var response = exchange.getResponse();
-        var request = exchange.getRequest() ;
+        var request = exchange.getRequest();
 
         int code = e != null && e.getErrorDetails() != null ? e.getErrorDetails().getCode() : 0;
         if (code == -1)
@@ -48,14 +48,14 @@ public class ExceptionController {
         else
             response.setStatusCode(HttpStatus.BAD_REQUEST);
 
-        logger.debug(e.getErrorDetails().getMessage(), e);
+        logger.debug(e.getErrorDetails().getMessage() + ": " + e.getErrorDetails().getDetails(), e);
         return Mono.just(e.getErrorDetails());
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public Mono<ErrorDetails> onAuthenticationException(AuthenticationException e, ServerWebExchange exchange) {
         var response = exchange.getResponse();
-        var request = exchange.getRequest() ;
+        var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.FORBIDDEN);
         logger.debug(e.getMessage(), e);
         return Mono.just(ErrorEnum.UNAUTHORIZED.details(e.getMessage()));
@@ -64,7 +64,7 @@ public class ExceptionController {
     @ExceptionHandler(AccessDeniedException.class)
     public Mono<ErrorDetails> onAccessDeniedException(AccessDeniedException e, ServerWebExchange exchange) {
         var response = exchange.getResponse();
-        var request = exchange.getRequest() ;
+        var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.FORBIDDEN);
         logger.debug(e.getMessage(), e);
         return Mono.just(ErrorEnum.ACCESS_DENIED.details(e.getMessage()));

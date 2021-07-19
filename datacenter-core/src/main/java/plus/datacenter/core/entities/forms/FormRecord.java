@@ -11,13 +11,15 @@ import java.util.Map;
 public class FormRecord {
 
     private String id;
-    private String formId;
     private String clientId;
     private String owner;
+
+    private String formId;
+    private String formName;
+    private Integer formVersion;
 
     private Instant createdAt;
     private Instant updatedAt;
 
     private Map<String, Object> data;
-
 }

@@ -39,3 +39,6 @@ spring:
         reactive:
           endpoints:
             - elasticsearch.svc
+logging:
+  level:
+    plus.datacenter.*: debug

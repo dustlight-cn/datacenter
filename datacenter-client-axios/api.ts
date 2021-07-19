@@ -418,12 +418,6 @@ export interface FormRecord {
      * @type {string}
      * @memberof FormRecord
      */
-    formId?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FormRecord
-     */
     clientId?: string;
     /**
      * 
@@ -431,6 +425,24 @@ export interface FormRecord {
      * @memberof FormRecord
      */
     owner?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    formId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    formName?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FormRecord
+     */
+    formVersion?: number;
     /**
      * 
      * @type {string}
@@ -1295,16 +1307,19 @@ export class FormsApi extends BaseAPI {
 export const RecordsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 提交表单记录。
+         * 提交一条表单记录。
          * @summary 创建表单记录
+         * @param {string} formName 
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord: async (formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+        createRecord: async (formName: string, formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'formName' is not null or undefined
+            assertParamExists('createRecord', 'formName', formName)
             // verify required parameter 'formRecord' is not null or undefined
             assertParamExists('createRecord', 'formRecord', formRecord)
-            const localVarPath = `/v1/records`;
+            const localVarPath = `/v1/record`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1313,6 +1328,54 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
             }
 
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (formName !== undefined) {
+                localVarQueryParameter['formName'] = formName;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord: async (id: string, formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteRecord', 'id', id)
+            // verify required parameter 'formRecord' is not null or undefined
+            assertParamExists('deleteRecord', 'formRecord', formRecord)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -1334,6 +1397,82 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord1: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteRecord1', 'id', id)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecord: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getRecord', 'id', id)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1345,14 +1484,49 @@ export const RecordsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = RecordsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 提交表单记录。
+         * 提交一条表单记录。
          * @summary 创建表单记录
+         * @param {string} formName 
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createRecord(formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createRecord(formRecord, options);
+        async createRecord(formName: string, formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createRecord(formName, formRecord, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteRecord(id: string, formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRecord(id, formRecord, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteRecord1(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRecord1(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRecord(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1366,14 +1540,46 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = RecordsApiFp(configuration)
     return {
         /**
-         * 提交表单记录。
+         * 提交一条表单记录。
          * @summary 创建表单记录
+         * @param {string} formName 
          * @param {FormRecord} formRecord 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord(formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
-            return localVarFp.createRecord(formRecord, options).then((request) => request(axios, basePath));
+        createRecord(formName: string, formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.createRecord(formName, formRecord, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord(id: string, formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.deleteRecord(id, formRecord, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord1(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteRecord1(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecord(id: string, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.getRecord(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1386,15 +1592,53 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
  */
 export class RecordsApi extends BaseAPI {
     /**
-     * 提交表单记录。
+     * 提交一条表单记录。
      * @summary 创建表单记录
+     * @param {string} formName 
      * @param {FormRecord} formRecord 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    public createRecord(formRecord: FormRecord, options?: any) {
-        return RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
+    public createRecord(formName: string, formRecord: FormRecord, options?: any) {
+        return RecordsApiFp(this.configuration).createRecord(formName, formRecord, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 更新一条表单记录。
+     * @summary 更新表单记录
+     * @param {string} id 
+     * @param {FormRecord} formRecord 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public deleteRecord(id: string, formRecord: FormRecord, options?: any) {
+        return RecordsApiFp(this.configuration).deleteRecord(id, formRecord, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 删除一条表单记录。
+     * @summary 删除表单记录
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public deleteRecord1(id: string, options?: any) {
+        return RecordsApiFp(this.configuration).deleteRecord1(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 获取一条表单记录。
+     * @summary 获取表单记录
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public getRecord(id: string, options?: any) {
+        return RecordsApiFp(this.configuration).getRecord(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

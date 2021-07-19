@@ -29,8 +29,8 @@
 
     <modules>
         <module>datacenter-core</module>
-        <module>datacenter-mongo</module>
         <module>datacenter-elasticsearch</module>
+        <module>datacenter-mongo</module>
         <module>datacenter-service</module>
     </modules>
 

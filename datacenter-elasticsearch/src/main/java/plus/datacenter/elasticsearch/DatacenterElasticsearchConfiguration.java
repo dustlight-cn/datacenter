@@ -2,16 +2,14 @@ package plus.datacenter.elasticsearch;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
 
-import java.time.Instant;
-import java.util.Date;
-
+@EnableConfigurationProperties(DatacenterElasticsearchProperties.class)
 @Configuration
 public class DatacenterElasticsearchConfiguration {
 
@@ -22,16 +20,10 @@ public class DatacenterElasticsearchConfiguration {
     }
 
     @Bean
-    public StringDateConverter stringDateConverter() {
-        return new StringDateConverter();
+    @ConditionalOnBean(ReactiveElasticsearchOperations.class)
+    public ElasticsearchFormRecordService elasticsearchFormRecordService(@Autowired ReactiveElasticsearchOperations operations,
+                                                                         @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchFormRecordService(operations, properties.getRecordPrefix());
     }
 
-    @ReadingConverter
-    public static class StringDateConverter implements Converter<String, Date> {
-
-        @Override
-        public Date convert(String source) {
-            return Date.from(Instant.parse(source));
-        }
-    }
 }

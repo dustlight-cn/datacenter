@@ -24,6 +24,43 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
+ * @interface BetweenQuery
+ */
+export interface BetweenQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof BetweenQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BetweenQuery
+     */
+    opt?: BetweenQueryOptEnum;
+    /**
+     * 
+     * @type {Rangeable}
+     * @memberof BetweenQuery
+     */
+    value?: Rangeable;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum BetweenQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * 
+ * @export
  * @interface BooleanItem
  */
 export interface BooleanItem {
@@ -208,6 +245,43 @@ export enum DoubleItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT'
+}
+
+/**
+ * 
+ * @export
+ * @interface EqualQuery
+ */
+export interface EqualQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof EqualQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EqualQuery
+     */
+    opt?: EqualQueryOptEnum;
+    /**
+     * 
+     * @type {object}
+     * @memberof EqualQuery
+     */
+    value?: object;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum EqualQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
 }
 
 /**
@@ -471,6 +545,43 @@ export interface FormRecord {
 /**
  * 
  * @export
+ * @interface InQuery
+ */
+export interface InQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof InQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InQuery
+     */
+    opt?: InQueryOptEnum;
+    /**
+     * 
+     * @type {Array<object>}
+     * @memberof InQuery
+     */
+    value?: Array<object>;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum InQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * 
+ * @export
  * @interface IntItem
  */
 export interface IntItem {
@@ -567,6 +678,49 @@ export interface ItemGroup {
 /**
  * 
  * @export
+ * @interface MatchQuery
+ */
+export interface MatchQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    opt?: MatchQueryOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    value?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum MatchQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * @type QueryObject
+ * @export
+ */
+export type QueryObject = BetweenQuery | EqualQuery | InQuery | MatchQuery;
+
+/**
+ * 
+ * @export
  * @interface QueryResultForm
  */
 export interface QueryResultForm {
@@ -582,6 +736,50 @@ export interface QueryResultForm {
      * @memberof QueryResultForm
      */
     data?: Array<Form>;
+}
+/**
+ * 
+ * @export
+ * @interface QueryResultFormRecord
+ */
+export interface QueryResultFormRecord {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultFormRecord
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<FormRecord>}
+     * @memberof QueryResultFormRecord
+     */
+    data?: Array<FormRecord>;
+}
+/**
+ * 
+ * @export
+ * @interface Rangeable
+ */
+export interface Rangeable {
+    /**
+     * 
+     * @type {object}
+     * @memberof Rangeable
+     */
+    min?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof Rangeable
+     */
+    max?: object;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Rangeable
+     */
+    openInterval?: boolean;
 }
 /**
  * 
@@ -1391,6 +1589,66 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 
+         * @param {Array<string>} [orders] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        findRecords: async (name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('findRecords', 'name', name)
+            const localVarPath = `/v1/records/queries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (orders) {
+                localVarQueryParameter['orders'] = orders;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(queryObject, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 获取一条表单记录。
          * @summary 获取表单记录
          * @param {string} id 
@@ -1505,6 +1763,21 @@ export const RecordsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 
+         * @param {Array<string>} [orders] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findRecords(name, orders, page, size, queryObject, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * 获取一条表单记录。
          * @summary 获取表单记录
          * @param {string} id 
@@ -1556,6 +1829,20 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
          */
         deleteRecord(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteRecord(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 
+         * @param {Array<string>} [orders] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord> {
+            return localVarFp.findRecords(name, orders, page, size, queryObject, options).then((request) => request(axios, basePath));
         },
         /**
          * 获取一条表单记录。
@@ -1610,6 +1897,22 @@ export class RecordsApi extends BaseAPI {
      */
     public deleteRecord(id: string, options?: any) {
         return RecordsApiFp(this.configuration).deleteRecord(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 列出或搜索表单记录。
+     * @summary 检索表单记录
+     * @param {string} name 
+     * @param {Array<string>} [orders] 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {Array<QueryObject>} [queryObject] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any) {
+        return RecordsApiFp(this.configuration).findRecords(name, orders, page, size, queryObject, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

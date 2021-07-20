@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import plus.auth.entities.QueryResult;
 import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
 import plus.datacenter.core.DatacenterException;
@@ -14,6 +15,8 @@ import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
+import plus.datacenter.core.entities.queries.Query;
+import plus.datacenter.core.services.FormRecordSearcher;
 import plus.datacenter.core.services.FormRecordService;
 import plus.datacenter.core.services.FormService;
 import plus.datacenter.core.utils.FormUtils;
@@ -33,6 +36,9 @@ public class RecordController {
 
     @Autowired
     private FormRecordService formRecordService;
+
+    @Autowired
+    private FormRecordSearcher formRecordSearcher;
 
     @PostMapping("record")
     @Operation(summary = "创建表单记录", description = "提交一条表单记录。")
@@ -84,6 +90,23 @@ public class RecordController {
                     return formRecordService.updateRecord(record1);
                 })
                 .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
+    }
+
+    @PostMapping("records/queries")
+    @Operation(summary = "检索表单记录", description = "列出或搜索表单记录。")
+    public Mono<QueryResult<FormRecord>> findRecords(@RequestParam String name,
+                                                     @RequestParam(required = false) Collection<String> orders,
+                                                     @RequestParam(required = false, defaultValue = "0") int page,
+                                                     @RequestParam(required = false, defaultValue = "10") int size,
+                                                     @RequestBody(required = false) Collection<Query> queries,
+                                                     AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        return formRecordSearcher.findRecord(principal.getClientId(),
+                name,
+                queries,
+                orders,
+                page,
+                size);
     }
 
     /**

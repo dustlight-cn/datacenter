@@ -8,7 +8,7 @@ import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.forms.items.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 public class FormUtils {
@@ -88,7 +88,7 @@ public class FormUtils {
             case FORM:
                 return String.class;
             case DATE:
-                return Date.class;
+                return Instant.class;
             case BOOLEAN:
                 return Boolean.class;
             default:

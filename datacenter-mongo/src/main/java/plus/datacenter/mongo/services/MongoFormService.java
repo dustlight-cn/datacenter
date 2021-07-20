@@ -4,6 +4,7 @@ import com.mongodb.reactivestreams.client.MongoClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -19,6 +20,8 @@ import plus.datacenter.core.services.FormService;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -39,23 +42,26 @@ public class MongoFormService implements FormService {
         meta.setVersion(0);
         meta.setOwner(origin.getOwner());
         meta.setClientId(origin.getClientId());
+
+        origin.setId(null);
+        Instant t = Instant.now();
+        origin.setVersion(meta.version);
+        origin.setCreatedAt(t);
+
         return Mono.from(client.startSession())
                 .flatMap(clientSession -> {
                             clientSession.startTransaction();
                             ReactiveMongoOperations op = operations.withSession(clientSession);
                             return op.withSession(clientSession)
-                                    .insert(meta, getMetaCollectionName())
-                                    .onErrorMap(throwable -> (throwable instanceof DuplicateKeyException) ?
-                                            ErrorEnum.FORM_EXISTS.details(throwable.getMessage()).getException() :
-                                            ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())
-                                    .flatMap(formMeta -> {
-                                        origin.setId(null);
-                                        Instant t = Instant.now();
-                                        origin.setVersion(formMeta.version);
-                                        origin.setCreatedAt(t);
-                                        return op
-                                                .insert(origin, collectionName)
-                                                .onErrorMap(throwable -> ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException());
+                                    .insert(origin, collectionName)
+                                    .onErrorMap(throwable -> ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())
+                                    .flatMap(form -> {
+                                        meta.setCurrentId(form.getId());
+                                        return op.insert(meta, getMetaCollectionName())
+                                                .onErrorMap(throwable -> (throwable instanceof DuplicateKeyException) ?
+                                                        ErrorEnum.FORM_EXISTS.details(throwable.getMessage()).getException() :
+                                                        ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException())
+                                                .map(formMeta -> form);
                                     })
                                     .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
                                     .flatMap(val -> Mono.from(clientSession.commitTransaction()).then(Mono.just(val)))
@@ -66,10 +72,13 @@ public class MongoFormService implements FormService {
 
     @Override
     public Mono<Form> updateForm(Form target) {
+        ObjectId id = new ObjectId();
         Update update = new Update();
+        update.set("currentId", id.toHexString());
         update.inc("version", 1);
         if (target.getOwner() != null)
             update.set("owner", target.getOwner());
+
         return Mono.from(client.startSession())
                 .flatMap(clientSession -> {
                     clientSession.startTransaction();
@@ -82,7 +91,7 @@ public class MongoFormService implements FormService {
                             .onErrorMap(throwable -> ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException())
                             .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()))
                             .flatMap(formMeta -> {
-                                target.setId(null);
+                                target.setId(id.toHexString());
                                 target.setCreatedAt(Instant.now());
                                 target.setVersion(formMeta.version + 1);
                                 return op
@@ -125,15 +134,12 @@ public class MongoFormService implements FormService {
         return operations.find(Query.query(Criteria.where("clientId").is(clientId)), FormMeta.class, getMetaCollectionName())
                 .collectList()
                 .flatMapMany(formMetas -> {
-                    Criteria criteria1 = new Criteria("clientId").is(clientId);
-                    Criteria criteria2 = new Criteria();
+                    Collection<String> ids = new HashSet<>();
                     for (FormMeta meta : formMetas) {
-                        String[] part = meta.getName().split(":", 2);
-                        if (part == null || part.length < 2)
-                            continue;
-                        criteria2 = criteria2.orOperator(Criteria.where("name").is(part[1]).and("version").is(meta.version));
+                        if (!StringUtils.hasText(meta.getCurrentId())) ;
+                        ids.add(meta.getCurrentId());
                     }
-                    return operations.find(Query.query(criteria1.andOperator(criteria2)), Form.class, collectionName);
+                    return operations.find(Query.query(Criteria.where("_id").in(ids)), Form.class, collectionName);
                 })
                 .collectList()
                 .map(forms -> new QueryResult<>(forms.size(), forms))
@@ -191,8 +197,8 @@ public class MongoFormService implements FormService {
         private String name;
         private String clientId;
         private String owner;
+        private String currentId;
         private int version = 0;
-
     }
 
 }

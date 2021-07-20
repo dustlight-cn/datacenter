@@ -24,6 +24,8 @@ public class Form implements Serializable {
     private String label;
     private String description;
 
+    private String primaryKey;
+
     private Collection<ItemGroup> groups;
 
     @JsonIgnore

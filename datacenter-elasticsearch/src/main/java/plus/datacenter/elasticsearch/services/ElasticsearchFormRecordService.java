@@ -1,7 +1,8 @@
 package plus.datacenter.elasticsearch.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fatboyindustrial.gsonjavatime.Converters;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,20 +10,22 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateResponse;
+import org.springframework.data.elasticsearch.core.query.*;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.services.FormRecordService;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class ElasticsearchFormRecordService implements FormRecordService {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final Gson gson = Converters.registerInstant(new GsonBuilder()).create();
     private ReactiveElasticsearchOperations operations;
     private String indexPrefix;
 
@@ -42,15 +45,25 @@ public class ElasticsearchFormRecordService implements FormRecordService {
 
     @Override
     public Mono<FormRecord> updateRecord(FormRecord target) {
-        try {
-            IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + target.getClientId() + "." + target.getFormName() + "." + target.getFormId());
-            UpdateQuery updateQuery = UpdateQuery.builder(target.getId()).withDocument(Document.parse(mapper.writeValueAsString(target))).build();
-            return operations.update(updateQuery, index)
-                    .onErrorMap(throwable -> ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                    .flatMap(updateResponse -> updateResponse.getResult() == UpdateResponse.Result.UPDATED ? Mono.just(target) : Mono.error(ErrorEnum.UPDATE_RESOURCE_FAILED.getException()));
-        } catch (JsonProcessingException e) {
-            throw ErrorEnum.UPDATE_RESOURCE_FAILED.details(e.getMessage()).getException();
+        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + target.getClientId() + "." + target.getFormName() + "." + target.getFormId());
+        Map<String, Object> update = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        update.put("updatedAt", target.getUpdatedAt().toEpochMilli());
+        update.put("data", data);
+        Iterator<Map.Entry<String, Object>> iterator = target.getData().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Object> kv = iterator.next();
+            if (kv.getValue() == null)
+                continue;
+            data.put(kv.getKey(), kv.getValue());
         }
+        Document doc = Document.parse(gson.toJson(update));
+        doc.setIndex(index.getIndexName());
+        doc.setId(target.getId());
+        return operations.update(UpdateQuery.builder(target.getId()).withDocument(doc).build(), index)
+                .onErrorMap(throwable -> ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
+                .flatMap(updateResponse -> updateResponse.getResult() == UpdateResponse.Result.UPDATED ?
+                        Mono.just(target) : Mono.error(ErrorEnum.UPDATE_RESOURCE_FAILED.details(updateResponse.getResult().name()).getException()));
     }
 
     @Override

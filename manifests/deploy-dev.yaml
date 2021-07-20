@@ -117,6 +117,10 @@ spec:
               mountPath: /application.yaml
               subPath: application.yaml
       initContainers:
+        - name: init-elasticsearch
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "until nc -z elasticsearch-master.default 9200; do echo waiting for elasticsearch; sleep 2; done"]
         - name: init-database
           image: busybox
           imagePullPolicy: IfNotPresent

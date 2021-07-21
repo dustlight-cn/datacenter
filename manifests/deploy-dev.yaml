@@ -64,6 +64,9 @@ data:
             reactive:
               endpoints:
                 - elasticsearch-master.default
+      rabbitmq:
+        addresses: rabbit-mq.default
+        port: 5672
 ---
 # 创建 Deployment
 apiVersion: apps/v1
@@ -125,6 +128,10 @@ spec:
           image: busybox
           imagePullPolicy: IfNotPresent
           command: ['sh', '-c', "until nc -z database-mongodb.database 27017; do echo waiting for mongodb; sleep 2; done"]
+        - name: init-mq
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "until nc -z rabbit-mq.default 5672; do echo waiting for rabbitmq; sleep 2; done"]
       volumes:
         - name: config
           configMap:

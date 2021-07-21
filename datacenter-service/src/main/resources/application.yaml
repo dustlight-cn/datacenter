@@ -39,6 +39,9 @@ spring:
         reactive:
           endpoints:
             - elasticsearch.svc
+  rabbitmq:
+    addresses: rabbitmq.svc
+    port: 5672
 logging:
   level:
     plus.datacenter.*: debug

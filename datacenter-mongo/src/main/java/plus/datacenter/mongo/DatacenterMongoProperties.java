@@ -13,4 +13,7 @@ public class DatacenterMongoProperties {
 
     private String formRecordCollection = "form_record";
 
+    private boolean enqueue = true;
+    private String exchange = "datacenter";
+
 }

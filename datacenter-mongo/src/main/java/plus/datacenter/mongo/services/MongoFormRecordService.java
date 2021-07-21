@@ -102,6 +102,9 @@ public class MongoFormRecordService implements FormRecordService {
                             target.setFormId(record.getFormId());
                             target.setFormName(record.getFormName());
                             target.setFormVersion(record.getFormVersion());
+                            target.setOwner(record.getOwner());
+                            target.setClientId(record.getClientId());
+                            target.setCreatedAt(record.getCreatedAt());
                             return record;
                         })
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :

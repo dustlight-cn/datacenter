@@ -10,7 +10,6 @@ import plus.datacenter.core.entities.forms.ItemType;
 
 import java.util.regex.Pattern;
 
-
 @Getter
 @Setter
 public class StringItem extends Item<String> {
@@ -40,8 +39,7 @@ public class StringItem extends Item<String> {
         else
             pattern = Pattern.compile(regex);
     }
-
-
+    
     @Schema(defaultValue = "STRING")
     @Override
     public ItemType getType() {

@@ -21,7 +21,8 @@ import java.util.List;
         FormItem.class,
         IntItem.class,
         SelectItem.class,
-        StringItem.class
+        StringItem.class,
+        UserItem.class
 })
 @Getter
 @Setter

@@ -114,7 +114,8 @@ export enum BooleanItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -179,7 +180,8 @@ export enum DateItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -244,7 +246,8 @@ export enum DoubleItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -346,7 +349,8 @@ export enum FileItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -478,7 +482,8 @@ export enum FormItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -641,14 +646,15 @@ export enum IntItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
  * @type Item
  * @export
  */
-export type Item = BooleanItem | DateItem | DoubleItem | FileItem | FormItem | IntItem | SelectItem | StringItem;
+export type Item = BooleanItem | DateItem | DoubleItem | FileItem | FormItem | IntItem | SelectItem | StringItem | UserItem;
 
 /**
  * 
@@ -924,7 +930,8 @@ export enum SelectItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 /**
@@ -1001,7 +1008,68 @@ export enum StringItemTypeEnum {
     Boolean = 'BOOLEAN',
     Form = 'FORM',
     File = 'FILE',
-    Select = 'SELECT'
+    Select = 'SELECT',
+    User = 'USER'
+}
+
+/**
+ * 
+ * @export
+ * @interface UserItem
+ */
+export interface UserItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    type?: UserItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserItem
+     */
+    required?: boolean;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum UserItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER'
 }
 
 

@@ -10,5 +10,6 @@ public enum ItemType implements Serializable {
     BOOLEAN,
     FORM,
     FILE,
-    SELECT
+    SELECT,
+    USER
 }

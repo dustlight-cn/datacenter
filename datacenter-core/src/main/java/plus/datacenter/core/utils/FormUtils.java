@@ -56,6 +56,8 @@ public class FormUtils {
                 return IntItem.class;
             case DOUBLE:
                 return DoubleItem.class;
+            case USER:
+                return UserItem.class;
             case STRING:
                 return StringItem.class;
             case FILE:
@@ -79,18 +81,16 @@ public class FormUtils {
                 return Integer.class;
             case DOUBLE:
                 return Double.class;
-            case STRING:
-                return String.class;
-            case FILE:
-                return String.class;
             case SELECT:
                 return SelectItem.Selected.class;
-            case FORM:
-                return String.class;
             case DATE:
                 return Instant.class;
             case BOOLEAN:
                 return Boolean.class;
+            case USER:
+            case FORM:
+            case FILE:
+            case STRING:
             default:
                 return String.class;
         }
@@ -104,8 +104,6 @@ public class FormUtils {
                 return ItemType.INT;
             case "DOUBLE":
                 return ItemType.DOUBLE;
-            case "STRING":
-                return ItemType.STRING;
             case "FILE":
                 return ItemType.FILE;
             case "SELECT":
@@ -116,6 +114,9 @@ public class FormUtils {
                 return ItemType.DATE;
             case "BOOLEAN":
                 return ItemType.BOOLEAN;
+            case "USER":
+                return ItemType.USER;
+            case "STRING":
             default:
                 return ItemType.STRING;
         }

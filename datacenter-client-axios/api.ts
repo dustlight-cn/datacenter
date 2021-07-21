@@ -1659,15 +1659,16 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 列出或搜索表单记录。
          * @summary 检索表单记录
-         * @param {string} name 
-         * @param {Array<string>} [orders] 
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {Array<QueryObject>} [queryObject] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findRecords: async (name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options: any = {}): Promise<RequestArgs> => {
+        findRecords: async (name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'name' is not null or undefined
             assertParamExists('findRecords', 'name', name)
             const localVarPath = `/v1/records/queries`;
@@ -1688,6 +1689,10 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
 
             if (name !== undefined) {
                 localVarQueryParameter['name'] = name;
+            }
+
+            if (query !== undefined) {
+                localVarQueryParameter['query'] = query;
             }
 
             if (orders) {
@@ -1833,16 +1838,17 @@ export const RecordsApiFp = function(configuration?: Configuration) {
         /**
          * 列出或搜索表单记录。
          * @summary 检索表单记录
-         * @param {string} name 
-         * @param {Array<string>} [orders] 
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {Array<QueryObject>} [queryObject] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.findRecords(name, orders, page, size, queryObject, options);
+        async findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findRecords(name, query, orders, page, size, queryObject, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1901,16 +1907,17 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
         /**
          * 列出或搜索表单记录。
          * @summary 检索表单记录
-         * @param {string} name 
-         * @param {Array<string>} [orders] 
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page] 
          * @param {number} [size] 
          * @param {Array<QueryObject>} [queryObject] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord> {
-            return localVarFp.findRecords(name, orders, page, size, queryObject, options).then((request) => request(axios, basePath));
+        findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord> {
+            return localVarFp.findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(axios, basePath));
         },
         /**
          * 获取一条表单记录。
@@ -1970,8 +1977,9 @@ export class RecordsApi extends BaseAPI {
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
-     * @param {string} name 
-     * @param {Array<string>} [orders] 
+     * @param {string} name 表单名称。
+     * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+     * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page] 
      * @param {number} [size] 
      * @param {Array<QueryObject>} [queryObject] 
@@ -1979,8 +1987,8 @@ export class RecordsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    public findRecords(name: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any) {
-        return RecordsApiFp(this.configuration).findRecords(name, orders, page, size, queryObject, options).then((request) => request(this.axios, this.basePath));
+    public findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any) {
+        return RecordsApiFp(this.configuration).findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

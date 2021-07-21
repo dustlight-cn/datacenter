@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -13,9 +14,11 @@ import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.queries.BetweenQuery;
 import plus.datacenter.core.services.FormRecordSearcher;
+import plus.datacenter.elasticsearch.utils.OrderUtil;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -30,7 +33,7 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
     public Mono<QueryResult<FormRecord>> findRecord(String clientId,
                                                     String formName,
                                                     Collection<Query> queries,
-                                                    Collection<String> orders,
+                                                    List<String> orders,
                                                     int page,
                                                     int size) {
         IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + clientId + "." + formName + ".*");
@@ -44,6 +47,10 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
         }
 
         NativeSearchQuery nqb = new NativeSearchQuery(bq).setPageable(Pageable.ofSize(size).withPage(page));
+
+        if (orders != null && orders.size() > 0) {
+            nqb.addSort(Sort.by(OrderUtil.getOrders(orders)));
+        }
         return operations.searchForPage(nqb,
                 FormRecord.class,
                 index)
@@ -55,7 +62,11 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
     protected QueryBuilder transform(Query query) {
         switch (query.getOpt()) {
             case MATCH:
-                return new MatchQueryBuilder(query.getName(), query.getValue());
+                String[] keys = query.getName().split(",");
+                if (keys.length == 1)
+                    return new MatchQueryBuilder(query.getName(), query.getValue());
+                else
+                    return new MultiMatchQueryBuilder(query.getValue(), keys);
             case BETWEEN:
                 RangeQueryBuilder rq = new RangeQueryBuilder(query.getName());
                 BetweenQuery bq = (BetweenQuery) query;

@@ -1,6 +1,7 @@
 package plus.datacenter.application.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.queries.Query;
+import plus.datacenter.core.entities.queries.QueryOperation;
+import plus.datacenter.core.entities.queries.queries.MatchQuery;
 import plus.datacenter.core.services.FormRecordSearcher;
 import plus.datacenter.core.services.FormRecordService;
 import plus.datacenter.core.services.FormService;
@@ -94,13 +97,44 @@ public class RecordController {
 
     @PostMapping("records/queries")
     @Operation(summary = "检索表单记录", description = "列出或搜索表单记录。")
-    public Mono<QueryResult<FormRecord>> findRecords(@RequestParam String name,
-                                                     @RequestParam(required = false) Collection<String> orders,
+    public Mono<QueryResult<FormRecord>> findRecords(@RequestParam @Parameter(description = "表单名称。") String name,
+                                                     @RequestParam(required = false) @Parameter(description = "关键词，对表单的 STRING 类型进行全文搜索。") String query,
+                                                     @RequestParam(required = false) @Parameter(description = "排序字段，如：update （正序排序） -update（倒序排序）。") List<String> orders,
                                                      @RequestParam(required = false, defaultValue = "0") int page,
                                                      @RequestParam(required = false, defaultValue = "10") int size,
-                                                     @RequestBody(required = false) Collection<Query> queries,
+                                                     @RequestBody(required = false) @Parameter(description = "过滤器。") Collection<Query> queries,
                                                      AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        if (StringUtils.hasText(query)) {
+            return formService.getForm(name, principal.getClientId())
+                    .map(form -> {
+                        MatchQuery q = new MatchQuery();
+                        StringBuilder builder = new StringBuilder();
+                        Collection<Item> items = form.getItems().values();
+                        for (Item item : items) {
+                            if (item.getType() != ItemType.STRING)
+                                continue;
+                            if (builder.length() > 0)
+                                builder.append(',');
+                            builder.append("data.");
+                            builder.append(item.getName());
+                        }
+                        q.setName(builder.toString());
+                        q.setOpt(QueryOperation.MATCH);
+                        q.setValue(query);
+                        Collection<Query> qs = new HashSet<>();
+                        if (queries != null)
+                            qs.addAll(queries);
+                        qs.add(q);
+                        return qs;
+                    })
+                    .flatMap(qs -> formRecordSearcher.findRecord(principal.getClientId(),
+                            name,
+                            qs,
+                            orders,
+                            page,
+                            size));
+        }
         return formRecordSearcher.findRecord(principal.getClientId(),
                 name,
                 queries,

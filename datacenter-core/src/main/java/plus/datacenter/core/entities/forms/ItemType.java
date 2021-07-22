@@ -11,5 +11,6 @@ public enum ItemType implements Serializable {
     FORM,
     FILE,
     SELECT,
-    GROUP
+    USER,
+    ELASTIC
 }

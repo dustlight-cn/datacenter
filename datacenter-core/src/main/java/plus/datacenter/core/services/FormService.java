@@ -1,13 +1,22 @@
 package plus.datacenter.core.services;
 
+import plus.auth.entities.QueryResult;
 import plus.datacenter.core.entities.forms.Form;
 import reactor.core.publisher.Mono;
 
 public interface FormService {
 
-    <T extends Form> Mono<T> createForm(T origin);
+    Mono<Form> createForm(Form origin);
 
-    <T extends Form> Mono<T> updateForm(T target);
+    Mono<Form> getForm(String name, String clientId);
 
-    Mono<Void> deleteForm(String id);
+    Mono<Form> getFormById(String id);
+
+    Mono<Form> updateForm(Form target);
+
+    Mono<Void> deleteForm(String name, String clientId);
+
+    Mono<QueryResult<Form>> listForm(String clientId);
+
+    Mono<QueryResult<Form>> listForm(String clientId, String name);
 }

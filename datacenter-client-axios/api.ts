@@ -21,6 +21,1133 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
 
+/**
+ * 
+ * @export
+ * @interface BetweenQuery
+ */
+export interface BetweenQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof BetweenQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BetweenQuery
+     */
+    opt?: BetweenQueryOptEnum;
+    /**
+     * 
+     * @type {Rangeable}
+     * @memberof BetweenQuery
+     */
+    value?: Rangeable;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum BetweenQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * 
+ * @export
+ * @interface BooleanItem
+ */
+export interface BooleanItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BooleanItem
+     */
+    type?: BooleanItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BooleanItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BooleanItem
+     */
+    required?: boolean;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum BooleanItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface DateItem
+ */
+export interface DateItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateItem
+     */
+    type?: DateItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {RangeableInstant}
+     * @memberof DateItem
+     */
+    dateRange?: RangeableInstant;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DateItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface DoubleItem
+ */
+export interface DoubleItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DoubleItem
+     */
+    type?: DoubleItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DoubleItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DoubleItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {RangeableDouble}
+     * @memberof DoubleItem
+     */
+    doubleRange?: RangeableDouble;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DoubleItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface ElasticItem
+ */
+export interface ElasticItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    type?: ElasticItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ElasticItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ElasticItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {Array<Item>}
+     * @memberof ElasticItem
+     */
+    options?: Array<Item>;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum ElasticItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface EqualQuery
+ */
+export interface EqualQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof EqualQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EqualQuery
+     */
+    opt?: EqualQueryOptEnum;
+    /**
+     * 
+     * @type {object}
+     * @memberof EqualQuery
+     */
+    value?: object;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum EqualQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * 
+ * @export
+ * @interface FileItem
+ */
+export interface FileItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    type?: FileItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FileItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FileItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItem
+     */
+    mime?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum FileItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface Form
+ */
+export interface Form {
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    id?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Form
+     */
+    version?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    createdAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    clientId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    owner?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Form
+     */
+    primaryKey?: string;
+    /**
+     * 
+     * @type {Array<ItemGroup>}
+     * @memberof Form
+     */
+    groups?: Array<ItemGroup>;
+}
+/**
+ * 
+ * @export
+ * @interface FormItem
+ */
+export interface FormItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    type?: FormItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FormItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FormItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormItem
+     */
+    form?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum FormItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface FormRecord
+ */
+export interface FormRecord {
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    clientId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    owner?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    formId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    formName?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FormRecord
+     */
+    formVersion?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    createdAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FormRecord
+     */
+    updatedAt?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof FormRecord
+     */
+    data?: { [key: string]: object; };
+}
+/**
+ * 
+ * @export
+ * @interface InQuery
+ */
+export interface InQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof InQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InQuery
+     */
+    opt?: InQueryOptEnum;
+    /**
+     * 
+     * @type {Array<object>}
+     * @memberof InQuery
+     */
+    value?: Array<object>;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum InQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * 
+ * @export
+ * @interface IntItem
+ */
+export interface IntItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntItem
+     */
+    type?: IntItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof IntItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof IntItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {RangeableInteger}
+     * @memberof IntItem
+     */
+    intRange?: RangeableInteger;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum IntItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * @type Item
+ * @export
+ */
+export type Item = BooleanItem | DateItem | DoubleItem | ElasticItem | FileItem | FormItem | IntItem | SelectItem | StringItem | UserItem;
+
+/**
+ * 
+ * @export
+ * @interface ItemGroup
+ */
+export interface ItemGroup {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemGroup
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemGroup
+     */
+    description?: string;
+    /**
+     * 
+     * @type {Array<Item>}
+     * @memberof ItemGroup
+     */
+    items?: Array<Item>;
+}
+/**
+ * 
+ * @export
+ * @interface MatchQuery
+ */
+export interface MatchQuery {
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    opt?: MatchQueryOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof MatchQuery
+     */
+    value?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum MatchQueryOptEnum {
+    Equal = 'EQUAL',
+    Match = 'MATCH',
+    In = 'IN',
+    Between = 'BETWEEN'
+}
+
+/**
+ * @type QueryObject
+ * @export
+ */
+export type QueryObject = BetweenQuery | EqualQuery | InQuery | MatchQuery;
+
+/**
+ * 
+ * @export
+ * @interface QueryResultForm
+ */
+export interface QueryResultForm {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultForm
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<Form>}
+     * @memberof QueryResultForm
+     */
+    data?: Array<Form>;
+}
+/**
+ * 
+ * @export
+ * @interface QueryResultFormRecord
+ */
+export interface QueryResultFormRecord {
+    /**
+     * 
+     * @type {number}
+     * @memberof QueryResultFormRecord
+     */
+    count?: number;
+    /**
+     * 
+     * @type {Array<FormRecord>}
+     * @memberof QueryResultFormRecord
+     */
+    data?: Array<FormRecord>;
+}
+/**
+ * 
+ * @export
+ * @interface Rangeable
+ */
+export interface Rangeable {
+    /**
+     * 
+     * @type {object}
+     * @memberof Rangeable
+     */
+    min?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof Rangeable
+     */
+    max?: object;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Rangeable
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableDouble
+ */
+export interface RangeableDouble {
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableDouble
+     */
+    min?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableDouble
+     */
+    max?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableDouble
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableInstant
+ */
+export interface RangeableInstant {
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    min?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    max?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableInstant
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RangeableInteger
+ */
+export interface RangeableInteger {
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableInteger
+     */
+    min?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RangeableInteger
+     */
+    max?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RangeableInteger
+     */
+    openInterval?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface SelectItem
+ */
+export interface SelectItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SelectItem
+     */
+    type?: SelectItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SelectItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SelectItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {RangeableInteger}
+     * @memberof SelectItem
+     */
+    selectedRange?: RangeableInteger;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof SelectItem
+     */
+    options?: { [key: string]: string; };
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum SelectItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface StringItem
+ */
+export interface StringItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    type?: StringItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    required?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    multiline?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StringItem
+     */
+    html?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof StringItem
+     */
+    regex?: string;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum StringItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface UserItem
+ */
+export interface UserItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserItem
+     */
+    type?: UserItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserItem
+     */
+    required?: boolean;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum UserItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
 
 /**
  * FormsApi - axios parameter creator
@@ -29,15 +1156,97 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 export const FormsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'form' is not null or undefined
+            assertParamExists('createForm', 'form', form)
+            const localVarPath = `/v1/form`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(form, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 通过名称删除所有表单。
+         * @summary 删除表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('deleteForm', 'name', name)
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        test: async (id: string, options: any = {}): Promise<RequestArgs> => {
+        getFormById: async (id: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('test', 'id', id)
-            const localVarPath = `/v1/forms/{id}`
+            assertParamExists('getFormById', 'id', id)
+            const localVarPath = `/v1/form/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -65,6 +1274,141 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForms: async (name?: string, query?: string, page?: number, size?: number, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/forms`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (query !== undefined) {
+                localVarQueryParameter['query'] = query;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLatestForm: async (name: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getLatestForm', 'name', name)
+            const localVarPath = `/v1/form`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateForm: async (form: Form, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'form' is not null or undefined
+            assertParamExists('updateForm', 'form', form)
+            const localVarPath = `/v1/form`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(form, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -76,13 +1420,72 @@ export const FormsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = FormsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createForm(form, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 通过名称删除所有表单。
+         * @summary 删除表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForm(name, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async test(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.test(id, options);
+        async getFormById(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFormById(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getForms(name?: string, query?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultForm>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForms(name, query, page, size, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLatestForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLatestForm(name, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateForm(form, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -96,13 +1499,67 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = FormsApiFp(configuration)
     return {
         /**
-         * 
+         * 创建一个表单，返回创建后的表单。
+         * @summary 创建表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForm(form: Form, options?: any): AxiosPromise<Form> {
+            return localVarFp.createForm(form, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 通过名称删除所有表单。
+         * @summary 删除表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForm(name: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteForm(name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 通过 ID 获取表单结构。
+         * @summary 获取表单
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        test(id: string, options?: any): AxiosPromise<string> {
-            return localVarFp.test(id, options).then((request) => request(axios, basePath));
+        getFormById(id: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getFormById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+         * @summary 查询或列出表单
+         * @param {string} [name] 
+         * @param {string} [query] 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForms(name?: string, query?: string, page?: number, size?: number, options?: any): AxiosPromise<QueryResultForm> {
+            return localVarFp.getForms(name, query, page, size, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 通过名称获取最新版本的表单。
+         * @summary 获取最新的表单
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLatestForm(name: string, options?: any): AxiosPromise<Form> {
+            return localVarFp.getLatestForm(name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 通过名称更新表单结构。
+         * @summary 更新表单
+         * @param {Form} form 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateForm(form: Form, options?: any): AxiosPromise<Form> {
+            return localVarFp.updateForm(form, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -115,14 +1572,524 @@ export const FormsApiFactory = function (configuration?: Configuration, basePath
  */
 export class FormsApi extends BaseAPI {
     /**
-     * 
+     * 创建一个表单，返回创建后的表单。
+     * @summary 创建表单
+     * @param {Form} form 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public createForm(form: Form, options?: any) {
+        return FormsApiFp(this.configuration).createForm(form, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 通过名称删除所有表单。
+     * @summary 删除表单
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public deleteForm(name: string, options?: any) {
+        return FormsApiFp(this.configuration).deleteForm(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 通过 ID 获取表单结构。
+     * @summary 获取表单
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    public test(id: string, options?: any) {
-        return FormsApiFp(this.configuration).test(id, options).then((request) => request(this.axios, this.basePath));
+    public getFormById(id: string, options?: any) {
+        return FormsApiFp(this.configuration).getFormById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
+     * @summary 查询或列出表单
+     * @param {string} [name] 
+     * @param {string} [query] 
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getForms(name?: string, query?: string, page?: number, size?: number, options?: any) {
+        return FormsApiFp(this.configuration).getForms(name, query, page, size, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 通过名称获取最新版本的表单。
+     * @summary 获取最新的表单
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public getLatestForm(name: string, options?: any) {
+        return FormsApiFp(this.configuration).getLatestForm(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 通过名称更新表单结构。
+     * @summary 更新表单
+     * @param {Form} form 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FormsApi
+     */
+    public updateForm(form: Form, options?: any) {
+        return FormsApiFp(this.configuration).updateForm(form, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * RecordsApi - axios parameter creator
+ * @export
+ */
+export const RecordsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 提交一条表单记录。
+         * @summary 创建表单记录
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRecord: async (formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'formRecord' is not null or undefined
+            assertParamExists('createRecord', 'formRecord', formRecord)
+            const localVarPath = `/v1/record`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteRecord', 'id', id)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        findRecords: async (name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('findRecords', 'name', name)
+            const localVarPath = `/v1/records/queries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (query !== undefined) {
+                localVarQueryParameter['query'] = query;
+            }
+
+            if (orders) {
+                localVarQueryParameter['orders'] = orders;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(queryObject, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecord: async (id: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getRecord', 'id', id)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateRecord: async (id: string, formRecord: FormRecord, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateRecord', 'id', id)
+            // verify required parameter 'formRecord' is not null or undefined
+            assertParamExists('updateRecord', 'formRecord', formRecord)
+            const localVarPath = `/v1/record/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RecordsApi - functional programming interface
+ * @export
+ */
+export const RecordsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = RecordsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 提交一条表单记录。
+         * @summary 创建表单记录
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createRecord(formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createRecord(formRecord, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRecord(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.findRecords(name, query, orders, page, size, queryObject, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRecord(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateRecord(id: string, formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateRecord(id, formRecord, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * RecordsApi - factory interface
+ * @export
+ */
+export const RecordsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = RecordsApiFp(configuration)
+    return {
+        /**
+         * 提交一条表单记录。
+         * @summary 创建表单记录
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createRecord(formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.createRecord(formRecord, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 删除一条表单记录。
+         * @summary 删除表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecord(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteRecord(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 列出或搜索表单记录。
+         * @summary 检索表单记录
+         * @param {string} name 表单名称。
+         * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+         * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {Array<QueryObject>} [queryObject] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord> {
+            return localVarFp.findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 获取一条表单记录。
+         * @summary 获取表单记录
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRecord(id: string, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.getRecord(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 更新一条表单记录。
+         * @summary 更新表单记录
+         * @param {string} id 
+         * @param {FormRecord} formRecord 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateRecord(id: string, formRecord: FormRecord, options?: any): AxiosPromise<FormRecord> {
+            return localVarFp.updateRecord(id, formRecord, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * RecordsApi - object-oriented interface
+ * @export
+ * @class RecordsApi
+ * @extends {BaseAPI}
+ */
+export class RecordsApi extends BaseAPI {
+    /**
+     * 提交一条表单记录。
+     * @summary 创建表单记录
+     * @param {FormRecord} formRecord 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public createRecord(formRecord: FormRecord, options?: any) {
+        return RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 删除一条表单记录。
+     * @summary 删除表单记录
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public deleteRecord(id: string, options?: any) {
+        return RecordsApiFp(this.configuration).deleteRecord(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 列出或搜索表单记录。
+     * @summary 检索表单记录
+     * @param {string} name 表单名称。
+     * @param {string} [query] 关键词，对表单的 STRING 类型进行全文搜索。
+     * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
+     * @param {number} [page] 
+     * @param {number} [size] 
+     * @param {Array<QueryObject>} [queryObject] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any) {
+        return RecordsApiFp(this.configuration).findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 获取一条表单记录。
+     * @summary 获取表单记录
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public getRecord(id: string, options?: any) {
+        return RecordsApiFp(this.configuration).getRecord(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 更新一条表单记录。
+     * @summary 更新表单记录
+     * @param {string} id 
+     * @param {FormRecord} formRecord 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public updateRecord(id: string, formRecord: FormRecord, options?: any) {
+        return RecordsApiFp(this.configuration).updateRecord(id, formRecord, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

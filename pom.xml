@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3-alpha-2-SNAPSHOT</version>
     <description>PLUS 数据中心服务</description>
 
     <properties>
@@ -23,12 +23,13 @@
         <spring-boot.version>2.5.2</spring-boot.version>
         <springdoc.version>1.5.9</springdoc.version>
 
-        <auth.version>1.1.0-alpha-SNAPSHOT</auth.version>
+        <auth.version>1.1.0-alpha-1-SNAPSHOT</auth.version>
         <storage.version>0.0.5</storage.version>
     </properties>
 
     <modules>
         <module>datacenter-core</module>
+        <module>datacenter-elasticsearch</module>
         <module>datacenter-mongo</module>
         <module>datacenter-service</module>
     </modules>
@@ -55,6 +56,11 @@
             </dependency>
             <dependency>
                 <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-elasticsearch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -70,6 +76,11 @@
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-core</artifactId>
                 <version>${springdoc.version}</version>
             </dependency>
         </dependencies>

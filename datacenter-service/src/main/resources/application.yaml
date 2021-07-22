@@ -12,6 +12,9 @@ plus:
       client-id: none
       uri: http://api.wgv/v1/token/validity
       token-type: jwt
+  datacenter:
+    mongo:
+      form-collection: form
 # SpringDoc 配置
 springdoc:
   api-docs:
@@ -31,3 +34,14 @@ spring:
       password: MTIzNDU2
       authentication-database: admin
       database: datacenter
+    elasticsearch:
+      client:
+        reactive:
+          endpoints:
+            - elasticsearch.svc
+  rabbitmq:
+    addresses: rabbitmq.svc
+    port: 5672
+logging:
+  level:
+    plus.datacenter.*: debug

@@ -295,6 +295,12 @@ export interface ElasticItem {
      * @memberof ElasticItem
      */
     required?: boolean;
+    /**
+     * 
+     * @type {Array<Item>}
+     * @memberof ElasticItem
+     */
+    options?: Array<Item>;
 }
 
 /**

@@ -1,5 +1,6 @@
 package plus.datacenter.core.entities.forms.items;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,18 @@ import java.util.Collection;
 @Setter
 public class ElasticItem extends Item<ElasticItem.ElasticValue> {
 
+    @ArraySchema(schema = @Schema(oneOf = {
+            BooleanItem.class,
+            DateItem.class,
+            DoubleItem.class,
+            FileItem.class,
+            FormItem.class,
+            IntItem.class,
+            SelectItem.class,
+            StringItem.class,
+            UserItem.class,
+            ElasticItem.class
+    }))
     private Collection<Item> options;
 
     @Schema(defaultValue = "ELASTIC")

@@ -70,6 +70,8 @@ public class FormUtils {
                 return DateItem.class;
             case BOOLEAN:
                 return BooleanItem.class;
+            case ELASTIC:
+                return ElasticItem.class;
             default:
                 return Item.class;
         }
@@ -87,6 +89,8 @@ public class FormUtils {
                 return Instant.class;
             case BOOLEAN:
                 return Boolean.class;
+            case ELASTIC:
+                return ElasticItem.ElasticValue.class;
             case USER:
             case FORM:
             case FILE:
@@ -116,6 +120,8 @@ public class FormUtils {
                 return ItemType.BOOLEAN;
             case "USER":
                 return ItemType.USER;
+            case "ELASTIC":
+                return ItemType.ELASTIC;
             case "STRING":
             default:
                 return ItemType.STRING;

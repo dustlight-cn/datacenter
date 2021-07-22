@@ -22,7 +22,8 @@ import java.util.List;
         IntItem.class,
         SelectItem.class,
         StringItem.class,
-        UserItem.class
+        UserItem.class,
+        ElasticItem.class
 })
 @Getter
 @Setter

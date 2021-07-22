@@ -115,7 +115,8 @@ export enum BooleanItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -181,7 +182,8 @@ export enum DateItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -247,7 +249,69 @@ export enum DoubleItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface ElasticItem
+ */
+export interface ElasticItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    description?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ElasticItem
+     */
+    type?: ElasticItemTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ElasticItem
+     */
+    array?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ElasticItem
+     */
+    required?: boolean;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum ElasticItemTypeEnum {
+    Int = 'INT',
+    Double = 'DOUBLE',
+    String = 'STRING',
+    Date = 'DATE',
+    Boolean = 'BOOLEAN',
+    Form = 'FORM',
+    File = 'FILE',
+    Select = 'SELECT',
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -350,7 +414,8 @@ export enum FileItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -483,7 +548,8 @@ export enum FormItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -647,14 +713,15 @@ export enum IntItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
  * @type Item
  * @export
  */
-export type Item = BooleanItem | DateItem | DoubleItem | FileItem | FormItem | IntItem | SelectItem | StringItem | UserItem;
+export type Item = BooleanItem | DateItem | DoubleItem | ElasticItem | FileItem | FormItem | IntItem | SelectItem | StringItem | UserItem;
 
 /**
  * 
@@ -931,7 +998,8 @@ export enum SelectItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -1009,7 +1077,8 @@ export enum StringItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 /**
@@ -1069,7 +1138,8 @@ export enum UserItemTypeEnum {
     Form = 'FORM',
     File = 'FILE',
     Select = 'SELECT',
-    User = 'USER'
+    User = 'USER',
+    Elastic = 'ELASTIC'
 }
 
 

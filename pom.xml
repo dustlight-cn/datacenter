@@ -23,7 +23,7 @@
         <spring-boot.version>2.5.2</spring-boot.version>
         <springdoc.version>1.5.9</springdoc.version>
 
-        <auth.version>1.1.0-alpha-1-SNAPSHOT</auth.version>
+        <auth.version>1.1.0-alpha-2-SNAPSHOT</auth.version>
         <storage.version>0.0.5</storage.version>
     </properties>
 

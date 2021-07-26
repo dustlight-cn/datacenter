@@ -50,6 +50,10 @@ public class RecordController {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
         record.setFormId(null);
         record.setFormVersion(null);
+
+        if (principal.getUid() != null)
+            record.setOwner(principal.getUidString());
+
         return validate(record, principal)
                 .flatMap(record1 -> formRecordService.createRecord(record1))
                 .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());

@@ -34,7 +34,8 @@ public class FormController {
                                  AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
         form.setClientId(principal.getClientId());
-        form.setOwner(principal.getUidString());
+        if (principal.getUid() != null)
+            form.setOwner(principal.getUidString());
         return formService.createForm(form);
     }
 
@@ -71,6 +72,8 @@ public class FormController {
     public Mono<Form> updateForm(@RequestBody Form form,
                                  AbstractOAuth2TokenAuthenticationToken token) {
         AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        if (principal.getUid() != null)
+            form.setOwner(principal.getUidString());
         form.setOwner(principal.getUidString());
         form.setClientId(principal.getClientId());
         return formService.updateForm(form);

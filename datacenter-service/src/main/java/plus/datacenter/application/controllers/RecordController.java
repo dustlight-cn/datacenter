@@ -177,10 +177,16 @@ public class RecordController {
                         Item item = kv.getValue();
                         if (item == null)
                             continue;
+                        Object value = data == null ? null : data.get(key);
 
                         if (item.getArray() != null && item.getArray()) {
                             // Item 为数组
-                            Object value = data == null ? null : data.get(key);
+                            if (value == null) {
+                                if (item.getRequired() != null && item.getRequired())
+                                    throw new IllegalArgumentException("Validation failed: '" + key + "' is empty but required");
+                                else
+                                    continue;
+                            }
                             if (!(value instanceof Collection))
                                 throw new IllegalArgumentException("Validation failed: '" + key + "' require an array value");
                             Collection arrays = (Collection) value;
@@ -200,7 +206,6 @@ public class RecordController {
 
                         } else {
                             // Item 不为数组
-                            Object value = data == null ? null : data.get(key);
                             if (value instanceof Collection && item.getType() != ItemType.SELECT)
                                 throw new IllegalArgumentException("Validation failed: '" + key + "' is not array");
                             value = FormUtils.transformItemValue(value, item.getType());

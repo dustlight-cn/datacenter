@@ -15,6 +15,8 @@ public class DoubleItem extends Item<Double> {
 
     @Override
     public Boolean validate(Double value) {
+        if (value == null)
+            return super.validate(value);
         return super.validate(value) && (doubleRange == null || doubleRange.validate(value));
     }
 

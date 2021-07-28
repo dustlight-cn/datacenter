@@ -15,6 +15,8 @@ public class IntItem extends Item<Integer> {
 
     @Override
     public Boolean validate(Integer value) {
+        if (value == null)
+            return super.validate(value);
         return super.validate(value) && (intRange == null || intRange.validate(value));
     }
 

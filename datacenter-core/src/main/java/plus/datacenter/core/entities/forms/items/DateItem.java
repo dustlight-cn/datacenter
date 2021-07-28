@@ -17,6 +17,8 @@ public class DateItem extends Item<Instant> {
 
     @Override
     public Boolean validate(Instant value) {
+        if (value == null)
+            return super.validate(null);
         return super.validate(value) && (dateRange == null || dateRange.validate(value));
     }
 

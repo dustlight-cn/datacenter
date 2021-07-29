@@ -25,13 +25,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RecordsApi = exports.RecordsApiFactory = exports.RecordsApiFp = exports.RecordsApiAxiosParamCreator = exports.FormsApi = exports.FormsApiFactory = exports.FormsApiFp = exports.FormsApiAxiosParamCreator = exports.UserItemTypeEnum = exports.StringItemTypeEnum = exports.SelectItemTypeEnum = exports.MatchQueryOptEnum = exports.IntItemTypeEnum = exports.InQueryOptEnum = exports.FormItemTypeEnum = exports.FileItemTypeEnum = exports.EqualQueryOptEnum = exports.ElasticItemTypeEnum = exports.DoubleItemTypeEnum = exports.DateItemTypeEnum = exports.BooleanItemTypeEnum = exports.BetweenQueryOptEnum = void 0;
+exports.RecordsApi = exports.RecordsApiFactory = exports.RecordsApiFp = exports.RecordsApiAxiosParamCreator = exports.FormsApi = exports.FormsApiFactory = exports.FormsApiFp = exports.FormsApiAxiosParamCreator = exports.UserItemTypeEnum = exports.TermAggregationOptEnum = exports.SumAggregationOptEnum = exports.StringItemTypeEnum = exports.SelectItemTypeEnum = exports.MinAggregationOptEnum = exports.MaxAggregationOptEnum = exports.MatchQueryOptEnum = exports.IntItemTypeEnum = exports.InQueryOptEnum = exports.HistogramAggregationOptEnum = exports.FormItemTypeEnum = exports.FileItemTypeEnum = exports.EqualQueryOptEnum = exports.ElasticItemTypeEnum = exports.DoubleItemTypeEnum = exports.DateItemTypeEnum = exports.DateHistogramAggregationUnitEnum = exports.DateHistogramAggregationOptEnum = exports.CountAggregationOptEnum = exports.BooleanItemTypeEnum = exports.BetweenQueryOptEnum = exports.AvgAggregationOptEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
 const common_1 = require("./common");
 // @ts-ignore
 const base_1 = require("./base");
+/**
+    * @export
+    * @enum {string}
+    */
+var AvgAggregationOptEnum;
+(function (AvgAggregationOptEnum) {
+    AvgAggregationOptEnum["Avg"] = "AVG";
+    AvgAggregationOptEnum["Sum"] = "SUM";
+    AvgAggregationOptEnum["Count"] = "COUNT";
+    AvgAggregationOptEnum["Max"] = "MAX";
+    AvgAggregationOptEnum["Min"] = "MIN";
+    AvgAggregationOptEnum["Term"] = "TERM";
+    AvgAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    AvgAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(AvgAggregationOptEnum = exports.AvgAggregationOptEnum || (exports.AvgAggregationOptEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -60,6 +75,51 @@ var BooleanItemTypeEnum;
     BooleanItemTypeEnum["User"] = "USER";
     BooleanItemTypeEnum["Elastic"] = "ELASTIC";
 })(BooleanItemTypeEnum = exports.BooleanItemTypeEnum || (exports.BooleanItemTypeEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var CountAggregationOptEnum;
+(function (CountAggregationOptEnum) {
+    CountAggregationOptEnum["Avg"] = "AVG";
+    CountAggregationOptEnum["Sum"] = "SUM";
+    CountAggregationOptEnum["Count"] = "COUNT";
+    CountAggregationOptEnum["Max"] = "MAX";
+    CountAggregationOptEnum["Min"] = "MIN";
+    CountAggregationOptEnum["Term"] = "TERM";
+    CountAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    CountAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(CountAggregationOptEnum = exports.CountAggregationOptEnum || (exports.CountAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var DateHistogramAggregationOptEnum;
+(function (DateHistogramAggregationOptEnum) {
+    DateHistogramAggregationOptEnum["Avg"] = "AVG";
+    DateHistogramAggregationOptEnum["Sum"] = "SUM";
+    DateHistogramAggregationOptEnum["Count"] = "COUNT";
+    DateHistogramAggregationOptEnum["Max"] = "MAX";
+    DateHistogramAggregationOptEnum["Min"] = "MIN";
+    DateHistogramAggregationOptEnum["Term"] = "TERM";
+    DateHistogramAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    DateHistogramAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(DateHistogramAggregationOptEnum = exports.DateHistogramAggregationOptEnum || (exports.DateHistogramAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var DateHistogramAggregationUnitEnum;
+(function (DateHistogramAggregationUnitEnum) {
+    DateHistogramAggregationUnitEnum["Second"] = "SECOND";
+    DateHistogramAggregationUnitEnum["Minute"] = "MINUTE";
+    DateHistogramAggregationUnitEnum["Hour"] = "HOUR";
+    DateHistogramAggregationUnitEnum["Day"] = "DAY";
+    DateHistogramAggregationUnitEnum["Week"] = "WEEK";
+    DateHistogramAggregationUnitEnum["Month"] = "MONTH";
+    DateHistogramAggregationUnitEnum["Quarter"] = "QUARTER";
+    DateHistogramAggregationUnitEnum["Year"] = "YEAR";
+})(DateHistogramAggregationUnitEnum = exports.DateHistogramAggregationUnitEnum || (exports.DateHistogramAggregationUnitEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -160,6 +220,21 @@ var FormItemTypeEnum;
     * @export
     * @enum {string}
     */
+var HistogramAggregationOptEnum;
+(function (HistogramAggregationOptEnum) {
+    HistogramAggregationOptEnum["Avg"] = "AVG";
+    HistogramAggregationOptEnum["Sum"] = "SUM";
+    HistogramAggregationOptEnum["Count"] = "COUNT";
+    HistogramAggregationOptEnum["Max"] = "MAX";
+    HistogramAggregationOptEnum["Min"] = "MIN";
+    HistogramAggregationOptEnum["Term"] = "TERM";
+    HistogramAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    HistogramAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(HistogramAggregationOptEnum = exports.HistogramAggregationOptEnum || (exports.HistogramAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
 var InQueryOptEnum;
 (function (InQueryOptEnum) {
     InQueryOptEnum["Equal"] = "EQUAL";
@@ -199,6 +274,36 @@ var MatchQueryOptEnum;
     * @export
     * @enum {string}
     */
+var MaxAggregationOptEnum;
+(function (MaxAggregationOptEnum) {
+    MaxAggregationOptEnum["Avg"] = "AVG";
+    MaxAggregationOptEnum["Sum"] = "SUM";
+    MaxAggregationOptEnum["Count"] = "COUNT";
+    MaxAggregationOptEnum["Max"] = "MAX";
+    MaxAggregationOptEnum["Min"] = "MIN";
+    MaxAggregationOptEnum["Term"] = "TERM";
+    MaxAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    MaxAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(MaxAggregationOptEnum = exports.MaxAggregationOptEnum || (exports.MaxAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var MinAggregationOptEnum;
+(function (MinAggregationOptEnum) {
+    MinAggregationOptEnum["Avg"] = "AVG";
+    MinAggregationOptEnum["Sum"] = "SUM";
+    MinAggregationOptEnum["Count"] = "COUNT";
+    MinAggregationOptEnum["Max"] = "MAX";
+    MinAggregationOptEnum["Min"] = "MIN";
+    MinAggregationOptEnum["Term"] = "TERM";
+    MinAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    MinAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(MinAggregationOptEnum = exports.MinAggregationOptEnum || (exports.MinAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
 var SelectItemTypeEnum;
 (function (SelectItemTypeEnum) {
     SelectItemTypeEnum["Int"] = "INT";
@@ -229,6 +334,36 @@ var StringItemTypeEnum;
     StringItemTypeEnum["User"] = "USER";
     StringItemTypeEnum["Elastic"] = "ELASTIC";
 })(StringItemTypeEnum = exports.StringItemTypeEnum || (exports.StringItemTypeEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var SumAggregationOptEnum;
+(function (SumAggregationOptEnum) {
+    SumAggregationOptEnum["Avg"] = "AVG";
+    SumAggregationOptEnum["Sum"] = "SUM";
+    SumAggregationOptEnum["Count"] = "COUNT";
+    SumAggregationOptEnum["Max"] = "MAX";
+    SumAggregationOptEnum["Min"] = "MIN";
+    SumAggregationOptEnum["Term"] = "TERM";
+    SumAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    SumAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(SumAggregationOptEnum = exports.SumAggregationOptEnum || (exports.SumAggregationOptEnum = {}));
+/**
+    * @export
+    * @enum {string}
+    */
+var TermAggregationOptEnum;
+(function (TermAggregationOptEnum) {
+    TermAggregationOptEnum["Avg"] = "AVG";
+    TermAggregationOptEnum["Sum"] = "SUM";
+    TermAggregationOptEnum["Count"] = "COUNT";
+    TermAggregationOptEnum["Max"] = "MAX";
+    TermAggregationOptEnum["Min"] = "MIN";
+    TermAggregationOptEnum["Term"] = "TERM";
+    TermAggregationOptEnum["Histogram"] = "HISTOGRAM";
+    TermAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
+})(TermAggregationOptEnum = exports.TermAggregationOptEnum || (exports.TermAggregationOptEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -714,6 +849,45 @@ exports.FormsApi = FormsApi;
 const RecordsApiAxiosParamCreator = function (configuration) {
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aggregate: (name, aggregationQuery, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'name' is not null or undefined
+            common_1.assertParamExists('aggregate', 'name', name);
+            // verify required parameter 'aggregationQuery' is not null or undefined
+            common_1.assertParamExists('aggregate', 'aggregationQuery', aggregationQuery);
+            const localVarPath = `/v1/records/aggregations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(aggregationQuery, localVarRequestOptions, configuration);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
@@ -911,6 +1085,20 @@ const RecordsApiFp = function (configuration) {
     const localVarAxiosParamCreator = exports.RecordsApiAxiosParamCreator(configuration);
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aggregate(name, aggregationQuery, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.aggregate(name, aggregationQuery, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
@@ -992,6 +1180,17 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
     const localVarFp = exports.RecordsApiFp(configuration);
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aggregate(name, aggregationQuery, options) {
+            return localVarFp.aggregate(name, aggregationQuery, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
@@ -1057,6 +1256,18 @@ exports.RecordsApiFactory = RecordsApiFactory;
  * @extends {BaseAPI}
  */
 class RecordsApi extends base_1.BaseAPI {
+    /**
+     * 聚合查询表单记录。
+     * @summary 聚合表单记录
+     * @param {string} name 表单名称。
+     * @param {AggregationQuery} aggregationQuery
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    aggregate(name, aggregationQuery, options) {
+        return exports.RecordsApiFp(this.configuration).aggregate(name, aggregationQuery, options).then((request) => request(this.axios, this.basePath));
+    }
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录

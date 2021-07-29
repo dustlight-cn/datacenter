@@ -22,6 +22,78 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
 
 /**
+ * @type Aggregation
+ * @export
+ */
+export type Aggregation = AvgAggregation | CountAggregation | DateHistogramAggregation | HistogramAggregation | MaxAggregation | MinAggregation | SumAggregation | TermAggregation;
+
+/**
+ * 
+ * @export
+ * @interface AggregationQuery
+ */
+export interface AggregationQuery {
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof AggregationQuery
+     */
+    aggs?: Aggregation;
+    /**
+     * 
+     * @type {Array<Query>}
+     * @memberof AggregationQuery
+     */
+    filter?: Array<Query>;
+}
+/**
+ * 
+ * @export
+ * @interface AvgAggregation
+ */
+export interface AvgAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof AvgAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AvgAggregation
+     */
+    opt?: AvgAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof AvgAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof AvgAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum AvgAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
  * 
  * @export
  * @interface BetweenQuery
@@ -122,6 +194,126 @@ export enum BooleanItemTypeEnum {
 /**
  * 
  * @export
+ * @interface CountAggregation
+ */
+export interface CountAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof CountAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CountAggregation
+     */
+    opt?: CountAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof CountAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof CountAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum CountAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
+ * 
+ * @export
+ * @interface DateHistogramAggregation
+ */
+export interface DateHistogramAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof DateHistogramAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateHistogramAggregation
+     */
+    opt?: DateHistogramAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateHistogramAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof DateHistogramAggregation
+     */
+    subAgg?: Aggregation;
+    /**
+     * 
+     * @type {number}
+     * @memberof DateHistogramAggregation
+     */
+    interval?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DateHistogramAggregation
+     */
+    unit?: DateHistogramAggregationUnitEnum;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DateHistogramAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+/**
+    * @export
+    * @enum {string}
+    */
+export enum DateHistogramAggregationUnitEnum {
+    Second = 'SECOND',
+    Minute = 'MINUTE',
+    Hour = 'HOUR',
+    Day = 'DAY',
+    Week = 'WEEK',
+    Month = 'MONTH',
+    Quarter = 'QUARTER',
+    Year = 'YEAR'
+}
+
+/**
+ * 
+ * @export
  * @interface DateItem
  */
 export interface DateItem {
@@ -163,10 +355,10 @@ export interface DateItem {
     required?: boolean;
     /**
      * 
-     * @type {RangeableInstant}
+     * @type {InstantRangeable}
      * @memberof DateItem
      */
-    dateRange?: RangeableInstant;
+    dateRange?: InstantRangeable;
 }
 
 /**
@@ -622,6 +814,59 @@ export interface FormRecord {
 /**
  * 
  * @export
+ * @interface HistogramAggregation
+ */
+export interface HistogramAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof HistogramAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof HistogramAggregation
+     */
+    opt?: HistogramAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof HistogramAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof HistogramAggregation
+     */
+    subAgg?: Aggregation;
+    /**
+     * 
+     * @type {number}
+     * @memberof HistogramAggregation
+     */
+    interval?: number;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum HistogramAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
+ * 
+ * @export
  * @interface InQuery
  */
 export interface InQuery {
@@ -656,6 +901,31 @@ export enum InQueryOptEnum {
     Between = 'BETWEEN'
 }
 
+/**
+ * 
+ * @export
+ * @interface InstantRangeable
+ */
+export interface InstantRangeable {
+    /**
+     * 
+     * @type {string}
+     * @memberof InstantRangeable
+     */
+    min?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InstantRangeable
+     */
+    max?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InstantRangeable
+     */
+    openInterval?: boolean;
+}
 /**
  * 
  * @export
@@ -792,6 +1062,106 @@ export enum MatchQueryOptEnum {
 }
 
 /**
+ * 
+ * @export
+ * @interface MaxAggregation
+ */
+export interface MaxAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof MaxAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MaxAggregation
+     */
+    opt?: MaxAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof MaxAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof MaxAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum MaxAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
+ * 
+ * @export
+ * @interface MinAggregation
+ */
+export interface MinAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof MinAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MinAggregation
+     */
+    opt?: MinAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof MinAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof MinAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum MinAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
+ * @type Query
+ * @export
+ */
+export type Query = BetweenQuery | EqualQuery | InQuery | MatchQuery;
+
+/**
  * @type QueryObject
  * @export
  */
@@ -882,31 +1252,6 @@ export interface RangeableDouble {
      * 
      * @type {boolean}
      * @memberof RangeableDouble
-     */
-    openInterval?: boolean;
-}
-/**
- * 
- * @export
- * @interface RangeableInstant
- */
-export interface RangeableInstant {
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableInstant
-     */
-    min?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RangeableInstant
-     */
-    max?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RangeableInstant
      */
     openInterval?: boolean;
 }
@@ -1085,6 +1430,100 @@ export enum StringItemTypeEnum {
     Select = 'SELECT',
     User = 'USER',
     Elastic = 'ELASTIC'
+}
+
+/**
+ * 
+ * @export
+ * @interface SumAggregation
+ */
+export interface SumAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof SumAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SumAggregation
+     */
+    opt?: SumAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof SumAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof SumAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum SumAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
+}
+
+/**
+ * 
+ * @export
+ * @interface TermAggregation
+ */
+export interface TermAggregation {
+    /**
+     * 
+     * @type {string}
+     * @memberof TermAggregation
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TermAggregation
+     */
+    opt?: TermAggregationOptEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof TermAggregation
+     */
+    field?: string;
+    /**
+     * 
+     * @type {Aggregation}
+     * @memberof TermAggregation
+     */
+    subAgg?: Aggregation;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum TermAggregationOptEnum {
+    Avg = 'AVG',
+    Sum = 'SUM',
+    Count = 'COUNT',
+    Max = 'MAX',
+    Min = 'MIN',
+    Term = 'TERM',
+    Histogram = 'HISTOGRAM',
+    DateHistogram = 'DATE_HISTOGRAM'
 }
 
 /**
@@ -1655,6 +2094,53 @@ export class FormsApi extends BaseAPI {
 export const RecordsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aggregate: async (name: string, aggregationQuery: AggregationQuery, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('aggregate', 'name', name)
+            // verify required parameter 'aggregationQuery' is not null or undefined
+            assertParamExists('aggregate', 'aggregationQuery', aggregationQuery)
+            const localVarPath = `/v1/records/aggregations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(aggregationQuery, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord 
@@ -1890,6 +2376,18 @@ export const RecordsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = RecordsApiAxiosParamCreator(configuration)
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aggregate(name: string, aggregationQuery: AggregationQuery, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aggregate(name, aggregationQuery, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord 
@@ -1961,6 +2459,17 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = RecordsApiFp(configuration)
     return {
         /**
+         * 聚合查询表单记录。
+         * @summary 聚合表单记录
+         * @param {string} name 表单名称。
+         * @param {AggregationQuery} aggregationQuery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aggregate(name: string, aggregationQuery: AggregationQuery, options?: any): AxiosPromise<object> {
+            return localVarFp.aggregate(name, aggregationQuery, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord 
@@ -2026,6 +2535,19 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class RecordsApi extends BaseAPI {
+    /**
+     * 聚合查询表单记录。
+     * @summary 聚合表单记录
+     * @param {string} name 表单名称。
+     * @param {AggregationQuery} aggregationQuery 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public aggregate(name: string, aggregationQuery: AggregationQuery, options?: any) {
+        return RecordsApiFp(this.configuration).aggregate(name, aggregationQuery, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录

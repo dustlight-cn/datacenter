@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
+import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
 import plus.datacenter.core.entities.queries.queries.MatchQuery;
@@ -25,6 +28,7 @@ import plus.datacenter.core.services.FormService;
 import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Mono;
 
+import java.io.Serializable;
 import java.util.*;
 
 @Tag(name = "Records", description = "表单记录")
@@ -147,6 +151,15 @@ public class RecordController {
                 size);
     }
 
+    @Operation(summary = "聚合表单记录", description = "聚合查询表单记录。")
+    @PostMapping("records/aggregations")
+    public Mono<?> aggregate(@RequestParam @Parameter(description = "表单名称。") String name,
+                             @RequestBody AggregationQuery query,
+                             AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        return formRecordSearcher.aggregate(principal.getClientId(), name, query.getFilter(), query.getAggs());
+    }
+
     /**
      * 校验表单
      *
@@ -220,5 +233,17 @@ public class RecordController {
 
                     return record;
                 });
+    }
+
+    @Getter
+    @Setter
+    public static class AggregationQuery implements Serializable {
+
+        @Parameter(description = "聚合查询。")
+        private Aggregation aggs;
+
+        @Parameter(description = "过滤器。")
+        private Collection<Query> filter;
+
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@plus/datacenter-client-axios",
-  "version": "0.0.3-alpha-2",
+  "version": "0.0.4-alpha",
   "description": "Client SDK for Datacenter Service",
   "main": "index.ts",
   "scripts": {

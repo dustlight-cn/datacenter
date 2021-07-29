@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.bucket.histogram.HistogramAggregationBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
@@ -11,7 +16,10 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import plus.auth.entities.QueryResult;
 import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
+import plus.datacenter.core.entities.queries.aggs.DateHistogramAggregation;
+import plus.datacenter.core.entities.queries.aggs.HistogramAggregation;
 import plus.datacenter.core.entities.queries.queries.BetweenQuery;
 import plus.datacenter.core.services.FormRecordSearcher;
 import plus.datacenter.elasticsearch.utils.OrderUtil;
@@ -59,7 +67,28 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
                                 formSearchHit.getContent()).collect(Collectors.toList())));
     }
 
-    protected QueryBuilder transform(Query query) {
+    @Override
+    public Mono<?> aggregate(String clientId, String formName, Collection<Query> queries, Aggregation aggregation) {
+        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + clientId + "." + formName + ".*");
+
+        BoolQueryBuilder bq = new BoolQueryBuilder();
+
+        if (queries != null) {
+            for (Query query : queries) {
+                QueryBuilder queryBuilder = transform(query);
+                bq.must(queryBuilder);
+            }
+        }
+
+        NativeSearchQuery nqb = new NativeSearchQuery(bq);
+        if(aggregation != null)
+            nqb.addAggregation(transform(aggregation));
+
+        return operations.aggregate(nqb, FormRecord.class, index)
+                .collectList();
+    }
+
+    public static QueryBuilder transform(Query query) {
         switch (query.getOpt()) {
             case MATCH:
                 String[] keys = query.getName().split(",");
@@ -91,5 +120,55 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
             default:
                 return new TermQueryBuilder(query.getName(), query.getValue());
         }
+    }
+
+    public static AbstractAggregationBuilder transform(Aggregation aggregation) {
+        if (aggregation == null)
+            return null;
+        AbstractAggregationBuilder builder = null;
+        switch (aggregation.getOpt()) {
+            case MAX:
+                builder = AggregationBuilders.max(aggregation.getName()).field(aggregation.getField());
+                break;
+            case MIN:
+                builder = AggregationBuilders.min(aggregation.getName()).field(aggregation.getField());
+                break;
+            case SUM:
+                builder = AggregationBuilders.sum(aggregation.getName()).field(aggregation.getField());
+                break;
+            case COUNT:
+                builder = AggregationBuilders.count(aggregation.getName()).field(aggregation.getField());
+                break;
+            case AVG:
+                builder = AggregationBuilders.avg(aggregation.getName()).field(aggregation.getField());
+                break;
+            case HISTOGRAM:
+                builder = transformHistogramAggregationBuilder((HistogramAggregation) aggregation);
+                break;
+            case DATE_HISTOGRAM:
+                builder = transformDateHistogramAggregationBuilder((DateHistogramAggregation) aggregation);
+                break;
+            case TERM:
+            default:
+                builder = AggregationBuilders.terms(aggregation.getName()).field(aggregation.getField());
+                break;
+        }
+        if (builder == null)
+            return null;
+        if (aggregation.getSubAgg() != null) {
+            builder.subAggregation(transform(aggregation.getSubAgg()));
+        }
+        return builder;
+    }
+
+    public static HistogramAggregationBuilder transformHistogramAggregationBuilder(HistogramAggregation aggregation) {
+        return AggregationBuilders.histogram(aggregation.getName()).field(aggregation.getField()).interval(aggregation.getInterval());
+    }
+
+    public static DateHistogramAggregationBuilder transformDateHistogramAggregationBuilder(DateHistogramAggregation aggregation) {
+        DateHistogramInterval interval = aggregation.getUnit() != null ?
+                new DateHistogramInterval(aggregation.getInterval() + aggregation.getUnit().getValue()) :
+                new DateHistogramInterval(aggregation.getInterval() + DateHistogramAggregation.IntervalUnit.DAY.getValue());
+        return AggregationBuilders.dateHistogram(aggregation.getName()).field(aggregation.getField()).fixedInterval(interval);
     }
 }

@@ -3,6 +3,9 @@ package plus.datacenter.core.entities.forms;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -16,7 +19,10 @@ public class Form implements Serializable {
 
     private String id;
     private Integer version;
+
+    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
     private Instant createdAt;
+
     private String clientId;
     private String owner;
 

@@ -12,10 +12,12 @@ import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverte
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
-import plus.datacenter.elasticsearch.converters.LongToInstantConverter;
+import plus.datacenter.elasticsearch.converters.InstantToStringConverter;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordSearcher;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
+
+import java.util.Arrays;
 
 @EnableConfigurationProperties(DatacenterElasticsearchProperties.class)
 @Configuration
@@ -43,12 +45,12 @@ public class DatacenterElasticsearchConfiguration {
 
     @Bean
     @Primary
-    public ElasticsearchConverter dcElasticsearchConverter(SimpleElasticsearchMappingContext mappingContext,
-                                                         ElasticsearchCustomConversions elasticsearchCustomConversions) {
+    public ElasticsearchConverter dcElasticsearchConverter(SimpleElasticsearchMappingContext mappingContext) {
         DefaultConversionService conversionService = new DefaultConversionService();
-        conversionService.addConverter(new LongToInstantConverter());
+        conversionService.addConverter(new InstantToStringConverter());
         MappingElasticsearchConverter converter = new MappingElasticsearchConverter(mappingContext, conversionService);
-        converter.setConversions(elasticsearchCustomConversions);
+        converter.setConversions(new ElasticsearchCustomConversions(Arrays.asList(new InstantToStringConverter())));
         return converter;
     }
+
 }

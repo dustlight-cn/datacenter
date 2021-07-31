@@ -45,7 +45,8 @@ public class MongoFormRecordService implements FormRecordService {
             ErrorEnum.CREATE_FORM_FAILED.details("form id can't not be null!").throwException();
         origin.setId(new ObjectId().toHexString());
         Instant t = Instant.now();
-        origin.setCreatedAt(t);
+        if (origin.getCreatedAt() == null)
+            origin.setCreatedAt(t);
         origin.setUpdatedAt(t);
         return Mono.from(mongoClient.startSession())
                 .flatMap(clientSession -> {
@@ -106,20 +107,20 @@ public class MongoFormRecordService implements FormRecordService {
                     return Mono.just(clientSession);
                 })
                 .flatMap(clientSession -> operations.withSession(clientSession)
-                                .findAndModify(Query.query(Criteria.where("_id").is(target.getId())),
-                                        update,
-                                        FormRecord.class,
-                                        collectionName)
-                                .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-                                .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                        elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
-                                .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
-                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
-                                        .then(Mono.just(record)))
-                                .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
-                                .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                                .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                                .doFinally(signalType -> clientSession.close())
+                        .findAndModify(Query.query(Criteria.where("_id").is(target.getId())),
+                                update,
+                                FormRecord.class,
+                                collectionName)
+                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+                                elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
+                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
+                                RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
+                                .then(Mono.just(record)))
+                        .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
+                        .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
+                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                        .doFinally(signalType -> clientSession.close())
                 );
     }
 

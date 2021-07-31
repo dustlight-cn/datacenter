@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -134,6 +135,30 @@ public class MongoFormRecordService implements FormRecordService {
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.deleteRecord(id).then(Mono.just(record)))
+                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
+                                RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
+                                .then(Mono.just(record)))
+                        .flatMap(v -> Mono.from(clientSession.commitTransaction()))
+                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                        .doFinally(signalType -> clientSession.close())
+                );
+    }
+
+    @Override
+    public Mono<Void> deleteRecords(Collection<String> ids) {
+        return Mono.from(mongoClient.startSession())
+                .flatMap(clientSession -> {
+                    clientSession.startTransaction();
+                    return Mono.just(clientSession);
+                })
+                .flatMap(clientSession -> operations.withSession(clientSession)
+                        .findAndRemove(Query.query(Criteria.where("_id").in(ids)),
+                                FormRecord.class,
+                                collectionName)
+                        .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
+                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+                                elasticsearchFormRecordService.deleteRecords(ids).then(Mono.just(record)))
                         .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
                                 RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
                                 .then(Mono.just(record)))

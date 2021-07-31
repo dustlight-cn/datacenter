@@ -79,6 +79,14 @@ public class RecordController {
         return formRecordService.deleteRecord(id);
     }
 
+    @DeleteMapping("records")
+    @Operation(summary = "批量删除表单记录", description = "根据 id 批量删除表单记录。")
+    public Mono<Void> deleteRecords(@RequestBody Collection<String> ids,
+                                    AbstractOAuth2TokenAuthenticationToken token) {
+        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
+        return formRecordService.deleteRecords(ids);
+    }
+
     @PutMapping("record/{id}")
     @Operation(summary = "更新表单记录", description = "更新一条表单记录。")
     public Mono<FormRecord> updateRecord(@PathVariable String id,

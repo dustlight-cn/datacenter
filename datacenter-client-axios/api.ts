@@ -2219,6 +2219,46 @@ export const RecordsApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * 根据 id 批量删除表单记录。
+         * @summary 批量删除表单记录
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecords: async (requestBody: Array<string>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('deleteRecords', 'requestBody', requestBody)
+            const localVarPath = `/v1/records`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication auth required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "auth", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 列出或搜索表单记录。
          * @summary 检索表单记录
          * @param {string} name 表单名称。
@@ -2410,6 +2450,17 @@ export const RecordsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 根据 id 批量删除表单记录。
+         * @summary 批量删除表单记录
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteRecords(requestBody: Array<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRecords(requestBody, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * 列出或搜索表单记录。
          * @summary 检索表单记录
          * @param {string} name 表单名称。
@@ -2488,6 +2539,16 @@ export const RecordsApiFactory = function (configuration?: Configuration, basePa
          */
         deleteRecord(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteRecord(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 根据 id 批量删除表单记录。
+         * @summary 批量删除表单记录
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteRecords(requestBody: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteRecords(requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 列出或搜索表单记录。
@@ -2570,6 +2631,18 @@ export class RecordsApi extends BaseAPI {
      */
     public deleteRecord(id: string, options?: any) {
         return RecordsApiFp(this.configuration).deleteRecord(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 根据 id 批量删除表单记录。
+     * @summary 批量删除表单记录
+     * @param {Array<string>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    public deleteRecords(requestBody: Array<string>, options?: any) {
+        return RecordsApiFp(this.configuration).deleteRecords(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

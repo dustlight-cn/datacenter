@@ -1801,6 +1801,14 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
      */
     deleteRecord: (id: string, options?: any) => Promise<RequestArgs>;
     /**
+     * 根据 id 批量删除表单记录。
+     * @summary 批量删除表单记录
+     * @param {Array<string>} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRecords: (requestBody: Array<string>, options?: any) => Promise<RequestArgs>;
+    /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
      * @param {string} name 表单名称。
@@ -1862,6 +1870,14 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      */
     deleteRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
+     * 根据 id 批量删除表单记录。
+     * @summary 批量删除表单记录
+     * @param {Array<string>} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRecords(requestBody: Array<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
      * @param {string} name 表单名称。
@@ -1922,6 +1938,14 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @throws {RequiredError}
      */
     deleteRecord(id: string, options?: any): AxiosPromise<void>;
+    /**
+     * 根据 id 批量删除表单记录。
+     * @summary 批量删除表单记录
+     * @param {Array<string>} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteRecords(requestBody: Array<string>, options?: any): AxiosPromise<void>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
@@ -1988,6 +2012,15 @@ export declare class RecordsApi extends BaseAPI {
      * @memberof RecordsApi
      */
     deleteRecord(id: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 根据 id 批量删除表单记录。
+     * @summary 批量删除表单记录
+     * @param {Array<string>} requestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    deleteRecords(requestBody: Array<string>, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录

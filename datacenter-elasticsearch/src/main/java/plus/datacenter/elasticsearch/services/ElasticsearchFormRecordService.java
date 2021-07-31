@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -16,6 +17,7 @@ import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.services.FormRecordService;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,6 +72,14 @@ public class ElasticsearchFormRecordService implements FormRecordService {
     public Mono<Void> deleteRecord(String id) {
         IndexCoordinates index = IndexCoordinates.of(indexPrefix + "*");
         return operations.delete(new NativeSearchQuery(new MatchQueryBuilder("_id", id)), FormRecord.class, index)
+                .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
+                .flatMap(byQueryResponse -> Mono.empty());
+    }
+
+    @Override
+    public Mono<Void> deleteRecords(Collection<String> ids) {
+        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "*");
+        return operations.delete(new NativeSearchQuery(new TermsQueryBuilder("_id", ids)), FormRecord.class, index)
                 .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                 .flatMap(byQueryResponse -> Mono.empty());
     }

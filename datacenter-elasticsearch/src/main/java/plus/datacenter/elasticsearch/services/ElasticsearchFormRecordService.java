@@ -50,6 +50,8 @@ public class ElasticsearchFormRecordService implements FormRecordService {
         IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + target.getClientId() + "." + target.getFormName() + "." + target.getFormId());
         Map<String, Object> update = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
+
+        update.put("createdAt", target.getCreatedAt());
         update.put("updatedAt", target.getUpdatedAt());
         update.put("data", data);
         Iterator<Map.Entry<String, Object>> iterator = target.getData().entrySet().iterator();

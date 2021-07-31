@@ -77,6 +77,7 @@ public class MongoFormRecordService implements FormRecordService {
     public Mono<FormRecord> updateRecord(FormRecord target) {
         target.setUpdatedAt(Instant.now());
         Update update = new Update();
+        update.set("createdAt", target.getCreatedAt());
         update.set("updatedAt", Instant.now());
         Map<String, Object> data = target.getData();
         if (data != null) {

@@ -88,16 +88,17 @@ public class RecordController {
         return formRecordService.getRecord(id)
                 .flatMap(record1 -> {
                     record.setId(record1.getId());
-                    record.setFormId(record1.getFormId());
+                    record.setFormId(null);
+                    record.setFormName(record1.getFormName());
                     return validate(record, principal);
                 })
                 .flatMap(record1 -> {
                     record.setId(id);
                     record1.setCreatedAt(null);
                     record1.setOwner(null);
-                    record1.setFormId(null);
-                    record1.setFormVersion(null);
-                    record1.setFormName(null);
+//                    record1.setFormId(null);
+//                    record1.setFormVersion(null);
+//                    record1.setFormName(null);
                     return formRecordService.updateRecord(record1);
                 })
                 .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());

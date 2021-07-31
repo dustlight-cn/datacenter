@@ -169,6 +169,6 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
         DateHistogramInterval interval = aggregation.getUnit() != null ?
                 new DateHistogramInterval(aggregation.getInterval() + aggregation.getUnit().getValue()) :
                 new DateHistogramInterval(aggregation.getInterval() + DateHistogramAggregation.IntervalUnit.DAY.getValue());
-        return AggregationBuilders.dateHistogram(aggregation.getName()).field(aggregation.getField()).fixedInterval(interval);
+        return AggregationBuilders.dateHistogram(aggregation.getName()).field(aggregation.getField()).calendarInterval(interval);
     }
 }

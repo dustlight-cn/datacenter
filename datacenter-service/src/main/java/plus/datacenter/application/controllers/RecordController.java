@@ -102,7 +102,7 @@ public class RecordController {
                 })
                 .flatMap(record1 -> {
                     record.setId(id);
-                    record1.setCreatedAt(null);
+//                    record1.setCreatedAt(null);
                     record1.setOwner(null);
 //                    record1.setFormId(null);
 //                    record1.setFormVersion(null);

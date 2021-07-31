@@ -77,8 +77,19 @@ public class MongoFormRecordService implements FormRecordService {
     public Mono<FormRecord> updateRecord(FormRecord target) {
         target.setUpdatedAt(Instant.now());
         Update update = new Update();
+        target.setUpdatedAt(Instant.now());
+        target.setOwner(null);
+        target.setClientId(null);
         update.set("createdAt", target.getCreatedAt());
-        update.set("updatedAt", Instant.now());
+        update.set("updatedAt", target.getUpdatedAt());
+
+        if (StringUtils.hasText(target.getFormId()))
+            update.set("formId", target.getFormId());
+        if (StringUtils.hasText(target.getFormName()))
+            update.set("formName", target.getFormName());
+        if (target.getFormVersion() != null)
+            update.set("formVersion", target.getFormVersion());
+
         Map<String, Object> data = target.getData();
         if (data != null) {
             Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
@@ -95,29 +106,20 @@ public class MongoFormRecordService implements FormRecordService {
                     return Mono.just(clientSession);
                 })
                 .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndModify(Query.query(Criteria.where("_id").is(target.getId())),
-                                update,
-                                FormRecord.class,
-                                collectionName)
-                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-                        .map(record -> {
-                            target.setFormId(record.getFormId());
-                            target.setFormName(record.getFormName());
-                            target.setFormVersion(record.getFormVersion());
-                            target.setOwner(record.getOwner());
-                            target.setClientId(record.getClientId());
-                            target.setCreatedAt(record.getCreatedAt());
-                            return record;
-                        })
-                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
-                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
-                                RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
-                                .then(Mono.just(record)))
-                        .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
-                        .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                        .doFinally(signalType -> clientSession.close())
+                                .findAndModify(Query.query(Criteria.where("_id").is(target.getId())),
+                                        update,
+                                        FormRecord.class,
+                                        collectionName)
+                                .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                                .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+                                        elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
+                                .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
+                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
+                                        .then(Mono.just(record)))
+                                .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
+                                .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
+                                .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
+                                .doFinally(signalType -> clientSession.close())
                 );
     }
 

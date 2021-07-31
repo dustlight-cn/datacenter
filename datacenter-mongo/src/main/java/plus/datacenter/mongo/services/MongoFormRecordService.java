@@ -81,7 +81,8 @@ public class MongoFormRecordService implements FormRecordService {
         target.setUpdatedAt(Instant.now());
         target.setOwner(null);
         target.setClientId(null);
-        update.set("createdAt", target.getCreatedAt());
+        if (target.getCreatedAt() != null)
+            update.set("createdAt", target.getCreatedAt());
         update.set("updatedAt", target.getUpdatedAt());
 
         if (StringUtils.hasText(target.getFormId()))
@@ -112,6 +113,12 @@ public class MongoFormRecordService implements FormRecordService {
                                 FormRecord.class,
                                 collectionName)
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
+                        .map(record -> {
+                            if (StringUtils.hasText(record.getOwner()))
+                                target.setOwner(record.getOwner());
+                            target.setClientId(record.getClientId());
+                            return target;
+                        })
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
                         .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),

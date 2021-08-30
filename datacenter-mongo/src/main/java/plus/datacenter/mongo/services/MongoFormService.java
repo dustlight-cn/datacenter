@@ -171,8 +171,8 @@ public class MongoFormService implements FormService {
     }
 
     @Override
-    public Mono<Form> getFormById(String id) {
-        return operations.findById(id, Form.class, collectionName)
+    public Mono<Form> getFormById(String id, String clientId) {
+        return operations.findOne(Query.query(Criteria.where("_id").is(id).and("clientId").is(clientId)), Form.class, collectionName)
                 .onErrorMap(throwable -> ErrorEnum.UNKNOWN.details(throwable.getMessage()).getException())
                 .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.getException()));
     }

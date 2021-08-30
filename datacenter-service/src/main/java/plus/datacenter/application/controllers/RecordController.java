@@ -7,12 +7,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.entities.QueryResult;
-import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
+import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
@@ -50,66 +50,80 @@ public class RecordController {
     @PostMapping("record")
     @Operation(summary = "创建表单记录", description = "提交一条表单记录。")
     public Mono<FormRecord> createRecord(@RequestBody FormRecord record,
-                                         AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        record.setFormId(null);
-        record.setFormVersion(null);
+                                         @RequestParam(name = "cid", required = false) String clientId,
+                                         ReactiveAuthClient reactiveAuthClient,
+                                         AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> {
+                    record.setFormId(null);
+                    record.setFormVersion(null);
 
-        if (principal.getUid() != null)
-            record.setOwner(principal.getUidString());
+                    if (principal.getUid() != null)
+                        record.setOwner(principal.getUidString());
 
-        return validate(record, principal)
-                .flatMap(record1 -> formRecordService.createRecord(record1))
-                .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
+                    return validate(record, principal, cid)
+                            .flatMap(record1 -> formRecordService.createRecord(record1))
+                            .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
+                });
+
     }
 
     @GetMapping("record/{id}")
     @Operation(summary = "获取表单记录", description = "获取一条表单记录。")
     public Mono<FormRecord> getRecord(@PathVariable String id,
-                                      AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formRecordService.getRecord(id);
+                                      @RequestParam(name = "cid", required = false) String clientId,
+                                      ReactiveAuthClient reactiveAuthClient,
+                                      AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formRecordService.getRecord(id, cid));
     }
 
     @DeleteMapping("record/{id}")
     @Operation(summary = "删除表单记录", description = "删除一条表单记录。")
     public Mono<Void> deleteRecord(@PathVariable String id,
-                                   AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formRecordService.deleteRecord(id);
+                                   @RequestParam(name = "cid", required = false) String clientId,
+                                   ReactiveAuthClient reactiveAuthClient,
+                                   AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formRecordService.deleteRecord(id, cid));
     }
 
     @DeleteMapping("records")
     @Operation(summary = "批量删除表单记录", description = "根据 id 批量删除表单记录。")
     public Mono<Void> deleteRecords(@RequestBody Collection<String> ids,
-                                    AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formRecordService.deleteRecords(ids);
+                                    @RequestParam(name = "cid", required = false) String clientId,
+                                    ReactiveAuthClient reactiveAuthClient,
+                                    AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formRecordService.deleteRecords(ids, cid));
     }
 
     @PutMapping("record/{id}")
     @Operation(summary = "更新表单记录", description = "更新一条表单记录。")
     public Mono<FormRecord> updateRecord(@PathVariable String id,
                                          @RequestBody FormRecord record,
-                                         AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formRecordService.getRecord(id)
-                .flatMap(record1 -> {
-                    record.setId(record1.getId());
-                    record.setFormId(null);
-                    record.setFormName(record1.getFormName());
-                    return validate(record, principal);
-                })
-                .flatMap(record1 -> {
-                    record.setId(id);
-//                    record1.setCreatedAt(null);
-                    record1.setOwner(null);
+                                         @RequestParam(name = "cid", required = false) String clientId,
+                                         ReactiveAuthClient reactiveAuthClient,
+                                         AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formRecordService.getRecord(id, cid)
+                        .flatMap(record1 -> {
+                            record.setId(record1.getId());
+                            record.setFormId(null);
+                            record.setFormName(record1.getFormName());
+                            return validate(record, principal, cid);
+                        })
+                        .flatMap(record1 -> {
+                            record.setId(id);
+                            record1.setCreatedAt(null);
+                            record1.setOwner(null);
 //                    record1.setFormId(null);
 //                    record1.setFormVersion(null);
 //                    record1.setFormName(null);
-                    return formRecordService.updateRecord(record1);
-                })
-                .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
+                            return formRecordService.updateRecord(record1);
+                        })
+                        .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException()))
+                ;
     }
 
     @PostMapping("records/queries")
@@ -120,53 +134,59 @@ public class RecordController {
                                                      @RequestParam(required = false, defaultValue = "0") int page,
                                                      @RequestParam(required = false, defaultValue = "10") int size,
                                                      @RequestBody(required = false) @Parameter(description = "过滤器。") Collection<Query> queries,
-                                                     AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        if (StringUtils.hasText(query)) {
-            return formService.getForm(name, principal.getClientId())
-                    .map(form -> {
-                        MatchQuery q = new MatchQuery();
-                        StringBuilder builder = new StringBuilder();
-                        Collection<Item> items = form.getItems().values();
-                        for (Item item : items) {
-                            if (item.getType() != ItemType.STRING)
-                                continue;
-                            if (builder.length() > 0)
-                                builder.append(',');
-                            builder.append("data.");
-                            builder.append(item.getName());
-                        }
-                        q.setName(builder.toString());
-                        q.setOpt(QueryOperation.MATCH);
-                        q.setValue(query);
-                        Collection<Query> qs = new HashSet<>();
-                        if (queries != null)
-                            qs.addAll(queries);
-                        qs.add(q);
-                        return qs;
-                    })
-                    .flatMap(qs -> formRecordSearcher.findRecord(principal.getClientId(),
+                                                     @RequestParam(name = "cid", required = false) String clientId,
+                                                     ReactiveAuthClient reactiveAuthClient,
+                                                     AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> {
+                    if (StringUtils.hasText(query)) {
+                        return formService.getForm(name, cid)
+                                .map(form -> {
+                                    MatchQuery q = new MatchQuery();
+                                    StringBuilder builder = new StringBuilder();
+                                    Collection<Item> items = form.getItems().values();
+                                    for (Item item : items) {
+                                        if (item.getType() != ItemType.STRING)
+                                            continue;
+                                        if (builder.length() > 0)
+                                            builder.append(',');
+                                        builder.append("data.");
+                                        builder.append(item.getName());
+                                    }
+                                    q.setName(builder.toString());
+                                    q.setOpt(QueryOperation.MATCH);
+                                    q.setValue(query);
+                                    Collection<Query> qs = new HashSet<>();
+                                    if (queries != null)
+                                        qs.addAll(queries);
+                                    qs.add(q);
+                                    return qs;
+                                })
+                                .flatMap(qs -> formRecordSearcher.findRecord(cid,
+                                        name,
+                                        qs,
+                                        orders,
+                                        page,
+                                        size));
+                    }
+                    return formRecordSearcher.findRecord(cid,
                             name,
-                            qs,
+                            queries,
                             orders,
                             page,
-                            size));
-        }
-        return formRecordSearcher.findRecord(principal.getClientId(),
-                name,
-                queries,
-                orders,
-                page,
-                size);
+                            size);
+                });
     }
 
     @Operation(summary = "聚合表单记录", description = "聚合查询表单记录。")
     @PostMapping("records/aggregations")
     public Mono<?> aggregate(@RequestParam @Parameter(description = "表单名称。") String name,
                              @RequestBody AggregationQuery query,
-                             AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formRecordSearcher.aggregate(principal.getClientId(), name, query.getFilter(), query.getAggs());
+                             @RequestParam(name = "cid", required = false) String clientId,
+                             ReactiveAuthClient reactiveAuthClient,
+                             AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formRecordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
     }
 
     /**
@@ -176,12 +196,12 @@ public class RecordController {
      * @param authPrincipal
      * @return
      */
-    protected Mono<FormRecord> validate(FormRecord record, AuthPrincipal authPrincipal) {
+    protected Mono<FormRecord> validate(FormRecord record, AuthPrincipal authPrincipal, String clientId) {
         return (StringUtils.hasText(record.getFormId()) ?
-                formService.getFormById(record.getFormId()) : formService.getForm(record.getFormName(), authPrincipal.getClientId()))
+                formService.getFormById(record.getFormId(), clientId) : formService.getForm(record.getFormName(), clientId))
                 .map(form -> {
 
-                    record.setClientId(authPrincipal.getClientId());
+                    record.setClientId(clientId);
                     record.setOwner(authPrincipal.getUidString());
                     record.setFormId(form.getId());
                     record.setFormName(form.getName());

@@ -391,10 +391,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * 创建一个表单，返回创建后的表单。
          * @summary 创建表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createForm: (form, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        createForm: (form, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'form' is not null or undefined
             common_1.assertParamExists('createForm', 'form', form);
             const localVarPath = `/v1/form`;
@@ -410,6 +411,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -424,10 +428,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * 通过名称删除所有表单。
          * @summary 删除表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteForm: (name, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        deleteForm: (name, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'name' is not null or undefined
             common_1.assertParamExists('deleteForm', 'name', name);
             const localVarPath = `/v1/forms`;
@@ -446,6 +451,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             if (name !== undefined) {
                 localVarQueryParameter['name'] = name;
             }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -458,10 +466,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * 通过 ID 获取表单结构。
          * @summary 获取表单
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getFormById: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getFormById: (id, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('getFormById', 'id', id);
             const localVarPath = `/v1/form/{id}`
@@ -478,6 +487,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -493,10 +505,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * @param {string} [query]
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForms: (name, query, page, size, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getForms: (name, query, page, size, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const localVarPath = `/v1/forms`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -522,6 +535,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             if (size !== undefined) {
                 localVarQueryParameter['size'] = size;
             }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -534,10 +550,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * 通过名称获取最新版本的表单。
          * @summary 获取最新的表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLatestForm: (name, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getLatestForm: (name, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'name' is not null or undefined
             common_1.assertParamExists('getLatestForm', 'name', name);
             const localVarPath = `/v1/form`;
@@ -556,6 +573,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             if (name !== undefined) {
                 localVarQueryParameter['name'] = name;
             }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -568,10 +588,11 @@ const FormsApiAxiosParamCreator = function (configuration) {
          * 通过名称更新表单结构。
          * @summary 更新表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateForm: (form, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        updateForm: (form, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'form' is not null or undefined
             common_1.assertParamExists('updateForm', 'form', form);
             const localVarPath = `/v1/form`;
@@ -587,6 +608,9 @@ const FormsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -611,12 +635,13 @@ const FormsApiFp = function (configuration) {
          * 创建一个表单，返回创建后的表单。
          * @summary 创建表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createForm(form, options) {
+        createForm(form, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.createForm(form, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.createForm(form, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -624,12 +649,13 @@ const FormsApiFp = function (configuration) {
          * 通过名称删除所有表单。
          * @summary 删除表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteForm(name, options) {
+        deleteForm(name, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteForm(name, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteForm(name, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -637,12 +663,13 @@ const FormsApiFp = function (configuration) {
          * 通过 ID 获取表单结构。
          * @summary 获取表单
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getFormById(id, options) {
+        getFormById(id, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getFormById(id, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getFormById(id, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -653,12 +680,13 @@ const FormsApiFp = function (configuration) {
          * @param {string} [query]
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForms(name, query, page, size, options) {
+        getForms(name, query, page, size, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getForms(name, query, page, size, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getForms(name, query, page, size, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -666,12 +694,13 @@ const FormsApiFp = function (configuration) {
          * 通过名称获取最新版本的表单。
          * @summary 获取最新的表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLatestForm(name, options) {
+        getLatestForm(name, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getLatestForm(name, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getLatestForm(name, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -679,12 +708,13 @@ const FormsApiFp = function (configuration) {
          * 通过名称更新表单结构。
          * @summary 更新表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateForm(form, options) {
+        updateForm(form, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateForm(form, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateForm(form, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -702,31 +732,34 @@ const FormsApiFactory = function (configuration, basePath, axios) {
          * 创建一个表单，返回创建后的表单。
          * @summary 创建表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createForm(form, options) {
-            return localVarFp.createForm(form, options).then((request) => request(axios, basePath));
+        createForm(form, cid, options) {
+            return localVarFp.createForm(form, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 通过名称删除所有表单。
          * @summary 删除表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteForm(name, options) {
-            return localVarFp.deleteForm(name, options).then((request) => request(axios, basePath));
+        deleteForm(name, cid, options) {
+            return localVarFp.deleteForm(name, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 通过 ID 获取表单结构。
          * @summary 获取表单
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getFormById(id, options) {
-            return localVarFp.getFormById(id, options).then((request) => request(axios, basePath));
+        getFormById(id, cid, options) {
+            return localVarFp.getFormById(id, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
@@ -735,31 +768,34 @@ const FormsApiFactory = function (configuration, basePath, axios) {
          * @param {string} [query]
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForms(name, query, page, size, options) {
-            return localVarFp.getForms(name, query, page, size, options).then((request) => request(axios, basePath));
+        getForms(name, query, page, size, cid, options) {
+            return localVarFp.getForms(name, query, page, size, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 通过名称获取最新版本的表单。
          * @summary 获取最新的表单
          * @param {string} name
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLatestForm(name, options) {
-            return localVarFp.getLatestForm(name, options).then((request) => request(axios, basePath));
+        getLatestForm(name, cid, options) {
+            return localVarFp.getLatestForm(name, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 通过名称更新表单结构。
          * @summary 更新表单
          * @param {Form} form
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateForm(form, options) {
-            return localVarFp.updateForm(form, options).then((request) => request(axios, basePath));
+        updateForm(form, cid, options) {
+            return localVarFp.updateForm(form, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -775,34 +811,37 @@ class FormsApi extends base_1.BaseAPI {
      * 创建一个表单，返回创建后的表单。
      * @summary 创建表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    createForm(form, options) {
-        return exports.FormsApiFp(this.configuration).createForm(form, options).then((request) => request(this.axios, this.basePath));
+    createForm(form, cid, options) {
+        return exports.FormsApiFp(this.configuration).createForm(form, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 通过名称删除所有表单。
      * @summary 删除表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    deleteForm(name, options) {
-        return exports.FormsApiFp(this.configuration).deleteForm(name, options).then((request) => request(this.axios, this.basePath));
+    deleteForm(name, cid, options) {
+        return exports.FormsApiFp(this.configuration).deleteForm(name, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 通过 ID 获取表单结构。
      * @summary 获取表单
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getFormById(id, options) {
-        return exports.FormsApiFp(this.configuration).getFormById(id, options).then((request) => request(this.axios, this.basePath));
+    getFormById(id, cid, options) {
+        return exports.FormsApiFp(this.configuration).getFormById(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
@@ -811,34 +850,37 @@ class FormsApi extends base_1.BaseAPI {
      * @param {string} [query]
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getForms(name, query, page, size, options) {
-        return exports.FormsApiFp(this.configuration).getForms(name, query, page, size, options).then((request) => request(this.axios, this.basePath));
+    getForms(name, query, page, size, cid, options) {
+        return exports.FormsApiFp(this.configuration).getForms(name, query, page, size, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 通过名称获取最新版本的表单。
      * @summary 获取最新的表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getLatestForm(name, options) {
-        return exports.FormsApiFp(this.configuration).getLatestForm(name, options).then((request) => request(this.axios, this.basePath));
+    getLatestForm(name, cid, options) {
+        return exports.FormsApiFp(this.configuration).getLatestForm(name, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 通过名称更新表单结构。
      * @summary 更新表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    updateForm(form, options) {
-        return exports.FormsApiFp(this.configuration).updateForm(form, options).then((request) => request(this.axios, this.basePath));
+    updateForm(form, cid, options) {
+        return exports.FormsApiFp(this.configuration).updateForm(form, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.FormsApi = FormsApi;
@@ -853,10 +895,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * @summary 聚合表单记录
          * @param {string} name 表单名称。
          * @param {AggregationQuery} aggregationQuery
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        aggregate: (name, aggregationQuery, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        aggregate: (name, aggregationQuery, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'name' is not null or undefined
             common_1.assertParamExists('aggregate', 'name', name);
             // verify required parameter 'aggregationQuery' is not null or undefined
@@ -877,6 +920,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             if (name !== undefined) {
                 localVarQueryParameter['name'] = name;
             }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -891,10 +937,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord: (formRecord, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        createRecord: (formRecord, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'formRecord' is not null or undefined
             common_1.assertParamExists('createRecord', 'formRecord', formRecord);
             const localVarPath = `/v1/record`;
@@ -910,6 +957,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -924,10 +974,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * 删除一条表单记录。
          * @summary 删除表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecord: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        deleteRecord: (id, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('deleteRecord', 'id', id);
             const localVarPath = `/v1/record/{id}`
@@ -944,6 +995,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -956,10 +1010,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * 根据 id 批量删除表单记录。
          * @summary 批量删除表单记录
          * @param {Array<string>} requestBody
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecords: (requestBody, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        deleteRecords: (requestBody, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'requestBody' is not null or undefined
             common_1.assertParamExists('deleteRecords', 'requestBody', requestBody);
             const localVarPath = `/v1/records`;
@@ -975,6 +1030,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -993,11 +1051,12 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {Array<QueryObject>} [queryObject]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findRecords: (name, query, orders, page, size, queryObject, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        findRecords: (name, query, orders, page, size, cid, queryObject, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'name' is not null or undefined
             common_1.assertParamExists('findRecords', 'name', name);
             const localVarPath = `/v1/records/queries`;
@@ -1028,6 +1087,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             if (size !== undefined) {
                 localVarQueryParameter['size'] = size;
             }
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1042,10 +1104,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * 获取一条表单记录。
          * @summary 获取表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRecord: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getRecord: (id, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('getRecord', 'id', id);
             const localVarPath = `/v1/record/{id}`
@@ -1062,6 +1125,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
@@ -1075,10 +1141,11 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * @summary 更新表单记录
          * @param {string} id
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord: (id, formRecord, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        updateRecord: (id, formRecord, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('updateRecord', 'id', id);
             // verify required parameter 'formRecord' is not null or undefined
@@ -1097,6 +1164,9 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             // authentication auth required
             // oauth required
             yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1122,12 +1192,13 @@ const RecordsApiFp = function (configuration) {
          * @summary 聚合表单记录
          * @param {string} name 表单名称。
          * @param {AggregationQuery} aggregationQuery
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        aggregate(name, aggregationQuery, options) {
+        aggregate(name, aggregationQuery, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.aggregate(name, aggregationQuery, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.aggregate(name, aggregationQuery, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1135,12 +1206,13 @@ const RecordsApiFp = function (configuration) {
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord(formRecord, options) {
+        createRecord(formRecord, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.createRecord(formRecord, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.createRecord(formRecord, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1148,12 +1220,13 @@ const RecordsApiFp = function (configuration) {
          * 删除一条表单记录。
          * @summary 删除表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecord(id, options) {
+        deleteRecord(id, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRecord(id, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRecord(id, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1161,12 +1234,13 @@ const RecordsApiFp = function (configuration) {
          * 根据 id 批量删除表单记录。
          * @summary 批量删除表单记录
          * @param {Array<string>} requestBody
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecords(requestBody, options) {
+        deleteRecords(requestBody, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRecords(requestBody, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRecords(requestBody, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1178,13 +1252,14 @@ const RecordsApiFp = function (configuration) {
          * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {Array<QueryObject>} [queryObject]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findRecords(name, query, orders, page, size, queryObject, options) {
+        findRecords(name, query, orders, page, size, cid, queryObject, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.findRecords(name, query, orders, page, size, queryObject, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.findRecords(name, query, orders, page, size, cid, queryObject, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1192,12 +1267,13 @@ const RecordsApiFp = function (configuration) {
          * 获取一条表单记录。
          * @summary 获取表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRecord(id, options) {
+        getRecord(id, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getRecord(id, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getRecord(id, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1206,12 +1282,13 @@ const RecordsApiFp = function (configuration) {
          * @summary 更新表单记录
          * @param {string} id
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord(id, formRecord, options) {
+        updateRecord(id, formRecord, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateRecord(id, formRecord, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateRecord(id, formRecord, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1230,41 +1307,45 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
          * @summary 聚合表单记录
          * @param {string} name 表单名称。
          * @param {AggregationQuery} aggregationQuery
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        aggregate(name, aggregationQuery, options) {
-            return localVarFp.aggregate(name, aggregationQuery, options).then((request) => request(axios, basePath));
+        aggregate(name, aggregationQuery, cid, options) {
+            return localVarFp.aggregate(name, aggregationQuery, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 提交一条表单记录。
          * @summary 创建表单记录
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord(formRecord, options) {
-            return localVarFp.createRecord(formRecord, options).then((request) => request(axios, basePath));
+        createRecord(formRecord, cid, options) {
+            return localVarFp.createRecord(formRecord, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 删除一条表单记录。
          * @summary 删除表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecord(id, options) {
-            return localVarFp.deleteRecord(id, options).then((request) => request(axios, basePath));
+        deleteRecord(id, cid, options) {
+            return localVarFp.deleteRecord(id, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 根据 id 批量删除表单记录。
          * @summary 批量删除表单记录
          * @param {Array<string>} requestBody
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRecords(requestBody, options) {
-            return localVarFp.deleteRecords(requestBody, options).then((request) => request(axios, basePath));
+        deleteRecords(requestBody, cid, options) {
+            return localVarFp.deleteRecords(requestBody, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 列出或搜索表单记录。
@@ -1274,33 +1355,36 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
          * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
          * @param {number} [page]
          * @param {number} [size]
+         * @param {string} [cid]
          * @param {Array<QueryObject>} [queryObject]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        findRecords(name, query, orders, page, size, queryObject, options) {
-            return localVarFp.findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(axios, basePath));
+        findRecords(name, query, orders, page, size, cid, queryObject, options) {
+            return localVarFp.findRecords(name, query, orders, page, size, cid, queryObject, options).then((request) => request(axios, basePath));
         },
         /**
          * 获取一条表单记录。
          * @summary 获取表单记录
          * @param {string} id
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRecord(id, options) {
-            return localVarFp.getRecord(id, options).then((request) => request(axios, basePath));
+        getRecord(id, cid, options) {
+            return localVarFp.getRecord(id, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 更新一条表单记录。
          * @summary 更新表单记录
          * @param {string} id
          * @param {FormRecord} formRecord
+         * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord(id, formRecord, options) {
-            return localVarFp.updateRecord(id, formRecord, options).then((request) => request(axios, basePath));
+        updateRecord(id, formRecord, cid, options) {
+            return localVarFp.updateRecord(id, formRecord, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1317,45 +1401,49 @@ class RecordsApi extends base_1.BaseAPI {
      * @summary 聚合表单记录
      * @param {string} name 表单名称。
      * @param {AggregationQuery} aggregationQuery
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    aggregate(name, aggregationQuery, options) {
-        return exports.RecordsApiFp(this.configuration).aggregate(name, aggregationQuery, options).then((request) => request(this.axios, this.basePath));
+    aggregate(name, aggregationQuery, cid, options) {
+        return exports.RecordsApiFp(this.configuration).aggregate(name, aggregationQuery, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    createRecord(formRecord, options) {
-        return exports.RecordsApiFp(this.configuration).createRecord(formRecord, options).then((request) => request(this.axios, this.basePath));
+    createRecord(formRecord, cid, options) {
+        return exports.RecordsApiFp(this.configuration).createRecord(formRecord, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    deleteRecord(id, options) {
-        return exports.RecordsApiFp(this.configuration).deleteRecord(id, options).then((request) => request(this.axios, this.basePath));
+    deleteRecord(id, cid, options) {
+        return exports.RecordsApiFp(this.configuration).deleteRecord(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 根据 id 批量删除表单记录。
      * @summary 批量删除表单记录
      * @param {Array<string>} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    deleteRecords(requestBody, options) {
-        return exports.RecordsApiFp(this.configuration).deleteRecords(requestBody, options).then((request) => request(this.axios, this.basePath));
+    deleteRecords(requestBody, cid, options) {
+        return exports.RecordsApiFp(this.configuration).deleteRecords(requestBody, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 列出或搜索表单记录。
@@ -1365,36 +1453,39 @@ class RecordsApi extends base_1.BaseAPI {
      * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {Array<QueryObject>} [queryObject]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    findRecords(name, query, orders, page, size, queryObject, options) {
-        return exports.RecordsApiFp(this.configuration).findRecords(name, query, orders, page, size, queryObject, options).then((request) => request(this.axios, this.basePath));
+    findRecords(name, query, orders, page, size, cid, queryObject, options) {
+        return exports.RecordsApiFp(this.configuration).findRecords(name, query, orders, page, size, cid, queryObject, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    getRecord(id, options) {
-        return exports.RecordsApiFp(this.configuration).getRecord(id, options).then((request) => request(this.axios, this.basePath));
+    getRecord(id, cid, options) {
+        return exports.RecordsApiFp(this.configuration).getRecord(id, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    updateRecord(id, formRecord, options) {
-        return exports.RecordsApiFp(this.configuration).updateRecord(id, formRecord, options).then((request) => request(this.axios, this.basePath));
+    updateRecord(id, formRecord, cid, options) {
+        return exports.RecordsApiFp(this.configuration).updateRecord(id, formRecord, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.RecordsApi = RecordsApi;

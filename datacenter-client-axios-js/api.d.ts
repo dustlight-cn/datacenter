@@ -335,10 +335,10 @@ export interface DateItem {
     required?: boolean;
     /**
      *
-     * @type {InstantRangeable}
+     * @type {RangeableInstant}
      * @memberof DateItem
      */
-    dateRange?: InstantRangeable;
+    dateRange?: RangeableInstant;
 }
 /**
     * @export
@@ -870,31 +870,6 @@ export declare enum InQueryOptEnum {
 /**
  *
  * @export
- * @interface InstantRangeable
- */
-export interface InstantRangeable {
-    /**
-     *
-     * @type {string}
-     * @memberof InstantRangeable
-     */
-    min?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof InstantRangeable
-     */
-    max?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof InstantRangeable
-     */
-    openInterval?: boolean;
-}
-/**
- *
- * @export
  * @interface IntItem
  */
 export interface IntItem {
@@ -1207,6 +1182,31 @@ export interface RangeableDouble {
      *
      * @type {boolean}
      * @memberof RangeableDouble
+     */
+    openInterval?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface RangeableInstant
+ */
+export interface RangeableInstant {
+    /**
+     *
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    min?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof RangeableInstant
+     */
+    max?: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof RangeableInstant
      */
     openInterval?: boolean;
 }
@@ -1543,26 +1543,29 @@ export declare const FormsApiAxiosParamCreator: (configuration?: Configuration) 
      * 创建一个表单，返回创建后的表单。
      * @summary 创建表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createForm: (form: Form, options?: any) => Promise<RequestArgs>;
+    createForm: (form: Form, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 通过名称删除所有表单。
      * @summary 删除表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteForm: (name: string, options?: any) => Promise<RequestArgs>;
+    deleteForm: (name: string, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 通过 ID 获取表单结构。
      * @summary 获取表单
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getFormById: (id: string, options?: any) => Promise<RequestArgs>;
+    getFormById: (id: string, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
      * @summary 查询或列出表单
@@ -1570,26 +1573,29 @@ export declare const FormsApiAxiosParamCreator: (configuration?: Configuration) 
      * @param {string} [query]
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getForms: (name?: string, query?: string, page?: number, size?: number, options?: any) => Promise<RequestArgs>;
+    getForms: (name?: string, query?: string, page?: number, size?: number, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 通过名称获取最新版本的表单。
      * @summary 获取最新的表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getLatestForm: (name: string, options?: any) => Promise<RequestArgs>;
+    getLatestForm: (name: string, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 通过名称更新表单结构。
      * @summary 更新表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateForm: (form: Form, options?: any) => Promise<RequestArgs>;
+    updateForm: (form: Form, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * FormsApi - functional programming interface
@@ -1600,26 +1606,29 @@ export declare const FormsApiFp: (configuration?: Configuration) => {
      * 创建一个表单，返回创建后的表单。
      * @summary 创建表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
+    createForm(form: Form, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
     /**
      * 通过名称删除所有表单。
      * @summary 删除表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    deleteForm(name: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 通过 ID 获取表单结构。
      * @summary 获取表单
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getFormById(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
+    getFormById(id: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
     /**
      * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
      * @summary 查询或列出表单
@@ -1627,26 +1636,29 @@ export declare const FormsApiFp: (configuration?: Configuration) => {
      * @param {string} [query]
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getForms(name?: string, query?: string, page?: number, size?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultForm>>;
+    getForms(name?: string, query?: string, page?: number, size?: number, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultForm>>;
     /**
      * 通过名称获取最新版本的表单。
      * @summary 获取最新的表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getLatestForm(name: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
+    getLatestForm(name: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
     /**
      * 通过名称更新表单结构。
      * @summary 更新表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateForm(form: Form, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
+    updateForm(form: Form, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Form>>;
 };
 /**
  * FormsApi - factory interface
@@ -1657,26 +1669,29 @@ export declare const FormsApiFactory: (configuration?: Configuration, basePath?:
      * 创建一个表单，返回创建后的表单。
      * @summary 创建表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createForm(form: Form, options?: any): AxiosPromise<Form>;
+    createForm(form: Form, cid?: string, options?: any): AxiosPromise<Form>;
     /**
      * 通过名称删除所有表单。
      * @summary 删除表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteForm(name: string, options?: any): AxiosPromise<void>;
+    deleteForm(name: string, cid?: string, options?: any): AxiosPromise<void>;
     /**
      * 通过 ID 获取表单结构。
      * @summary 获取表单
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getFormById(id: string, options?: any): AxiosPromise<Form>;
+    getFormById(id: string, cid?: string, options?: any): AxiosPromise<Form>;
     /**
      * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
      * @summary 查询或列出表单
@@ -1684,26 +1699,29 @@ export declare const FormsApiFactory: (configuration?: Configuration, basePath?:
      * @param {string} [query]
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getForms(name?: string, query?: string, page?: number, size?: number, options?: any): AxiosPromise<QueryResultForm>;
+    getForms(name?: string, query?: string, page?: number, size?: number, cid?: string, options?: any): AxiosPromise<QueryResultForm>;
     /**
      * 通过名称获取最新版本的表单。
      * @summary 获取最新的表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getLatestForm(name: string, options?: any): AxiosPromise<Form>;
+    getLatestForm(name: string, cid?: string, options?: any): AxiosPromise<Form>;
     /**
      * 通过名称更新表单结构。
      * @summary 更新表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateForm(form: Form, options?: any): AxiosPromise<Form>;
+    updateForm(form: Form, cid?: string, options?: any): AxiosPromise<Form>;
 };
 /**
  * FormsApi - object-oriented interface
@@ -1716,29 +1734,32 @@ export declare class FormsApi extends BaseAPI {
      * 创建一个表单，返回创建后的表单。
      * @summary 创建表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    createForm(form: Form, options?: any): Promise<import("axios").AxiosResponse<Form>>;
+    createForm(form: Form, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
     /**
      * 通过名称删除所有表单。
      * @summary 删除表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    deleteForm(name: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    deleteForm(name: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 通过 ID 获取表单结构。
      * @summary 获取表单
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getFormById(id: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
+    getFormById(id: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
     /**
      * 当 query 不为空时，不分版本搜索表单，提供 name 可以限制搜索范围。当 query 为空时，若 name 不为空则列出该名称表单的所有版本，否则列出此应用的所有最新表单结构。
      * @summary 查询或列出表单
@@ -1746,29 +1767,32 @@ export declare class FormsApi extends BaseAPI {
      * @param {string} [query]
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getForms(name?: string, query?: string, page?: number, size?: number, options?: any): Promise<import("axios").AxiosResponse<QueryResultForm>>;
+    getForms(name?: string, query?: string, page?: number, size?: number, cid?: string, options?: any): Promise<import("axios").AxiosResponse<QueryResultForm>>;
     /**
      * 通过名称获取最新版本的表单。
      * @summary 获取最新的表单
      * @param {string} name
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    getLatestForm(name: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
+    getLatestForm(name: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
     /**
      * 通过名称更新表单结构。
      * @summary 更新表单
      * @param {Form} form
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FormsApi
      */
-    updateForm(form: Form, options?: any): Promise<import("axios").AxiosResponse<Form>>;
+    updateForm(form: Form, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Form>>;
 }
 /**
  * RecordsApi - axios parameter creator
@@ -1780,34 +1804,38 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
      * @summary 聚合表单记录
      * @param {string} name 表单名称。
      * @param {AggregationQuery} aggregationQuery
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    aggregate: (name: string, aggregationQuery: AggregationQuery, options?: any) => Promise<RequestArgs>;
+    aggregate: (name: string, aggregationQuery: AggregationQuery, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord: (formRecord: FormRecord, options?: any) => Promise<RequestArgs>;
+    createRecord: (formRecord: FormRecord, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecord: (id: string, options?: any) => Promise<RequestArgs>;
+    deleteRecord: (id: string, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 根据 id 批量删除表单记录。
      * @summary 批量删除表单记录
      * @param {Array<string>} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecords: (requestBody: Array<string>, options?: any) => Promise<RequestArgs>;
+    deleteRecords: (requestBody: Array<string>, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
@@ -1816,28 +1844,31 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
      * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {Array<QueryObject>} [queryObject]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    findRecords: (name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any) => Promise<RequestArgs>;
+    findRecords: (name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any) => Promise<RequestArgs>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRecord: (id: string, options?: any) => Promise<RequestArgs>;
+    getRecord: (id: string, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord: (id: string, formRecord: FormRecord, options?: any) => Promise<RequestArgs>;
+    updateRecord: (id: string, formRecord: FormRecord, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * RecordsApi - functional programming interface
@@ -1849,34 +1880,38 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      * @summary 聚合表单记录
      * @param {string} name 表单名称。
      * @param {AggregationQuery} aggregationQuery
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    aggregate(name: string, aggregationQuery: AggregationQuery, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>>;
+    aggregate(name: string, aggregationQuery: AggregationQuery, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>>;
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord(formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    createRecord(formRecord: FormRecord, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    deleteRecord(id: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 根据 id 批量删除表单记录。
      * @summary 批量删除表单记录
      * @param {Array<string>} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecords(requestBody: Array<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    deleteRecords(requestBody: Array<string>, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
@@ -1885,28 +1920,31 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {Array<QueryObject>} [queryObject]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRecord(id: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    getRecord(id: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord(id: string, formRecord: FormRecord, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
 };
 /**
  * RecordsApi - factory interface
@@ -1918,34 +1956,38 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @summary 聚合表单记录
      * @param {string} name 表单名称。
      * @param {AggregationQuery} aggregationQuery
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    aggregate(name: string, aggregationQuery: AggregationQuery, options?: any): AxiosPromise<object>;
+    aggregate(name: string, aggregationQuery: AggregationQuery, cid?: string, options?: any): AxiosPromise<object>;
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord(formRecord: FormRecord, options?: any): AxiosPromise<FormRecord>;
+    createRecord(formRecord: FormRecord, cid?: string, options?: any): AxiosPromise<FormRecord>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecord(id: string, options?: any): AxiosPromise<void>;
+    deleteRecord(id: string, cid?: string, options?: any): AxiosPromise<void>;
     /**
      * 根据 id 批量删除表单记录。
      * @summary 批量删除表单记录
      * @param {Array<string>} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteRecords(requestBody: Array<string>, options?: any): AxiosPromise<void>;
+    deleteRecords(requestBody: Array<string>, cid?: string, options?: any): AxiosPromise<void>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
@@ -1954,28 +1996,31 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {Array<QueryObject>} [queryObject]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRecord(id: string, options?: any): AxiosPromise<FormRecord>;
+    getRecord(id: string, cid?: string, options?: any): AxiosPromise<FormRecord>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord(id: string, formRecord: FormRecord, options?: any): AxiosPromise<FormRecord>;
+    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): AxiosPromise<FormRecord>;
 };
 /**
  * RecordsApi - object-oriented interface
@@ -1989,38 +2034,42 @@ export declare class RecordsApi extends BaseAPI {
      * @summary 聚合表单记录
      * @param {string} name 表单名称。
      * @param {AggregationQuery} aggregationQuery
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    aggregate(name: string, aggregationQuery: AggregationQuery, options?: any): Promise<import("axios").AxiosResponse<object>>;
+    aggregate(name: string, aggregationQuery: AggregationQuery, cid?: string, options?: any): Promise<import("axios").AxiosResponse<object>>;
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    createRecord(formRecord: FormRecord, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    createRecord(formRecord: FormRecord, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    deleteRecord(id: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    deleteRecord(id: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 根据 id 批量删除表单记录。
      * @summary 批量删除表单记录
      * @param {Array<string>} requestBody
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    deleteRecords(requestBody: Array<string>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    deleteRecords(requestBody: Array<string>, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 列出或搜索表单记录。
      * @summary 检索表单记录
@@ -2029,29 +2078,32 @@ export declare class RecordsApi extends BaseAPI {
      * @param {Array<string>} [orders] 排序字段，如：update （正序排序） -update（倒序排序）。
      * @param {number} [page]
      * @param {number} [size]
+     * @param {string} [cid]
      * @param {Array<QueryObject>} [queryObject]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, queryObject?: Array<QueryObject>, options?: any): Promise<import("axios").AxiosResponse<QueryResultFormRecord>>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<import("axios").AxiosResponse<QueryResultFormRecord>>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
      * @param {string} id
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    getRecord(id: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    getRecord(id: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
      * @param {FormRecord} formRecord
+     * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    updateRecord(id: string, formRecord: FormRecord, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
 }

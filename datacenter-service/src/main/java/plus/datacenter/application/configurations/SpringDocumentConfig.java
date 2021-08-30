@@ -35,5 +35,6 @@ import org.springframework.context.annotation.Configuration;
         )
 )
 )
+@Schema()
 public class SpringDocumentConfig {
 }

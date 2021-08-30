@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
-    <version>0.0.4-alpha-1-SNAPSHOT</version>
+    <version>0.0.5-alpha-SNAPSHOT</version>
     <description>PLUS 数据中心服务</description>
 
     <properties>
@@ -23,7 +23,7 @@
         <spring-boot.version>2.5.2</spring-boot.version>
         <springdoc.version>1.5.9</springdoc.version>
 
-        <auth.version>1.1.0-alpha-2-SNAPSHOT</auth.version>
+        <auth.version>1.1.1-alpha-SNAPSHOT</auth.version>
         <storage.version>0.0.5</storage.version>
     </properties>
 
@@ -32,6 +32,7 @@
         <module>datacenter-elasticsearch</module>
         <module>datacenter-mongo</module>
         <module>datacenter-service</module>
+        <module>tools/es2mongo</module>
     </modules>
 
     <dependencyManagement>
@@ -62,6 +63,11 @@
             <dependency>
                 <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>es2mongo</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -249,49 +255,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-    <profiles>
-        <profile>
-            <id>native</id>
-            <properties>
-                <repackage.classifier>exec</repackage.classifier>
-                <native-buildtools.version>0.9.1</native-buildtools.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>junit-platform-native</artifactId>
-                    <version>${native-buildtools.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <version>${native-buildtools.version}</version>
-                        <executions>
-                            <execution>
-                                <id>test-native</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>build-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <developers>
         <developer>

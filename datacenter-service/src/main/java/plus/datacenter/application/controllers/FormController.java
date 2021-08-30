@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.entities.QueryResult;
-import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
+import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormSearcher;
 import plus.datacenter.core.services.FormService;
@@ -31,20 +31,26 @@ public class FormController {
     @PostMapping("form")
     @Operation(summary = "创建表单", description = "创建一个表单，返回创建后的表单。")
     public Mono<Form> createForm(@RequestBody Form form,
-                                 AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        form.setClientId(principal.getClientId());
-        if (principal.getUid() != null)
-            form.setOwner(principal.getUidString());
-        return formService.createForm(form);
+                                 @RequestParam(name = "cid", required = false) String clientId,
+                                 ReactiveAuthClient reactiveAuthClient,
+                                 AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> {
+                    form.setClientId(cid);
+                    if (principal.getUid() != null)
+                        form.setOwner(principal.getUidString());
+                    return formService.createForm(form);
+                });
     }
 
     @GetMapping("form")
     @Operation(summary = "获取最新的表单", description = "通过名称获取最新版本的表单。")
     public Mono<Form> getLatestForm(@RequestParam String name,
-                                    AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formService.getForm(name, principal.getClientId());
+                                    @RequestParam(name = "cid", required = false) String clientId,
+                                    ReactiveAuthClient reactiveAuthClient,
+                                    AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formService.getForm(name, cid));
     }
 
     @GetMapping("forms")
@@ -54,43 +60,57 @@ public class FormController {
                                             @RequestParam(required = false) String query,
                                             @RequestParam(required = false, defaultValue = "0") Integer page,
                                             @RequestParam(required = false, defaultValue = "10") Integer size,
-                                            AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        if (StringUtils.hasText(query)) {
-            return StringUtils.hasText(name) ?
-                    formSearcher.search(principal.getClientId(), query, name, page, size) :
-                    formSearcher.search(principal.getClientId(), query, page, size);
-        } else {
-            return StringUtils.hasText(name) ?
-                    formService.listForm(principal.getClientId(), name) :
-                    formService.listForm(principal.getClientId());
-        }
+                                            @RequestParam(name = "cid", required = false) String clientId,
+                                            ReactiveAuthClient reactiveAuthClient,
+                                            AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> {
+                    if (StringUtils.hasText(query)) {
+                        return StringUtils.hasText(name) ?
+                                formSearcher.search(cid, query, name, page, size) :
+                                formSearcher.search(cid, query, page, size);
+                    } else {
+                        return StringUtils.hasText(name) ?
+                                formService.listForm(cid, name) :
+                                formService.listForm(cid);
+                    }
+                });
     }
 
     @PutMapping("form")
     @Operation(summary = "更新表单", description = "通过名称更新表单结构。")
     public Mono<Form> updateForm(@RequestBody Form form,
-                                 AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        if (principal.getUid() != null)
-            form.setOwner(principal.getUidString());
-        form.setOwner(principal.getUidString());
-        form.setClientId(principal.getClientId());
-        return formService.updateForm(form);
+                                 @RequestParam(name = "cid", required = false) String clientId,
+                                 ReactiveAuthClient reactiveAuthClient,
+                                 AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> {
+                    if (principal.getUid() != null)
+                        form.setOwner(principal.getUidString());
+                    form.setOwner(principal.getUidString());
+                    form.setClientId(cid);
+                    return formService.updateForm(form);
+                });
     }
 
     @DeleteMapping("forms")
     @Operation(summary = "删除表单", description = "通过名称删除所有表单。")
     public Mono<Void> deleteForm(@RequestParam(name = "name") String name,
-                                 AbstractOAuth2TokenAuthenticationToken token) {
-        AuthPrincipal principal = AuthPrincipalUtil.getAuthPrincipal(token);
-        return formService.deleteForm(name, principal.getClientId());
+                                 @RequestParam(name = "cid", required = false) String clientId,
+                                 ReactiveAuthClient reactiveAuthClient,
+                                 AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formService.deleteForm(name, cid));
     }
 
     @GetMapping("form/{id}")
     @Operation(summary = "获取表单", description = "通过 ID 获取表单结构。")
-    public Mono<Form> getFormById(@PathVariable String id) {
-        return formService.getFormById(id);
+    public Mono<Form> getFormById(@PathVariable String id,
+                                  @RequestParam(name = "cid", required = false) String clientId,
+                                  ReactiveAuthClient reactiveAuthClient,
+                                  AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> formService.getFormById(id, cid));
     }
 
 }

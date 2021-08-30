@@ -39,8 +39,8 @@ public class ElasticsearchFormRecordService implements FormRecordService {
     }
 
     @Override
-    public Mono<FormRecord> getRecord(String id) {
-        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "*");
+    public Mono<FormRecord> getRecord(String id, String clientId) {
+        IndexCoordinates index = IndexCoordinates.of(String.format("%s.%s.*", indexPrefix, clientId));
         return operations.get(id, FormRecord.class, index)
                 .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()));
     }
@@ -72,16 +72,16 @@ public class ElasticsearchFormRecordService implements FormRecordService {
     }
 
     @Override
-    public Mono<Void> deleteRecord(String id) {
-        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "*");
+    public Mono<Void> deleteRecord(String id, String clientId) {
+        IndexCoordinates index = IndexCoordinates.of(String.format("%s.%s.*", indexPrefix, clientId));
         return operations.delete(new NativeSearchQuery(new MatchQueryBuilder("_id", id)), FormRecord.class, index)
                 .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                 .flatMap(byQueryResponse -> Mono.empty());
     }
 
     @Override
-    public Mono<Void> deleteRecords(Collection<String> ids) {
-        IndexCoordinates index = IndexCoordinates.of(indexPrefix + "*");
+    public Mono<Void> deleteRecords(Collection<String> ids, String clientId) {
+        IndexCoordinates index = IndexCoordinates.of(String.format("%s.%s.*", indexPrefix, clientId));
         return operations.delete(new NativeSearchQuery(new TermsQueryBuilder("_id", ids)), FormRecord.class, index)
                 .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                 .flatMap(byQueryResponse -> Mono.empty());

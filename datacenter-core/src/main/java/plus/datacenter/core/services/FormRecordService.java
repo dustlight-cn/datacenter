@@ -9,12 +9,12 @@ public interface FormRecordService {
 
     Mono<FormRecord> createRecord(FormRecord origin);
 
-    Mono<FormRecord> getRecord(String id);
+    Mono<FormRecord> getRecord(String id, String clientId);
 
     Mono<FormRecord> updateRecord(FormRecord target);
 
-    Mono<Void> deleteRecord(String id);
+    Mono<Void> deleteRecord(String id, String clientId);
 
-    Mono<Void> deleteRecords(Collection<String> ids);
+    Mono<Void> deleteRecords(Collection<String> ids, String clientId);
 
 }

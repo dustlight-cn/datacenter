@@ -24,7 +24,7 @@ public class ElasticsearchFormService implements FormService {
     }
 
     @Override
-    public Mono<Form> getFormById(String id) {
+    public Mono<Form> getFormById(String id,String clientId) {
         return null;
     }
 

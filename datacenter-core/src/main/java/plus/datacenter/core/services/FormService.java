@@ -10,7 +10,7 @@ public interface FormService {
 
     Mono<Form> getForm(String name, String clientId);
 
-    Mono<Form> getFormById(String id);
+    Mono<Form> getFormById(String id,String clientId);
 
     Mono<Form> updateForm(Form target);
 

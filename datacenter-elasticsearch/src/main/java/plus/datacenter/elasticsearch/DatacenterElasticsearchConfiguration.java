@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomCo
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import plus.datacenter.elasticsearch.converters.InstantToStringConverter;
+import plus.datacenter.elasticsearch.converters.ObjectIdToStringConverter;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordSearcher;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
@@ -48,8 +49,10 @@ public class DatacenterElasticsearchConfiguration {
     public ElasticsearchConverter dcElasticsearchConverter(SimpleElasticsearchMappingContext mappingContext) {
         DefaultConversionService conversionService = new DefaultConversionService();
         conversionService.addConverter(new InstantToStringConverter());
+        conversionService.addConverter(new ObjectIdToStringConverter());
         MappingElasticsearchConverter converter = new MappingElasticsearchConverter(mappingContext, conversionService);
-        converter.setConversions(new ElasticsearchCustomConversions(Arrays.asList(new InstantToStringConverter())));
+        converter.setConversions(new ElasticsearchCustomConversions(Arrays.asList(new InstantToStringConverter(),
+                new ObjectIdToStringConverter())));
         return converter;
     }
 

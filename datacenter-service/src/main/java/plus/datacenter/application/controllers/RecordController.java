@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -200,7 +201,6 @@ public class RecordController {
         return (StringUtils.hasText(record.getFormId()) ?
                 formService.getFormById(record.getFormId(), clientId) : formService.getForm(record.getFormName(), clientId))
                 .map(form -> {
-
                     record.setClientId(clientId);
                     record.setOwner(authPrincipal.getUidString());
                     record.setFormId(form.getId());
@@ -241,7 +241,7 @@ public class RecordController {
                                 v = FormUtils.transformItemValue(v, t);
                                 if (!item.validate(v))
                                     throw new IllegalArgumentException("Validation failed: '" + key + "[" + i + "]'");
-                                transformedValues.add(v);
+                                transformedValues.add(t == ItemType.FORM ? new ObjectId((String) v) : v);
                                 i++;
                             }
                             validatedData.put(key, transformedValues);
@@ -253,7 +253,7 @@ public class RecordController {
                             value = FormUtils.transformItemValue(value, item.getType());
                             if (!item.validate(value))
                                 throw new IllegalArgumentException("Validation failed: '" + key + "'");
-                            validatedData.put(key, value);
+                            validatedData.put(key, item.getType() == ItemType.FORM ? new ObjectId((String) value) : value);
                         }
 
                     }

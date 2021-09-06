@@ -1,7 +1,6 @@
 package plus.datacenter.mongo;
 
 import com.mongodb.reactivestreams.client.MongoClient;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
+import plus.datacenter.mongo.serializers.ObjectIdToStringSerializer;
 import plus.datacenter.mongo.services.MongoFormRecordService;
 import plus.datacenter.mongo.services.MongoFormService;
 
@@ -71,5 +71,10 @@ public class DatacenterMongoConfiguration {
         RabbitTemplate template = new RabbitTemplate(factory);
         template.setExchange(exchange.getName());
         return template;
+    }
+
+    @Bean
+    public ObjectIdToStringSerializer objectIdToStringSerializer(){
+        return new ObjectIdToStringSerializer();
     }
 }

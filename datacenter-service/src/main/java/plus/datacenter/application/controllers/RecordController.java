@@ -63,7 +63,7 @@ public class RecordController {
                         record.setOwner(principal.getUidString());
 
                     return validate(record, principal, cid)
-                            .flatMap(record1 -> formRecordService.createRecord(record1))
+                            .flatMap(record1 -> formRecordService.createRecord(record1, cid))
                             .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
                 });
 
@@ -101,11 +101,11 @@ public class RecordController {
 
     @PutMapping("record/{id}")
     @Operation(summary = "更新表单记录", description = "更新一条表单记录。")
-    public Mono<FormRecord> updateRecord(@PathVariable String id,
-                                         @RequestBody FormRecord record,
-                                         @RequestParam(name = "cid", required = false) String clientId,
-                                         ReactiveAuthClient reactiveAuthClient,
-                                         AuthPrincipal principal) {
+    public Mono<Void> updateRecord(@PathVariable String id,
+                                   @RequestBody FormRecord record,
+                                   @RequestParam(name = "cid", required = false) String clientId,
+                                   ReactiveAuthClient reactiveAuthClient,
+                                   AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> formRecordService.getRecord(id, cid)
                         .flatMap(record1 -> {
@@ -121,7 +121,7 @@ public class RecordController {
 //                    record1.setFormId(null);
 //                    record1.setFormVersion(null);
 //                    record1.setFormName(null);
-                            return formRecordService.updateRecord(record1);
+                            return formRecordService.updateRecord(record1, cid);
                         })
                         .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException()))
                 ;

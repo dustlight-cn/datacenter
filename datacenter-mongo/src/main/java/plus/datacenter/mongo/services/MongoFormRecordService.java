@@ -1,234 +1,131 @@
 package plus.datacenter.mongo.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.reactivestreams.client.ClientSession;
 import com.mongodb.reactivestreams.client.MongoClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
-import plus.datacenter.core.services.FormRecordService;
+import plus.datacenter.core.services.AbstractFormRecordService;
+import plus.datacenter.core.services.RecordEventHandler;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
-import java.time.Instant;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class MongoFormRecordService implements FormRecordService {
+public class MongoFormRecordService extends AbstractFormRecordService implements InitializingBean {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-    private ReactiveMongoOperations operations;
-    private String collectionName;
     private MongoClient mongoClient;
+    private ReactiveMongoOperations operations;
+
+    private String collectionName;
 
     @Override
-    public Mono<FormRecord> createRecord(FormRecord origin) {
-        if (!StringUtils.hasText(origin.getFormId()))
-            ErrorEnum.CREATE_FORM_FAILED.details("form id can't not be null!").throwException();
-        origin.setId(new ObjectId().toHexString());
-        Instant t = Instant.now();
-        if (origin.getCreatedAt() == null)
-            origin.setCreatedAt(t);
-        origin.setUpdatedAt(t);
-        return Mono.from(mongoClient.startSession())
-                .flatMap(clientSession -> {
-                    clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .insert(origin, collectionName)
-                        .onErrorMap(throwable -> ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-//                                elasticsearchFormRecordService.createRecord(record).flatMap(record1 -> Mono.just(record1)))
-//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(origin, RecordMessage.MessageType.CREATED),
-//                                        RecordMessage.from(origin, RecordMessage.MessageType.CREATED).toJson()))
-//                                .then(Mono.just(record)))
-                        .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                        .doFinally(signalType -> clientSession.close())
-                );
+    protected Flux<FormRecord> doInsert(Collection<FormRecord> records) {
+        return startTransaction() // 开启会话与事务
+                .flatMapMany(clientSession -> operations.withSession(clientSession)
+                        .insert(records, collectionName) // 插入数据
+                        .transform(recordz -> joinHandler(recordz, RecordEventHandler.EventType.CREATE)) // 执行 Handler
+                        .transform(recordz -> commitTransaction(recordz, clientSession)) // 提交事务
+                        .onErrorMap(throwable -> ErrorEnum.CREATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
+                        .doFinally(signalType -> clientSession.close())); // 结束会话
     }
 
     @Override
-    public Mono<FormRecord> getRecord(String id, String clientId) {
-        return operations.findOne(Query.query(Criteria.where("_id").is(id).and("clientId").is(clientId)), FormRecord.class, collectionName)
-                .onErrorMap(throwable -> ErrorEnum.RESOURCE_NOT_FOUND.details(throwable.getMessage()).getException())
-                .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()));
+    protected Flux<FormRecord> doGet(Collection<String> ids, String clientId) {
+        return operations.find(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), FormRecord.class, collectionName);
     }
 
     @Override
-    public Mono<FormRecord> updateRecord(FormRecord target) {
-        target.setUpdatedAt(Instant.now());
+    protected Mono<Void> doUpdate(Collection<String> ids, FormRecord record) {
         Update update = new Update();
-        target.setUpdatedAt(Instant.now());
-        target.setOwner(null);
-        target.setClientId(null);
-        if (target.getCreatedAt() != null)
-            update.set("createdAt", target.getCreatedAt());
-        update.set("updatedAt", target.getUpdatedAt());
 
-        if (StringUtils.hasText(target.getFormId()))
-            update.set("formId", target.getFormId());
-        if (StringUtils.hasText(target.getFormName()))
-            update.set("formName", target.getFormName());
-        if (target.getFormVersion() != null)
-            update.set("formVersion", target.getFormVersion());
+        update.set("updatedAt", record.getUpdatedAt()); // 设置更新时间
 
-        Map<String, Object> data = target.getData();
-        if (data != null) {
+        if (StringUtils.hasText(record.getFormId()))
+            update.set("formId", record.getFormId()); // 设置表单 ID（若不为空）
+        if (StringUtils.hasText(record.getFormName()))
+            update.set("formName", record.getFormName()); // 设置表单名（若不为空）
+        if (record.getFormVersion() != null)
+            update.set("formVersion", record.getFormVersion()); // 设置表单版本（若不为空）
+
+        Map<String, Object> data = record.getData();
+        if (data != null) { // 若更新数据不为空
             Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> kv = iterator.next();
                 if (kv.getValue() != null)
-                    update.set("data." + kv.getKey(), kv.getValue());
+                    update.set("data." + kv.getKey(), kv.getValue()); // 设置更新数据
             }
         }
 
-        return Mono.from(mongoClient.startSession())
-                .flatMap(clientSession -> {
-                    clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
+        return startTransaction()
                 .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndModify(Query.query(Criteria.where("_id").is(target.getId())),
+                        .updateMulti(Query.query(Criteria.where("clientId").is(record.getClientId()).and("_id").in(ids)),
                                 update,
-                                FormRecord.class,
-                                collectionName)
-                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-                        .map(record -> {
-                            if (StringUtils.hasText(record.getOwner()))
-                                target.setOwner(record.getOwner());
-                            target.setClientId(record.getClientId());
-                            return target;
-                        })
-//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-//                                elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
-//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
-//                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
-//                                .then(Mono.just(record)))
-                        .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
-                        .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                        .doFinally(signalType -> clientSession.close())
+                                FormRecord.class, collectionName) // 更新数据
+                        .flatMap(updateResult -> updateResult.getMatchedCount() == ids.size() ?
+                                Mono.empty() :
+                                Mono.error(new DatacenterException())) // 判断更新数量是否一致
+                        .flatMap(unused -> commitTransaction(clientSession)) // 提交事务
+                        .onErrorMap(throwable -> ErrorEnum.UPDATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
+                        .doFinally(signalType -> clientSession.close()) // 结束会话
                 );
     }
 
     @Override
-    public Mono<Void> deleteRecord(String id, String clientId) {
+    protected Mono<Void> doDelete(Collection<String> ids, String clientId) {
+        return startTransaction()
+                .flatMap(clientSession -> operations.withSession(clientSession)
+                        .remove(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), collectionName) // 删除数据
+                        .flatMap(deleteResult -> deleteResult.getDeletedCount() == ids.size() ?
+                                Mono.empty() :
+                                Mono.error(new DatacenterException())) // 判断删除数量是否一致
+                        .flatMap(unused -> commitTransaction(clientSession)) // 提交事务
+                        .onErrorMap(throwable -> ErrorEnum.DELETE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
+                        .doFinally(signalType -> clientSession.close()) // 结束会话
+                );
+    }
+
+    protected Mono<ClientSession> startTransaction() {
         return Mono.from(mongoClient.startSession())
                 .flatMap(clientSession -> {
                     clientSession.startTransaction();
                     return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndRemove(Query.query(Criteria.where("_id").is(id).and("clientId").is(clientId)),
-                                FormRecord.class,
-                                collectionName)
-                        .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-//                                elasticsearchFormRecordService.deleteRecord(id, clientId).then(Mono.just(record)))
-//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
-//                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
-//                                .then(Mono.just(record)))
-                        .flatMap(v -> Mono.from(clientSession.commitTransaction()))
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                        .doFinally(signalType -> clientSession.close())
-                );
+                });
+    }
+
+    protected <T> Flux<T> commitTransaction(Flux<T> obj, ClientSession clientSession) {
+        return Mono.from(clientSession.commitTransaction()).thenMany(obj);
+    }
+
+    protected Mono<Void> commitTransaction(ClientSession clientSession) {
+        return Mono.from(clientSession.commitTransaction()).then();
+    }
+
+    protected <T> Flux<T> abortTransaction(Throwable throwable, ClientSession clientSession) {
+        return Mono.from(clientSession.abortTransaction()).thenMany(Mono.error(throwable));
     }
 
     @Override
-    public Mono<Void> deleteRecords(Collection<String> ids, String clientId) {
-        return Mono.from(mongoClient.startSession())
-                .flatMap(clientSession -> {
-                    clientSession.startTransaction();
-                    return Mono.just(clientSession);
-                })
-                .flatMap(clientSession -> operations.withSession(clientSession)
-                        .findAndRemove(Query.query(Criteria.where("_id").in(ids).and("clientId").is(clientId)),
-                                FormRecord.class,
-                                collectionName)
-                        .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                        .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-//                                elasticsearchFormRecordService.deleteRecords(ids, clientId).then(Mono.just(record)))
-//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
-//                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
-//                                .then(Mono.just(record)))
-                        .flatMap(v -> Mono.from(clientSession.commitTransaction()))
-                        .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
-                        .doFinally(signalType -> clientSession.close())
-                );
-    }
-
-    private static String getRouting(FormRecord formRecord, RecordMessage.MessageType type) {
-        if (formRecord == null)
-            return null;
-        return String.format("%s.%s.%s", type.toString(), formRecord.getClientId(), formRecord.getFormName());
-    }
-
-    @Getter
-    @Setter
-    public static class RecordMessage implements Serializable {
-
-        private String recordId, formName, formId, clientId, owner;
-        private Integer formVersion;
-        private Map<String, Object> updateData;
-
-        private MessageType type;
-
-        public static RecordMessage from(FormRecord record, MessageType type) {
-            if (record == null)
-                return null;
-            RecordMessage msg = new RecordMessage();
-            msg.setFormId(record.getFormId());
-            msg.setFormName(record.getFormName());
-            msg.setFormVersion(record.getFormVersion());
-            msg.setRecordId(record.getId());
-            msg.setClientId(record.getClientId());
-            msg.setOwner(record.getOwner());
-            msg.setType(type);
-            if (type == MessageType.UPDATED) {
-                Map<String, Object> data = record.getData();
-                Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
-                Map<String, Object> updateData = new HashMap<>();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, Object> kv = iterator.next();
-                    if (kv.getValue() == null)
-                        continue;
-                    updateData.put(kv.getKey(), kv.getValue());
-                }
-                msg.setUpdateData(updateData);
-            }
-            return msg;
-        }
-
-        public String toJson() {
-            try {
-                return objectMapper.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Fail to convert RecordMessage to json string", e);
-            }
-        }
-
-        public enum MessageType {
-            CREATED,
-            UPDATED,
-            DELETED
-        }
+    public void afterPropertiesSet() throws Exception {
+        Assert.hasText(collectionName, "Record collection name must be set");
     }
 }

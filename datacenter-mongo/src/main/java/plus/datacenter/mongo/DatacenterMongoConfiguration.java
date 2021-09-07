@@ -30,9 +30,9 @@ public class DatacenterMongoConfiguration {
     public MongoFormRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
                                                          @Autowired ReactiveMongoOperations operations,
                                                          @Autowired MongoClient mongoClient) {
-        return new MongoFormRecordService(operations,
-                properties.getFormRecordCollection(),
-                mongoClient);
+        return new MongoFormRecordService(mongoClient,
+                operations,
+                properties.getFormRecordCollection());
     }
 
 //    @Bean
@@ -50,7 +50,7 @@ public class DatacenterMongoConfiguration {
 //    }
 
     @Bean
-    public ObjectIdToStringSerializer objectIdToStringSerializer(){
+    public ObjectIdToStringSerializer objectIdToStringSerializer() {
         return new ObjectIdToStringSerializer();
     }
 }

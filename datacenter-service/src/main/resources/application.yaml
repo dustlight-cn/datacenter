@@ -29,11 +29,12 @@ springdoc:
 spring:
   data:
     mongodb:
-      host: mongodb.svc
-      username: my-user
-      password: MTIzNDU2
-      authentication-database: admin
-      database: datacenter
+#      host: localhost
+#      username: my-user
+#      password: MTIzNDU2
+#      authentication-database: admin
+#      database: datacenter
+      uri: mongodb://localhost:27017/datacenter?retryWrites=false
     elasticsearch:
       client:
         reactive:

@@ -31,9 +31,9 @@ spring:
     max-in-memory-size: -1
   data:
     mongodb:
-      host: mongodb.svc
-      username: my-user
-      password: MTIzNDU2
-      authentication-database: admin
+      host: localhost
+#      username: my-user
+#      password: MTIzNDU2
+#      authentication-database: admin
       database: datacenter
 

@@ -2,19 +2,24 @@ package plus.datacenter.mongotest;
 
 import com.google.gson.Gson;
 import com.mongodb.reactivestreams.client.MongoClient;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.items.FormItem;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 
@@ -40,9 +45,38 @@ public class MongotestApplication implements ApplicationRunner {
         String formName = "company";
         String recordId = "6104f1dc92bd3756ecd4582e";
 
+        getFormRecord(recordId);
         listRecordAboutRecord(formName, recordId)
-                .forEach(record -> System.out.println(gson.toJson(record)));
+                .forEach(record -> {
+                    System.out.println(gson.toJson(record));
+                    getFormRecord(record.getId());
+                });
+    }
 
+    public FormRecord getFormRecord(String recordId) {
+        FormRecord record = mongoOperations.findOne(Query.query(Criteria.where("id").is(recordId)), FormRecord.class, "form_record")
+                .block();
+        Map<String, Object> data = record.getData();
+        Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
+        HashSet<String> fields = new HashSet<>();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Object> kv = iterator.next();
+            if (kv.getValue() instanceof ObjectId)
+                fields.add(kv.getKey());
+        }
+        if (fields.size() != 0) {
+            AggregationPipeline pipeline = new AggregationPipeline();
+            pipeline.add(Aggregation.match(Criteria.where("_id").is(recordId)));
+            for (String field : fields) {
+                pipeline.add(LookupOperation.newLookup().from("form_record").localField("data." + field).foreignField("_id").as("data." + field));
+            }
+            return mongoOperations.aggregate(Aggregation.newAggregation(pipeline.getOperations()), "form_record", FormRecord.class)
+                    .collectList()
+                    .flatMap(formRecords -> {
+                        return formRecords.size() == 0 ? Mono.empty() : Mono.just(formRecords.get(0));
+                    }).block();
+        }
+        return record;
     }
 
     public List<FormRecord> listRecordAboutRecord(String formName, String recordId) {
@@ -57,7 +91,7 @@ public class MongotestApplication implements ApplicationRunner {
                     FormItem formItem = (FormItem) item;
                     if (formName.equals(formItem.getForm())) {
                         criteriaCollection.add(
-                                Criteria.where("formId").is(form.getId()).and("data." + formItem.getName()).is(recordId)
+                                Criteria.where("formId").is(form.getId()).and("data." + formItem.getName()).is(new ObjectId(recordId))
                         );
                     }
                 }

@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -37,7 +36,6 @@ public class MongoFormRecordService implements FormRecordService {
     private String collectionName;
     private ElasticsearchFormRecordService elasticsearchFormRecordService;
     private MongoClient mongoClient;
-    private RabbitTemplate rabbitTemplate;
 
     @Override
     public Mono<FormRecord> createRecord(FormRecord origin) {
@@ -58,9 +56,9 @@ public class MongoFormRecordService implements FormRecordService {
                         .onErrorMap(throwable -> ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.createRecord(record).flatMap(record1 -> Mono.just(record1)))
-                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(origin, RecordMessage.MessageType.CREATED),
-                                        RecordMessage.from(origin, RecordMessage.MessageType.CREATED).toJson()))
-                                .then(Mono.just(record)))
+//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(origin, RecordMessage.MessageType.CREATED),
+//                                        RecordMessage.from(origin, RecordMessage.MessageType.CREATED).toJson()))
+//                                .then(Mono.just(record)))
                         .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
                         .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
                         .doFinally(signalType -> clientSession.close())
@@ -121,9 +119,9 @@ public class MongoFormRecordService implements FormRecordService {
                         })
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
-                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
-                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
-                                .then(Mono.just(record)))
+//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
+//                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
+//                                .then(Mono.just(record)))
                         .flatMap(record -> Mono.from(clientSession.commitTransaction()).then(Mono.just(record)))
                         .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                         .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
@@ -146,9 +144,9 @@ public class MongoFormRecordService implements FormRecordService {
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.deleteRecord(id, clientId).then(Mono.just(record)))
-                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
-                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
-                                .then(Mono.just(record)))
+//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
+//                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
+//                                .then(Mono.just(record)))
                         .flatMap(v -> Mono.from(clientSession.commitTransaction()))
                         .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
                         .doFinally(signalType -> clientSession.close())
@@ -170,9 +168,9 @@ public class MongoFormRecordService implements FormRecordService {
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
                         .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
                                 elasticsearchFormRecordService.deleteRecords(ids, clientId).then(Mono.just(record)))
-                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
-                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
-                                .then(Mono.just(record)))
+//                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
+//                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
+//                                .then(Mono.just(record)))
                         .flatMap(v -> Mono.from(clientSession.commitTransaction()))
                         .onErrorResume(throwable -> Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable)))
                         .doFinally(signalType -> clientSession.close())

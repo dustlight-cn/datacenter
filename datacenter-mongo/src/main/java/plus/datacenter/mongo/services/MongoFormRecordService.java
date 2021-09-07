@@ -16,7 +16,6 @@ import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.FormRecord;
 import plus.datacenter.core.services.FormRecordService;
-import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -34,7 +33,6 @@ public class MongoFormRecordService implements FormRecordService {
     private static ObjectMapper objectMapper = new ObjectMapper();
     private ReactiveMongoOperations operations;
     private String collectionName;
-    private ElasticsearchFormRecordService elasticsearchFormRecordService;
     private MongoClient mongoClient;
 
     @Override
@@ -54,8 +52,8 @@ public class MongoFormRecordService implements FormRecordService {
                 .flatMap(clientSession -> operations.withSession(clientSession)
                         .insert(origin, collectionName)
                         .onErrorMap(throwable -> ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
-                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                elasticsearchFormRecordService.createRecord(record).flatMap(record1 -> Mono.just(record1)))
+//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+//                                elasticsearchFormRecordService.createRecord(record).flatMap(record1 -> Mono.just(record1)))
 //                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(origin, RecordMessage.MessageType.CREATED),
 //                                        RecordMessage.from(origin, RecordMessage.MessageType.CREATED).toJson()))
 //                                .then(Mono.just(record)))
@@ -117,8 +115,8 @@ public class MongoFormRecordService implements FormRecordService {
                             target.setClientId(record.getClientId());
                             return target;
                         })
-                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
+//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+//                                elasticsearchFormRecordService.updateRecord(target).then(Mono.just(record)))
 //                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(target, RecordMessage.MessageType.UPDATED),
 //                                        RecordMessage.from(target, RecordMessage.MessageType.UPDATED).toJson()))
 //                                .then(Mono.just(record)))
@@ -142,8 +140,8 @@ public class MongoFormRecordService implements FormRecordService {
                                 collectionName)
                         .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                elasticsearchFormRecordService.deleteRecord(id, clientId).then(Mono.just(record)))
+//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+//                                elasticsearchFormRecordService.deleteRecord(id, clientId).then(Mono.just(record)))
 //                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
 //                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
 //                                .then(Mono.just(record)))
@@ -166,8 +164,8 @@ public class MongoFormRecordService implements FormRecordService {
                                 collectionName)
                         .onErrorMap(throwable -> ErrorEnum.DELETE_RESOURCE_FAILED.details(throwable.getMessage()).getException())
                         .switchIfEmpty(Mono.error(ErrorEnum.RESOURCE_NOT_FOUND.getException()))
-                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
-                                elasticsearchFormRecordService.deleteRecords(ids, clientId).then(Mono.just(record)))
+//                        .flatMap(record -> elasticsearchFormRecordService == null ? Mono.just(record) :
+//                                elasticsearchFormRecordService.deleteRecords(ids, clientId).then(Mono.just(record)))
 //                        .flatMap(record -> Mono.fromRunnable(() -> rabbitTemplate.convertAndSend(getRouting(record, RecordMessage.MessageType.DELETED),
 //                                        RecordMessage.from(record, RecordMessage.MessageType.DELETED).toJson()))
 //                                .then(Mono.just(record)))

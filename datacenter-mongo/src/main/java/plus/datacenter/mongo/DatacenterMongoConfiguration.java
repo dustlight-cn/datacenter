@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import plus.datacenter.mongo.serializers.ObjectIdToStringSerializer;
 import plus.datacenter.mongo.services.MongoFormRecordService;
 import plus.datacenter.mongo.services.MongoFormService;
@@ -26,26 +25,13 @@ public class DatacenterMongoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(value = {ReactiveMongoOperations.class, ElasticsearchFormRecordService.class})
-    @Primary
-    public MongoFormRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
-                                                         @Autowired ReactiveMongoOperations operations,
-                                                         @Autowired MongoClient mongoClient,
-                                                         @Autowired ElasticsearchFormRecordService elasticsearchFormRecordService) {
-        return new MongoFormRecordService(operations,
-                properties.getFormRecordCollection(),
-                elasticsearchFormRecordService,
-                mongoClient);
-    }
-
-    @Bean
     @ConditionalOnBean(value = {ReactiveMongoOperations.class})
+    @Primary
     public MongoFormRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
                                                          @Autowired ReactiveMongoOperations operations,
                                                          @Autowired MongoClient mongoClient) {
         return new MongoFormRecordService(operations,
                 properties.getFormRecordCollection(),
-                null,
                 mongoClient);
     }
 

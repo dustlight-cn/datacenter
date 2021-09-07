@@ -1,19 +1,16 @@
 package plus.datacenter.mongotest;
 
 import com.google.gson.Gson;
-import com.mongodb.reactivestreams.client.MongoClient;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.FormRecord;
@@ -31,9 +28,6 @@ public class MongotestApplication implements ApplicationRunner {
     private ReactiveMongoOperations mongoOperations;
 
     private static final Gson gson = new Gson();
-
-    @Autowired
-    private MongoClient mongoClient;
 
     public static void main(String[] args) {
         SpringApplication.run(MongotestApplication.class, args);

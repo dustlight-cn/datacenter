@@ -14,15 +14,19 @@ public enum ErrorEnum {
 
     RESOURCE_EXISTS(3000, "Resource already exists"),
     FORM_EXISTS(3001, "Form already exists"),
+    RECORD_EXISTS(3002, "Record already exists"),
 
     CREATE_RESOURCE_FAILED(4000, "Fail to create resource"),
     CREATE_FORM_FAILED(4001, "Fail to create form"),
+    CREATE_RECORD_FAILED(4002, "Fail to create record"),
 
     UPDATE_RESOURCE_FAILED(5000, "Fail to update resource"),
     UPDATE_FORM_FAILED(5001, "Fail to update form"),
+    UPDATE_RECORD_FAILED(5002, "Fail to update record"),
 
     DELETE_RESOURCE_FAILED(6000, "Fail to delete resource"),
-    DELETE_FORM_FAILED(6001, "Fail to delete form");
+    DELETE_FORM_FAILED(6001, "Fail to delete form"),
+    DELETE_RECORD_FAILED(6002, "Fail to delete record");
 
     private ErrorDetails details;
 

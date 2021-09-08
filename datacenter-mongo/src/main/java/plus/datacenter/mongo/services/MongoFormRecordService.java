@@ -80,9 +80,8 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
                                 update,
                                 FormRecord.class, collectionName) // 更新数据
                         .flatMap(updateResult -> updateResult.getMatchedCount() == ids.size() ?
-                                Mono.empty() :
+                                commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断更新数量是否一致
-                        .flatMap(unused -> commitTransaction(clientSession)) // 提交事务
                         .onErrorMap(throwable -> ErrorEnum.UPDATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话
@@ -95,9 +94,8 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
                 .flatMap(clientSession -> operations.withSession(clientSession)
                         .remove(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), collectionName) // 删除数据
                         .flatMap(deleteResult -> deleteResult.getDeletedCount() == ids.size() ?
-                                Mono.empty() :
+                                commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断删除数量是否一致
-                        .flatMap(unused -> commitTransaction(clientSession)) // 提交事务
                         .onErrorMap(throwable -> ErrorEnum.DELETE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话

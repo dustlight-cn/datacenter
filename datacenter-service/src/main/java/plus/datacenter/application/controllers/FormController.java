@@ -64,18 +64,10 @@ public class FormController {
                                             ReactiveAuthClient reactiveAuthClient,
                                             AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> {
-                    if (StringUtils.hasText(query)) {
-                        return StringUtils.hasText(name) ?
-                                formSearcher.search(cid, query, name, page, size) :
-                                formSearcher.search(cid, query, page, size);
-                    } else {
-                        return Mono.empty();
-//                        return StringUtils.hasText(name) ?
-//                                formService.listLatestForm(cid, name) :
-//                                formService.listForm(cid);
-                    }
-                });
+                .flatMap(cid -> StringUtils.hasText(name) ?
+                        formSearcher.search(cid, query, name, page, size) :
+                        formSearcher.search(cid, query, page, size)
+                );
     }
 
     @PutMapping("form")

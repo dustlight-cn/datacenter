@@ -15,7 +15,6 @@ import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMa
 import plus.datacenter.elasticsearch.converters.InstantToStringConverter;
 import plus.datacenter.elasticsearch.converters.ObjectIdToStringConverter;
 import plus.datacenter.elasticsearch.services.ElasticsearchRecordSearcher;
-//import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
 
 import java.util.Arrays;
@@ -29,13 +28,6 @@ public class DatacenterElasticsearchConfiguration {
     public ElasticsearchFormSearcher elasticsearchFormSearcher(@Autowired ReactiveElasticsearchOperations operations) {
         return new ElasticsearchFormSearcher(operations);
     }
-
-//    @Bean
-//    @ConditionalOnBean(ReactiveElasticsearchOperations.class)
-//    public ElasticsearchFormRecordService elasticsearchFormRecordService(@Autowired ReactiveElasticsearchOperations operations,
-//                                                                         @Autowired DatacenterElasticsearchProperties properties) {
-//        return new ElasticsearchFormRecordService(operations, properties.getRecordPrefix());
-//    }
 
     @Bean
     @ConditionalOnBean(ReactiveElasticsearchOperations.class)

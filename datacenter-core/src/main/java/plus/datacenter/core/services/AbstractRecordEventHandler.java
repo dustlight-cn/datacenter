@@ -1,7 +1,7 @@
 package plus.datacenter.core.services;
 
 import plus.datacenter.core.DatacenterException;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Collection;
 public abstract class AbstractRecordEventHandler implements RecordEventHandler {
 
     @Override
-    public Mono<Collection<FormRecord>> onEvent(Collection<FormRecord> records, EventType eventType) {
+    public Mono<Collection<Record>> onEvent(Collection<Record> records, EventType eventType) {
         switch (eventType) {
             case CREATE:
                 return onCreate(records);
@@ -22,9 +22,9 @@ public abstract class AbstractRecordEventHandler implements RecordEventHandler {
         }
     }
 
-    public abstract Mono<Collection<FormRecord>> onCreate(Collection<FormRecord> record);
+    public abstract Mono<Collection<Record>> onCreate(Collection<Record> record);
 
-    public abstract Mono<Collection<FormRecord>> onUpdate(Collection<FormRecord> record);
+    public abstract Mono<Collection<Record>> onUpdate(Collection<Record> record);
 
-    public abstract Mono<Collection<FormRecord>> onDelete(Collection<FormRecord> record);
+    public abstract Mono<Collection<Record>> onDelete(Collection<Record> record);
 }

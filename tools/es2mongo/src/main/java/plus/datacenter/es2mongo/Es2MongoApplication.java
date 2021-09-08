@@ -16,7 +16,7 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.stereotype.Component;
 import plus.datacenter.core.entities.forms.Form;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import reactor.core.publisher.Mono;
 
 import java.util.LinkedList;
@@ -84,21 +84,21 @@ public class Es2MongoApplication implements ApplicationRunner {
                             int page = 0;
                             long total;
                             long count = 0;
-                            LinkedList<FormRecord> formRecords = new LinkedList<>();
+                            LinkedList<Record> records = new LinkedList<>();
                             while (true) {
-                                SearchPage<FormRecord> hits = elasticsearchOperations.searchForPage(Query.findAll()
+                                SearchPage<Record> hits = elasticsearchOperations.searchForPage(Query.findAll()
                                                 .setPageable(Pageable.ofSize(100).withPage(page++)),
-                                        FormRecord.class,
+                                        Record.class,
                                         IndexCoordinates.of(formRecordIndex)).block();
 
-                                hits.forEach(formMetaSearchHit -> formRecords.add(formMetaSearchHit.getContent()));
+                                hits.forEach(formMetaSearchHit -> records.add(formMetaSearchHit.getContent()));
 
                                 count += hits.getContent().size();
                                 total = hits.getTotalElements();
                                 if(count >= total)
                                     break;
                             }
-                            return formRecords;
+                            return records;
 
                         })
                         .flatMap(formRecords -> {

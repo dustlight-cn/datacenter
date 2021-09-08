@@ -16,15 +16,15 @@ import plus.auth.resources.core.AuthPrincipal;
 import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
 import plus.datacenter.core.entities.queries.queries.MatchQuery;
-import plus.datacenter.core.services.FormRecordSearcher;
-import plus.datacenter.core.services.FormRecordService;
+import plus.datacenter.core.services.RecordSearcher;
+import plus.datacenter.core.services.RecordService;
 import plus.datacenter.core.services.FormService;
 import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Mono;
@@ -43,17 +43,17 @@ public class RecordController {
     private FormService formService;
 
     @Autowired
-    private FormRecordService formRecordService;
+    private RecordService recordService;
 
     @Autowired
-    private FormRecordSearcher formRecordSearcher;
+    private RecordSearcher recordSearcher;
 
     @PostMapping("record")
     @Operation(summary = "创建表单记录", description = "提交一条表单记录。")
-    public Mono<FormRecord> createRecord(@RequestBody FormRecord record,
-                                         @RequestParam(name = "cid", required = false) String clientId,
-                                         ReactiveAuthClient reactiveAuthClient,
-                                         AuthPrincipal principal) {
+    public Mono<Record> createRecord(@RequestBody Record record,
+                                     @RequestParam(name = "cid", required = false) String clientId,
+                                     ReactiveAuthClient reactiveAuthClient,
+                                     AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     record.setFormId(null);
@@ -63,7 +63,7 @@ public class RecordController {
                         record.setOwner(principal.getUidString());
 
                     return validate(record, principal, cid)
-                            .flatMap(record1 -> formRecordService.createRecord(record1, cid))
+                            .flatMap(record1 -> recordService.createRecord(record1, cid))
                             .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
                 });
 
@@ -71,12 +71,12 @@ public class RecordController {
 
     @GetMapping("record/{id}")
     @Operation(summary = "获取表单记录", description = "获取一条表单记录。")
-    public Mono<FormRecord> getRecord(@PathVariable String id,
-                                      @RequestParam(name = "cid", required = false) String clientId,
-                                      ReactiveAuthClient reactiveAuthClient,
-                                      AuthPrincipal principal) {
+    public Mono<Record> getRecord(@PathVariable String id,
+                                  @RequestParam(name = "cid", required = false) String clientId,
+                                  ReactiveAuthClient reactiveAuthClient,
+                                  AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formRecordService.getRecord(id, cid));
+                .flatMap(cid -> recordService.getRecord(id, cid));
     }
 
     @DeleteMapping("record/{id}")
@@ -86,7 +86,7 @@ public class RecordController {
                                    ReactiveAuthClient reactiveAuthClient,
                                    AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formRecordService.deleteRecord(id, cid));
+                .flatMap(cid -> recordService.deleteRecord(id, cid));
     }
 
     @DeleteMapping("records")
@@ -96,18 +96,18 @@ public class RecordController {
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formRecordService.deleteRecords(ids, cid));
+                .flatMap(cid -> recordService.deleteRecords(ids, cid));
     }
 
     @PutMapping("record/{id}")
     @Operation(summary = "更新表单记录", description = "更新一条表单记录。")
     public Mono<Void> updateRecord(@PathVariable String id,
-                                   @RequestBody FormRecord record,
+                                   @RequestBody Record record,
                                    @RequestParam(name = "cid", required = false) String clientId,
                                    ReactiveAuthClient reactiveAuthClient,
                                    AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formRecordService.getRecord(id, cid)
+                .flatMap(cid -> recordService.getRecord(id, cid)
                         .flatMap(record1 -> {
                             record.setId(record1.getId());
                             record.setFormId(null);
@@ -121,7 +121,7 @@ public class RecordController {
 //                    record1.setFormId(null);
 //                    record1.setFormVersion(null);
 //                    record1.setFormName(null);
-                            return formRecordService.updateRecord(record1, cid);
+                            return recordService.updateRecord(record1, cid);
                         })
                         .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException()))
                 ;
@@ -129,15 +129,15 @@ public class RecordController {
 
     @PostMapping("records/queries")
     @Operation(summary = "检索表单记录", description = "列出或搜索表单记录。")
-    public Mono<QueryResult<FormRecord>> findRecords(@RequestParam @Parameter(description = "表单名称。") String name,
-                                                     @RequestParam(required = false) @Parameter(description = "关键词，对表单的 STRING 类型进行全文搜索。") String query,
-                                                     @RequestParam(required = false) @Parameter(description = "排序字段，如：update （正序排序） -update（倒序排序）。") List<String> orders,
-                                                     @RequestParam(required = false, defaultValue = "0") int page,
-                                                     @RequestParam(required = false, defaultValue = "10") int size,
-                                                     @RequestBody(required = false) @Parameter(description = "过滤器。") Collection<Query> queries,
-                                                     @RequestParam(name = "cid", required = false) String clientId,
-                                                     ReactiveAuthClient reactiveAuthClient,
-                                                     AuthPrincipal principal) {
+    public Mono<QueryResult<Record>> findRecords(@RequestParam @Parameter(description = "表单名称。") String name,
+                                                 @RequestParam(required = false) @Parameter(description = "关键词，对表单的 STRING 类型进行全文搜索。") String query,
+                                                 @RequestParam(required = false) @Parameter(description = "排序字段，如：update （正序排序） -update（倒序排序）。") List<String> orders,
+                                                 @RequestParam(required = false, defaultValue = "0") int page,
+                                                 @RequestParam(required = false, defaultValue = "10") int size,
+                                                 @RequestBody(required = false) @Parameter(description = "过滤器。") Collection<Query> queries,
+                                                 @RequestParam(name = "cid", required = false) String clientId,
+                                                 ReactiveAuthClient reactiveAuthClient,
+                                                 AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     if (StringUtils.hasText(query)) {
@@ -163,14 +163,14 @@ public class RecordController {
                                     qs.add(q);
                                     return qs;
                                 })
-                                .flatMap(qs -> formRecordSearcher.findRecord(cid,
+                                .flatMap(qs -> recordSearcher.findRecord(cid,
                                         name,
                                         qs,
                                         orders,
                                         page,
                                         size));
                     }
-                    return formRecordSearcher.findRecord(cid,
+                    return recordSearcher.findRecord(cid,
                             name,
                             queries,
                             orders,
@@ -187,7 +187,7 @@ public class RecordController {
                              ReactiveAuthClient reactiveAuthClient,
                              AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formRecordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
+                .flatMap(cid -> recordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
     }
 
     /**
@@ -197,7 +197,7 @@ public class RecordController {
      * @param authPrincipal
      * @return
      */
-    protected Mono<FormRecord> validate(FormRecord record, AuthPrincipal authPrincipal, String clientId) {
+    protected Mono<Record> validate(Record record, AuthPrincipal authPrincipal, String clientId) {
         return (StringUtils.hasText(record.getFormId()) ?
                 formService.getFormById(record.getFormId(), clientId) : formService.getForm(record.getFormName(), clientId))
                 .map(form -> {

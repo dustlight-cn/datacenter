@@ -4,27 +4,34 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.ErrorEnum;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
-public abstract class AbstractFormRecordService implements FormRecordService {
+/**
+ * 抽象记录服务，抽象出四个批量增删改查方法。
+ * <p>
+ * 维护了一个 RecordEventHandler 列表，子类在进行增删改时调用 joinHandler 进行事件通知。若发生异常且支持事务则可以进行回滚。
+ * <p>
+ * 在进行增删改查之前，将使用 RecordValidator 进行校验。
+ */
+public abstract class AbstractRecordService implements RecordService {
 
     @Getter
-    private Collection<RecordEventHandler> joins = new HashSet<>();
+    private List<RecordEventHandler> joins = new ArrayList<>();
 
     @Getter
     @Setter
     private RecordValidator recordValidator;
 
     @Override
-    public Mono<FormRecord> createRecord(FormRecord origin, String clientId) {
+    public Mono<Record> createRecord(Record origin, String clientId) {
         beforeCreate(origin, clientId, Instant.now());
         return doInsert(Arrays.asList(origin))
                 .singleOrEmpty()
@@ -32,34 +39,34 @@ public abstract class AbstractFormRecordService implements FormRecordService {
     }
 
     @Override
-    public Flux<FormRecord> createRecords(Collection<FormRecord> origin, String clientId) {
+    public Flux<Record> createRecords(Collection<Record> origin, String clientId) {
         Instant now = Instant.now();
-        for (FormRecord record : origin) {
+        for (Record record : origin) {
             beforeCreate(record, clientId, now);
         }
         return doInsert(origin);
     }
 
     @Override
-    public Mono<FormRecord> getRecord(String id, String clientId) {
+    public Mono<Record> getRecord(String id, String clientId) {
         return doGet(Arrays.asList(id), clientId)
                 .singleOrEmpty()
                 .switchIfEmpty(Mono.error(ErrorEnum.RECORD_NOT_FOUND.getException()));
     }
 
     @Override
-    public Flux<FormRecord> getRecords(Collection<String> id, String clientId) {
+    public Flux<Record> getRecords(Collection<String> id, String clientId) {
         return doGet(id, clientId);
     }
 
     @Override
-    public Mono<Void> updateRecord(FormRecord target, String clientId) {
+    public Mono<Void> updateRecord(Record target, String clientId) {
         beforeUpdate(target, clientId, Instant.now());
         return doUpdate(Arrays.asList(target.getId()), target);
     }
 
     @Override
-    public Mono<Void> updateRecords(Collection<String> ids, FormRecord target, String clientId) {
+    public Mono<Void> updateRecords(Collection<String> ids, Record target, String clientId) {
         beforeUpdate(target, clientId, Instant.now());
         return doUpdate(ids, target);
     }
@@ -74,11 +81,11 @@ public abstract class AbstractFormRecordService implements FormRecordService {
         return doDelete(ids, clientId);
     }
 
-    protected abstract Flux<FormRecord> doInsert(Collection<FormRecord> records);
+    protected abstract Flux<Record> doInsert(Collection<Record> records);
 
-    protected abstract Flux<FormRecord> doGet(Collection<String> ids, String clientId);
+    protected abstract Flux<Record> doGet(Collection<String> ids, String clientId);
 
-    protected abstract Mono<Void> doUpdate(Collection<String> ids, FormRecord record);
+    protected abstract Mono<Void> doUpdate(Collection<String> ids, Record record);
 
     protected abstract Mono<Void> doDelete(Collection<String> ids, String clientId);
 
@@ -89,15 +96,15 @@ public abstract class AbstractFormRecordService implements FormRecordService {
      * @param eventType
      * @return
      */
-    protected Flux<FormRecord> joinHandler(Flux<FormRecord> records, RecordEventHandler.EventType eventType) {
-        Mono<List<FormRecord>> result = records.collectList();
+    protected Mono<Collection<Record>> joinHandler(Collection<Record> records, RecordEventHandler.EventType eventType) {
+        Mono<Collection<Record>> result = Mono.just(records);
         for (RecordEventHandler handler : joins) {
-            result.flatMap(recordz -> handler.onEvent(recordz, eventType));
+            result = result.flatMap(recordz -> handler.onEvent(recordz, eventType));
         }
-        return result.flatMapMany(recordz -> Flux.fromIterable(recordz));
+        return result;
     }
 
-    protected void beforeCreate(FormRecord record, String clientId, Instant now) {
+    protected void beforeCreate(Record record, String clientId, Instant now) {
         if (record == null) // 创建对象不可为空
             throw ErrorEnum.CREATE_RECORD_FAILED.details("Record can not be null").getException();
         if (!StringUtils.hasText(record.getFormId())) // 记录的表单 ID 不可为空
@@ -113,7 +120,7 @@ public abstract class AbstractFormRecordService implements FormRecordService {
         record.setClientId(clientId);
     }
 
-    protected void beforeUpdate(FormRecord record, String clientId, Instant now) {
+    protected void beforeUpdate(Record record, String clientId, Instant now) {
         if (record == null) // 创建对象不可为空
             throw ErrorEnum.CREATE_RECORD_FAILED.details("Record can not be null").getException();
         if (!StringUtils.hasText(record.getId())) // 记录的 ID 不可为空

@@ -14,45 +14,50 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
-import plus.datacenter.core.entities.forms.FormRecord;
-import plus.datacenter.core.services.AbstractFormRecordService;
+import plus.datacenter.core.entities.forms.Record;
+import plus.datacenter.core.services.AbstractRecordService;
 import plus.datacenter.core.services.RecordEventHandler;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * 基于 MongoDB 实现的记录服务，支持事务。
+ */
 @Getter
 @Setter
 @AllArgsConstructor
-public class MongoFormRecordService extends AbstractFormRecordService implements InitializingBean {
+public class MongoRecordService extends AbstractRecordService implements InitializingBean {
 
     private MongoClient mongoClient;
     private ReactiveMongoOperations operations;
 
+    /**
+     * 记录集合名称
+     */
     private String collectionName;
 
     @Override
-    protected Flux<FormRecord> doInsert(Collection<FormRecord> records) {
+    protected Flux<Record> doInsert(Collection<Record> records) {
         return startTransaction() // 开启会话与事务
                 .flatMapMany(clientSession -> operations.withSession(clientSession)
                         .insert(records, collectionName) // 插入数据
-                        .transform(recordz -> joinHandler(recordz, RecordEventHandler.EventType.CREATE)) // 执行 Handler
-                        .transform(recordz -> commitTransaction(recordz, clientSession)) // 提交事务
+                        .collectList()
+                        .flatMap(recordz -> joinHandler(recordz, RecordEventHandler.EventType.CREATE)) // 执行 Handler
                         .onErrorMap(throwable -> ErrorEnum.CREATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
+                        .flatMapMany(recordz -> commitTransaction(recordz, clientSession)) // 提交事务
                         .doFinally(signalType -> clientSession.close())); // 结束会话
     }
 
     @Override
-    protected Flux<FormRecord> doGet(Collection<String> ids, String clientId) {
-        return operations.find(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), FormRecord.class, collectionName);
+    protected Flux<Record> doGet(Collection<String> ids, String clientId) {
+        return operations.find(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), Record.class, collectionName);
     }
 
     @Override
-    protected Mono<Void> doUpdate(Collection<String> ids, FormRecord record) {
+    protected Mono<Void> doUpdate(Collection<String> ids, Record record) {
         Update update = new Update();
 
         update.set("updatedAt", record.getUpdatedAt()); // 设置更新时间
@@ -78,7 +83,11 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
                 .flatMap(clientSession -> operations.withSession(clientSession)
                         .updateMulti(Query.query(Criteria.where("clientId").is(record.getClientId()).and("_id").in(ids)),
                                 update,
-                                FormRecord.class, collectionName) // 更新数据
+                                Record.class, collectionName) // 更新数据
+                        .flatMap(updateResult ->
+                                buildRecords(record, ids, null)
+                                        .flatMap(records -> joinHandler(records, RecordEventHandler.EventType.UPDATE))
+                                        .map(records -> updateResult)) // 执行 Handler
                         .flatMap(updateResult -> updateResult.getMatchedCount() == ids.size() ?
                                 commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断更新数量是否一致
@@ -93,6 +102,9 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
         return startTransaction()
                 .flatMap(clientSession -> operations.withSession(clientSession)
                         .remove(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), collectionName) // 删除数据
+                        .flatMap(deleteResult -> buildRecords(null, ids, clientId)
+                                .flatMap(records -> joinHandler(records, RecordEventHandler.EventType.DELETE))
+                                .map(records -> deleteResult)) // 执行 Handler
                         .flatMap(deleteResult -> deleteResult.getDeletedCount() == ids.size() ?
                                 commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断删除数量是否一致
@@ -102,6 +114,11 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
                 );
     }
 
+    /**
+     * 开启事务
+     *
+     * @return 启用了事务的会话对象
+     */
     protected Mono<ClientSession> startTransaction() {
         return Mono.from(mongoClient.startSession())
                 .flatMap(clientSession -> {
@@ -110,20 +127,71 @@ public class MongoFormRecordService extends AbstractFormRecordService implements
                 });
     }
 
-    protected <T> Flux<T> commitTransaction(Flux<T> obj, ClientSession clientSession) {
-        return Mono.from(clientSession.commitTransaction()).thenMany(obj);
+    /**
+     * 提交事务
+     *
+     * @param obj           提交完毕后将此集合以 Flux 形式返回
+     * @param clientSession 会话对象
+     * @param <T>           集合元素类型
+     * @return
+     */
+    protected <T> Flux<T> commitTransaction(Collection<T> obj, ClientSession clientSession) {
+        return Mono.from(clientSession.commitTransaction()).thenMany(Flux.fromIterable(obj));
     }
 
+    /**
+     * 提交事务
+     *
+     * @param clientSession 会话对象
+     * @return
+     */
     protected Mono<Void> commitTransaction(ClientSession clientSession) {
         return Mono.from(clientSession.commitTransaction()).then();
     }
 
-    protected <T> Flux<T> abortTransaction(Throwable throwable, ClientSession clientSession) {
-        return Mono.from(clientSession.abortTransaction()).thenMany(Mono.error(throwable));
+    /**
+     * 回滚事务
+     *
+     * @param throwable     异常对象
+     * @param clientSession 会话对象
+     * @param <T>
+     * @return
+     */
+    protected <T> Mono<T> abortTransaction(Throwable throwable, ClientSession clientSession) {
+        return Mono.from(clientSession.abortTransaction()).then(Mono.error(throwable));
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Assert.hasText(collectionName, "Record collection name must be set");
+        Assert.hasText(collectionName, "Record collection name must be set"); // 检查记录集合的名称是否为空
+    }
+
+    /**
+     * 将一个记录对象根据 ID 集合进行复制
+     *
+     * @param origin   源对象
+     * @param ids      ID 集合
+     * @param clientId 客户端ID
+     * @return
+     */
+    private static Mono<Collection<Record>> buildRecords(Record origin, Collection<String> ids, String clientId) {
+        if (ids == null || ids.size() == 0)
+            return Mono.empty();
+        if (origin == null)
+            origin = new Record();
+        if (!StringUtils.hasText(origin.getClientId()) && StringUtils.hasText(clientId))
+            origin.setClientId(clientId);
+        Collection<Record> records = new ArrayList<>(ids.size());
+        for (String id : ids) {
+            Record r = null;
+            try {
+                r = (Record) origin.clone();
+            } catch (CloneNotSupportedException e) {
+                return Mono.error(e);
+            }
+            r.setId(id);
+            records.add(r);
+        }
+        return Mono.just(records);
     }
 }

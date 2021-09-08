@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import plus.datacenter.core.entities.forms.Form;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.items.FormItem;
 import reactor.core.publisher.Mono;
@@ -47,8 +47,8 @@ public class MongotestApplication implements ApplicationRunner {
                 });
     }
 
-    public FormRecord getFormRecord(String recordId) {
-        FormRecord record = mongoOperations.findOne(Query.query(Criteria.where("id").is(recordId)), FormRecord.class, "form_record")
+    public Record getFormRecord(String recordId) {
+        Record record = mongoOperations.findOne(Query.query(Criteria.where("id").is(recordId)), Record.class, "form_record")
                 .block();
         Map<String, Object> data = record.getData();
         Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
@@ -64,7 +64,7 @@ public class MongotestApplication implements ApplicationRunner {
             for (String field : fields) {
                 pipeline.add(LookupOperation.newLookup().from("form_record").localField("data." + field).foreignField("_id").as("data." + field));
             }
-            return mongoOperations.aggregate(Aggregation.newAggregation(pipeline.getOperations()), "form_record", FormRecord.class)
+            return mongoOperations.aggregate(Aggregation.newAggregation(pipeline.getOperations()), "form_record", Record.class)
                     .collectList()
                     .flatMap(formRecords -> {
                         return formRecords.size() == 0 ? Mono.empty() : Mono.just(formRecords.get(0));
@@ -73,7 +73,7 @@ public class MongotestApplication implements ApplicationRunner {
         return record;
     }
 
-    public List<FormRecord> listRecordAboutRecord(String formName, String recordId) {
+    public List<Record> listRecordAboutRecord(String formName, String recordId) {
         List<Form> list = mongoOperations.find(Query.query(Criteria.where("groups.items.type").is("FORM").and("groups.items.form").is(formName)), Form.class, "form")
                 .collectList()
                 .block();
@@ -93,7 +93,7 @@ public class MongotestApplication implements ApplicationRunner {
         }
 
         Query q = Query.query(new Criteria().orOperator(criteriaCollection));
-        List<FormRecord> records = mongoOperations.find(q, FormRecord.class, "form_record").collectList().block();
+        List<Record> records = mongoOperations.find(q, Record.class, "form_record").collectList().block();
         return records;
     }
 }

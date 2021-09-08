@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import plus.datacenter.mongo.serializers.ObjectIdToStringSerializer;
-import plus.datacenter.mongo.services.MongoFormRecordService;
+import plus.datacenter.mongo.services.MongoRecordService;
 import plus.datacenter.mongo.services.MongoFormService;
 
 @Configuration
@@ -27,12 +27,13 @@ public class DatacenterMongoConfiguration {
     @Bean
     @ConditionalOnBean(value = {ReactiveMongoOperations.class})
     @Primary
-    public MongoFormRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
-                                                         @Autowired ReactiveMongoOperations operations,
-                                                         @Autowired MongoClient mongoClient) {
-        return new MongoFormRecordService(mongoClient,
+    public MongoRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
+                                                     @Autowired ReactiveMongoOperations operations,
+                                                     @Autowired MongoClient mongoClient) {
+        MongoRecordService service = new MongoRecordService(mongoClient,
                 operations,
                 properties.getFormRecordCollection());
+        return service;
     }
 
 //    @Bean

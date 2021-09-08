@@ -39,7 +39,7 @@ public class FormController {
                     form.setClientId(cid);
                     if (principal.getUid() != null)
                         form.setOwner(principal.getUidString());
-                    return formService.createForm(form);
+                    return formService.createForm(form, cid);
                 });
     }
 
@@ -50,7 +50,7 @@ public class FormController {
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formService.getForm(name, cid));
+                .flatMap(cid -> formService.getLatestForm(name, cid));
     }
 
     @GetMapping("forms")
@@ -70,9 +70,10 @@ public class FormController {
                                 formSearcher.search(cid, query, name, page, size) :
                                 formSearcher.search(cid, query, page, size);
                     } else {
-                        return StringUtils.hasText(name) ?
-                                formService.listForm(cid, name) :
-                                formService.listForm(cid);
+                        return Mono.empty();
+//                        return StringUtils.hasText(name) ?
+//                                formService.listLatestForm(cid, name) :
+//                                formService.listForm(cid);
                     }
                 });
     }
@@ -89,7 +90,7 @@ public class FormController {
                         form.setOwner(principal.getUidString());
                     form.setOwner(principal.getUidString());
                     form.setClientId(cid);
-                    return formService.updateForm(form);
+                    return formService.updateForm(form, cid);
                 });
     }
 
@@ -110,7 +111,7 @@ public class FormController {
                                   ReactiveAuthClient reactiveAuthClient,
                                   AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formService.getFormById(id, cid));
+                .flatMap(cid -> formService.getForm(id, cid));
     }
 
 }

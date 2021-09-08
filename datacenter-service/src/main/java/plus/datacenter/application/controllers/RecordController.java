@@ -141,7 +141,7 @@ public class RecordController {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     if (StringUtils.hasText(query)) {
-                        return formService.getForm(name, cid)
+                        return formService.getLatestForm(name, cid)
                                 .map(form -> {
                                     MatchQuery q = new MatchQuery();
                                     StringBuilder builder = new StringBuilder();
@@ -199,7 +199,7 @@ public class RecordController {
      */
     protected Mono<Record> validate(Record record, AuthPrincipal authPrincipal, String clientId) {
         return (StringUtils.hasText(record.getFormId()) ?
-                formService.getFormById(record.getFormId(), clientId) : formService.getForm(record.getFormName(), clientId))
+                formService.getForm(record.getFormId(), clientId) : formService.getLatestForm(record.getFormName(), clientId))
                 .map(form -> {
                     record.setClientId(clientId);
                     record.setOwner(authPrincipal.getUidString());

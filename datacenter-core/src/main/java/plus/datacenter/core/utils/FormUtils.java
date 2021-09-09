@@ -2,7 +2,6 @@ package plus.datacenter.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.ItemType;
@@ -13,11 +12,12 @@ import java.util.Map;
 
 public class FormUtils {
 
+    public static final ObjectMapper mapper = new ObjectMapper();
+
     public static Form transformForm(Map<String, Object> form) {
         if (form == null)
             return null;
         try {
-            ObjectMapper mapper = Json.mapper();
             return mapper.readValue(mapper.writeValueAsString(form), Form.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -29,7 +29,6 @@ public class FormUtils {
             return null;
         try {
             Class<? extends Item> targetClass = item.get("type") == null ? Item.class : getItemClass(getItemType(item.get("type").toString()));
-            ObjectMapper mapper = Json.mapper();
             return mapper.readValue(mapper.writeValueAsString(item), targetClass);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -43,7 +42,6 @@ public class FormUtils {
             Class<?> targetClass = getItemValueClass(type);
             if (targetClass == value.getClass())
                 return value;
-            ObjectMapper mapper = Json.mapper();
             return mapper.readValue(mapper.writeValueAsString(value), targetClass);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

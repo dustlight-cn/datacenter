@@ -15,6 +15,9 @@ plus:
   datacenter:
     mongo:
       form-collection: form
+    amqp:
+      exchange: datacenter
+
 # SpringDoc 配置
 springdoc:
   api-docs:

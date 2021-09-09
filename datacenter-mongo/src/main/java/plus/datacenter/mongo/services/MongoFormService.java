@@ -24,6 +24,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.*;
 
+/**
+ * 基于 MongoDB 实现的表单服务，支持事务。
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,6 +34,10 @@ public class MongoFormService extends AbstractFormService implements Initializin
 
     private MongoClient client;
     private ReactiveMongoOperations operations;
+
+    /**
+     * 记录集合名称
+     */
     private String collectionName;
 
     @Override
@@ -87,15 +94,15 @@ public class MongoFormService extends AbstractFormService implements Initializin
         }
         return operations.find(Query.query(Criteria.where("_id").in(ids).and("clientId").is(clientId)),
                         FormMeta.class,
-                        getFormMetaCollectionName())
+                        getFormMetaCollectionName()) // 查询 Meta
                 .collectList()
                 .map(formMetas -> {
                     Set<String> formIds = new HashSet<>();
                     for (FormMeta meta : formMetas)
                         formIds.add(meta.getCurrentId());
-                    return formIds;
+                    return formIds; // 根据 Meta 获取到最新版本的表单 ID 集合。
                 })
-                .flatMapMany(formIds -> doGet(formIds, clientId));
+                .flatMapMany(formIds -> doGet(formIds, clientId)); // 根据表单 ID 集合获取表单对象集合。
     }
 
     @Override
@@ -182,17 +189,34 @@ public class MongoFormService extends AbstractFormService implements Initializin
                 );
     }
 
-
+    /**
+     * 获取表单元信息集合名称
+     *
+     * @return
+     */
     protected String getFormMetaCollectionName() {
         return collectionName + "_meta";
     }
 
+    /**
+     * 获取表单元信息 ID
+     *
+     * @param form
+     * @return
+     */
     protected String getFormMetaId(Form form) {
         if (form == null)
             throw new NullPointerException("Fail to get form meta id, cause form is null");
         return getFormMetaId(form.getClientId(), form.getName());
     }
 
+    /**
+     * 获取表单元信息 ID
+     *
+     * @param clientId
+     * @param formName
+     * @return
+     */
     protected String getFormMetaId(String clientId, String formName) {
         if (!StringUtils.hasText(formName))
             throw new DatacenterException("Fail to get form meta id, cause formName is empty");
@@ -263,6 +287,9 @@ public class MongoFormService extends AbstractFormService implements Initializin
     }
 
 
+    /**
+     * 表单元信息，用于记录当前版本号以及当前版本表单 ID
+     */
     @Getter
     @Setter
     public static class FormMeta {

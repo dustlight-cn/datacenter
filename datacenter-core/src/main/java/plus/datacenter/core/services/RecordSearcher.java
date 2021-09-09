@@ -9,6 +9,9 @@ import reactor.core.publisher.Mono;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 记录搜索器，负责复杂的记录搜索。
+ */
 public interface RecordSearcher {
 
     Mono<QueryResult<Record>> findRecord(String clientId,

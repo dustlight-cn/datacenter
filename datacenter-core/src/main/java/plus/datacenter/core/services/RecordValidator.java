@@ -1,5 +1,6 @@
 package plus.datacenter.core.services;
 
+import org.springframework.core.Ordered;
 import plus.datacenter.core.entities.DatacenterPrincipal;
 import plus.datacenter.core.entities.forms.Record;
 import reactor.core.publisher.Mono;
@@ -8,8 +9,10 @@ import java.util.Collection;
 
 /**
  * 记录验证器
+ * <p>
+ * 继承了 Ordered 接口，表示在执行验证时的顺序。
  */
-public interface RecordValidator {
+public interface RecordValidator extends Ordered {
 
     /**
      * 验证记录

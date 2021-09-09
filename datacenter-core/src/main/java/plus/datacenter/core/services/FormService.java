@@ -6,6 +6,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
+/**
+ * 表单服务，负责简单的表单增删改查。
+ */
 public interface FormService {
 
     Mono<Form> createForm(Form origin, String clientId);

@@ -1,7 +1,7 @@
 package plus.datacenter.core.services;
 
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
@@ -9,10 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 抽象记录服务，抽象出四个批量增删改查方法。
@@ -27,8 +24,7 @@ public abstract class AbstractRecordService implements RecordService {
     private List<RecordEventHandler> joins = new ArrayList<>();
 
     @Getter
-    @Setter
-    private RecordValidator recordValidator;
+    private List<RecordValidator> validators = new ArrayList<>();
 
     @Override
     public Mono<Record> createRecord(Record origin, String clientId) {
@@ -137,11 +133,40 @@ public abstract class AbstractRecordService implements RecordService {
         record.setClientId(clientId);
     }
 
-    public void addEventHandler(RecordEventHandler handler) {
-        this.joins.add(handler);
+    public void addEventHandler(RecordEventHandler... handler) {
+        this.joins.addAll(Arrays.asList(handler));
+        this.joins.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 
-    public void removeEventHandler(RecordEventHandler handler) {
-        this.joins.remove(handler);
+    public void removeEventHandler(RecordEventHandler... handler) {
+        this.joins.remove(Arrays.asList(handler));
+    }
+
+    public void addEventHandler(Collection<RecordEventHandler> handlers) {
+        this.joins.addAll(handlers);
+        this.joins.sort(Comparator.comparingInt(Ordered::getOrder));
+    }
+
+    public void removeEventHandler(Collection<RecordEventHandler> handler) {
+        this.joins.remove(Arrays.asList(handler));
+    }
+
+
+    public void addValidator(RecordValidator... validator) {
+        this.validators.addAll(Arrays.asList(validator));
+        this.validators.sort(Comparator.comparingInt(Ordered::getOrder));
+    }
+
+    public void removeValidator(RecordValidator... validator) {
+        this.validators.remove(Arrays.asList(validator));
+    }
+
+    public void addValidator(Collection<RecordValidator> validators) {
+        this.validators.addAll(validators);
+        this.validators.sort(Comparator.comparingInt(Ordered::getOrder));
+    }
+
+    public void removeValidator(Collection<RecordValidator> validators) {
+        this.validators.remove(Arrays.asList(validators));
     }
 }

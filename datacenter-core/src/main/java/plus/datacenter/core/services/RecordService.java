@@ -6,6 +6,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
+/**
+ * 记录服务，负责简单的记录对象增删改查。
+ */
 public interface RecordService {
 
     Mono<Record> createRecord(Record origin, String clientId);

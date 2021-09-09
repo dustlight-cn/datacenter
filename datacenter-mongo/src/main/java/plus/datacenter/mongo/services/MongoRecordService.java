@@ -45,7 +45,7 @@ public class MongoRecordService extends AbstractRecordService implements Initial
                         .insert(records, collectionName) // 插入数据
                         .collectList()
                         .flatMap(recordz -> joinHandler(recordz, RecordEventHandler.EventType.CREATE)) // 执行 Handler
-                        .onErrorMap(throwable -> ErrorEnum.CREATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorMap(throwable -> ErrorEnum.CREATE_RECORD_FAILED.details(throwable).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
                         .flatMapMany(recordz -> commitTransaction(recordz, clientSession)) // 提交事务
                         .doFinally(signalType -> clientSession.close())); // 结束会话
@@ -91,7 +91,7 @@ public class MongoRecordService extends AbstractRecordService implements Initial
                         .flatMap(updateResult -> updateResult.getMatchedCount() == ids.size() ?
                                 commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断更新数量是否一致
-                        .onErrorMap(throwable -> ErrorEnum.UPDATE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorMap(throwable -> ErrorEnum.UPDATE_RECORD_FAILED.details(throwable).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话
                 );
@@ -108,7 +108,7 @@ public class MongoRecordService extends AbstractRecordService implements Initial
                         .flatMap(deleteResult -> deleteResult.getDeletedCount() == ids.size() ?
                                 commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断删除数量是否一致
-                        .onErrorMap(throwable -> ErrorEnum.DELETE_RECORD_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorMap(throwable -> ErrorEnum.DELETE_RECORD_FAILED.details(throwable).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession).then()) // 回滚事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话
                 );
@@ -163,6 +163,7 @@ public class MongoRecordService extends AbstractRecordService implements Initial
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
         Assert.hasText(collectionName, "Record collection name must be set"); // 检查记录集合的名称是否为空
     }
 

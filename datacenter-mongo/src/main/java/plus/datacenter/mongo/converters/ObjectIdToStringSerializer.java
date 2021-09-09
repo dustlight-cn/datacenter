@@ -1,4 +1,4 @@
-package plus.datacenter.mongo.serializers;
+package plus.datacenter.mongo.converters;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -8,6 +8,9 @@ import org.springframework.boot.jackson.JsonComponent;
 
 import java.io.IOException;
 
+/**
+ * 在 Json 序列化时，将 ObjectID 类型的值转换成十六进制字符串。
+ */
 @JsonComponent
 public class ObjectIdToStringSerializer extends JsonSerializer<ObjectId> {
 

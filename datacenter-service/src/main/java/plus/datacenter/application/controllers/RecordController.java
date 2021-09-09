@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,6 @@ import plus.datacenter.core.entities.queries.queries.MatchQuery;
 import plus.datacenter.core.services.RecordSearcher;
 import plus.datacenter.core.services.RecordService;
 import plus.datacenter.core.services.FormService;
-import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -55,17 +53,10 @@ public class RecordController {
                                      ReactiveAuthClient reactiveAuthClient,
                                      AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> {
-                    record.setFormId(null);
-                    record.setFormVersion(null);
-
-                    if (principal.getUid() != null)
-                        record.setOwner(principal.getUidString());
-
-                    return validate(record, principal, cid)
-                            .flatMap(record1 -> recordService.createRecord(record1, cid))
-                            .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable.getMessage()).getException());
-                });
+                .flatMap(cid -> recordService.createRecord(record, cid)
+                        .onErrorMap(throwable -> throwable instanceof DatacenterException ?
+                                throwable :
+                                ErrorEnum.CREATE_RESOURCE_FAILED.details(throwable).getException()));
 
     }
 
@@ -106,25 +97,15 @@ public class RecordController {
                                    @RequestParam(name = "cid", required = false) String clientId,
                                    ReactiveAuthClient reactiveAuthClient,
                                    AuthPrincipal principal) {
+        if (record == null)
+            return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.getException());
+        record.setId(id);
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> recordService.getRecord(id, cid)
-                        .flatMap(record1 -> {
-                            record.setId(record1.getId());
-                            record.setFormId(null);
-                            record.setFormName(record1.getFormName());
-                            return validate(record, principal, cid);
-                        })
-                        .flatMap(record1 -> {
-                            record.setId(id);
-                            record1.setCreatedAt(null);
-                            record1.setOwner(null);
-//                    record1.setFormId(null);
-//                    record1.setFormVersion(null);
-//                    record1.setFormName(null);
-                            return recordService.updateRecord(record1, cid);
-                        })
-                        .onErrorMap(throwable -> throwable instanceof DatacenterException ? throwable : ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable.getMessage()).getException()))
-                ;
+                .flatMap(cid -> recordService.updateRecord(record, cid))
+                .onErrorMap(throwable -> throwable instanceof DatacenterException ?
+                        throwable :
+                        ErrorEnum.UPDATE_RESOURCE_FAILED.details(throwable).getException()
+                );
     }
 
     @PostMapping("records/queries")
@@ -188,80 +169,6 @@ public class RecordController {
                              AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
-    }
-
-    /**
-     * 校验表单
-     *
-     * @param record
-     * @param authPrincipal
-     * @return
-     */
-    protected Mono<Record> validate(Record record, AuthPrincipal authPrincipal, String clientId) {
-        return (StringUtils.hasText(record.getFormId()) ?
-                formService.getForm(record.getFormId(), clientId) : formService.getLatestForm(record.getFormName(), clientId))
-                .map(form -> {
-                    record.setClientId(clientId);
-                    record.setOwner(authPrincipal.getUidString());
-                    record.setFormId(form.getId());
-                    record.setFormName(form.getName());
-                    record.setFormVersion(form.getVersion());
-
-
-                    Map<String, Item> items = form.getItems();
-                    Map<String, Object> data = record.getData();
-                    Map<String, Object> validatedData = new HashMap<>();
-
-                    Iterator<Map.Entry<String, Item>> iterator = items.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, Item> kv = iterator.next();
-                        String key = kv.getKey();
-                        Item item = kv.getValue();
-                        if (item == null)
-                            continue;
-                        Object value = data == null ? null : data.get(key);
-
-                        if (item.getArray() != null && item.getArray()) {
-                            // Item 为数组
-                            if (value == null) {
-                                if (item.getRequired() != null && item.getRequired())
-                                    throw new IllegalArgumentException("Validation failed: '" + key + "' is empty but required");
-                                else
-                                    continue;
-                            }
-                            if (!(value instanceof Collection))
-                                throw new IllegalArgumentException("Validation failed: '" + key + "' require an array value");
-                            Collection arrays = (Collection) value;
-                            if ((arrays == null || arrays.size() == 0) && item.getRequired())
-                                throw new IllegalArgumentException("Validation failed: '" + key + "' is empty but required");
-                            ItemType t = item.getType();
-                            int i = 0;
-                            Collection<Object> transformedValues = new ArrayList<>();
-                            for (Object v : arrays) {
-                                v = FormUtils.transformItemValue(v, t);
-                                if (!item.validate(v))
-                                    throw new IllegalArgumentException("Validation failed: '" + key + "[" + i + "]'");
-                                transformedValues.add(t == ItemType.FORM ? new ObjectId((String) v) : v);
-                                i++;
-                            }
-                            validatedData.put(key, transformedValues);
-
-                        } else {
-                            // Item 不为数组
-                            if (value instanceof Collection && item.getType() != ItemType.SELECT)
-                                throw new IllegalArgumentException("Validation failed: '" + key + "' is not array");
-                            value = FormUtils.transformItemValue(value, item.getType());
-                            if (!item.validate(value))
-                                throw new IllegalArgumentException("Validation failed: '" + key + "'");
-                            validatedData.put(key, item.getType() == ItemType.FORM ? new ObjectId((String) value) : value);
-                        }
-
-                    }
-
-                    record.setData(validatedData);
-
-                    return record;
-                });
     }
 
     @Getter

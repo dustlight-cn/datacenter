@@ -1,8 +1,14 @@
 package plus.datacenter.core.services;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
+import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
 import reactor.core.publisher.Flux;
@@ -18,7 +24,7 @@ import java.util.*;
  * <p>
  * 在进行增删改查之前，将使用 RecordValidator 进行校验。
  */
-public abstract class AbstractRecordService implements RecordService {
+public abstract class AbstractRecordService implements RecordService, ApplicationContextAware, InitializingBean {
 
     @Getter
     private List<RecordEventHandler> joins = new ArrayList<>();
@@ -26,21 +32,38 @@ public abstract class AbstractRecordService implements RecordService {
     @Getter
     private List<RecordValidator> validators = new ArrayList<>();
 
+    @Getter
+    @Setter
+    private PrincipalHolder principalHolder;
+
+    private ApplicationContext applicationContext;
+
     @Override
     public Mono<Record> createRecord(Record origin, String clientId) {
-        beforeCreate(origin, clientId, Instant.now());
-        return doInsert(Arrays.asList(origin))
-                .singleOrEmpty()
-                .switchIfEmpty(Mono.error(ErrorEnum.CREATE_RECORD_FAILED.getException()));
+        return joinValidator(Arrays.asList(origin), clientId)
+                .map(records -> {
+                    if (records.size() == 0)
+                        return records;
+                    beforeCreate(records.iterator().next(), clientId, Instant.now());
+                    return records;
+                })
+                .flatMap(records -> doInsert(records)
+                        .singleOrEmpty()
+                        .switchIfEmpty(Mono.error(ErrorEnum.CREATE_RECORD_FAILED.getException()))
+                );
     }
 
     @Override
     public Flux<Record> createRecords(Collection<Record> origin, String clientId) {
-        Instant now = Instant.now();
-        for (Record record : origin) {
-            beforeCreate(record, clientId, now);
-        }
-        return doInsert(origin);
+        return joinValidator(origin, clientId)
+                .map(records -> {
+                    Instant now = Instant.now();
+                    for (Record record : records) {
+                        beforeCreate(record, clientId, now);
+                    }
+                    return records;
+                })
+                .flatMapMany(records -> doInsert(records));
     }
 
     @Override
@@ -57,14 +80,38 @@ public abstract class AbstractRecordService implements RecordService {
 
     @Override
     public Mono<Void> updateRecord(Record target, String clientId) {
-        beforeUpdate(target, clientId, Instant.now());
-        return doUpdate(Arrays.asList(target.getId()), target);
+        return updateRecords(Arrays.asList(target.getId()), target, clientId);
     }
 
     @Override
     public Mono<Void> updateRecords(Collection<String> ids, Record target, String clientId) {
-        beforeUpdate(target, clientId, Instant.now());
-        return doUpdate(ids, target);
+        return doGet(ids, clientId)
+                .collectList()
+                .flatMap(records -> {
+                    if (records == null || records.size() == 0)
+                        return Mono.empty();
+
+                    String formName = null;
+                    for (Record record : records) {
+                        if (formName == null)
+                            formName = record.getFormName();
+                        else if (!formName.equals(record.getFormName()))
+                            return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.details("Record's form name must be same").getException());
+                    }
+                    if (formName == null)
+                        return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.details("All of Record's form name is empty or null").getException());
+                    target.setFormId(null);
+                    target.setFormName(formName);
+                    return joinValidator(Arrays.asList(target), clientId)
+                            .flatMap(recordz -> {
+                                if (recordz == null || recordz.size() == 0)
+                                    return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.getException());
+                                Record record = recordz.iterator().next();
+                                beforeUpdate(record, clientId, Instant.now());
+                                return Mono.just(record);
+                            })
+                            .flatMap(record -> doUpdate(ids, record));
+                });
     }
 
     @Override
@@ -98,6 +145,29 @@ public abstract class AbstractRecordService implements RecordService {
             result = result.flatMap(recordz -> handler.onEvent(recordz, eventType));
         }
         return result;
+    }
+
+    /**
+     * 执行校验
+     *
+     * @param records
+     * @param clientId
+     * @return
+     */
+    private Mono<Collection<Record>> joinValidator(Collection<Record> records, String clientId) {
+        if (validators == null || validators.size() == 0)
+            return Mono.just(records);
+        if (principalHolder == null)
+            return Mono.error(new DatacenterException("PrincipalHolder must be set"));
+        return principalHolder.getPrincipal()
+                .switchIfEmpty(Mono.error(new DatacenterException("principal is null")))
+                .flatMap(principal -> {
+                    Mono<Collection<Record>> result = Mono.just(records);
+                    for (RecordValidator validator : validators) {
+                        result = result.flatMap(recordz -> validator.validate(recordz, principal, clientId));
+                    }
+                    return result;
+                });
     }
 
     protected void beforeCreate(Record record, String clientId, Instant now) {
@@ -168,5 +238,20 @@ public abstract class AbstractRecordService implements RecordService {
 
     public void removeValidator(Collection<RecordValidator> validators) {
         this.validators.remove(Arrays.asList(validators));
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (this.joins == null || this.joins.size() == 0) {
+            addEventHandler(applicationContext.getBeansOfType(RecordEventHandler.class).values());
+        }
+        if (this.validators == null || this.validators.size() == 0) {
+            addValidator(applicationContext.getBeansOfType(RecordValidator.class).values());
+        }
     }
 }

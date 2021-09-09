@@ -68,4 +68,9 @@ public enum ErrorEnum {
         instance.setDetails(details != null ? details : this.details.getDetails());
         return instance;
     }
+
+    public ErrorDetails details(Throwable throwable) {
+        ErrorDetails instance = new ErrorDetails(this.details.getCode(), this.details.getMessage(), throwable);
+        return instance;
+    }
 }

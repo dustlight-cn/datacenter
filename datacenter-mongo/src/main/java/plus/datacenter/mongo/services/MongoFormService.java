@@ -71,8 +71,8 @@ public class MongoFormService extends AbstractFormService implements Initializin
                                     .map(formMetas -> forms);
                         })
                         .onErrorMap(throwable -> (throwable instanceof DuplicateKeyException) ?
-                                ErrorEnum.FORM_EXISTS.details(throwable.getMessage()).getException() :
-                                ErrorEnum.CREATE_FORM_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                                ErrorEnum.FORM_EXISTS.details(throwable).getException() :
+                                ErrorEnum.CREATE_FORM_FAILED.details(throwable).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
                         .flatMapMany(forms -> commitTransaction(forms, clientSession)) // 提交事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话
@@ -161,7 +161,7 @@ public class MongoFormService extends AbstractFormService implements Initializin
                                         .insert(forms, collectionName); // 插入新表单数据
                             })
                             .collectList()
-                            .onErrorMap(throwable -> ErrorEnum.UPDATE_FORM_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                            .onErrorMap(throwable -> ErrorEnum.UPDATE_FORM_FAILED.details(throwable).getException()) // 转换异常类
                             .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
                             .flatMapMany(forms1 -> commitTransaction(forms1, clientSession)) // 提交事务
                             .doFinally(signalType -> clientSession.close()); // 结束会话
@@ -182,7 +182,7 @@ public class MongoFormService extends AbstractFormService implements Initializin
                                 Mono.just(deleteResult)) // 判断删除数量是否一致
                         .flatMap(deleteResult -> operations.withSession(clientSession)
                                 .remove(Query.query(Criteria.where("name").in(names)), Form.class, collectionName)) // 再删除表单数据
-                        .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable.getMessage()).getException()) // 转换异常类
+                        .onErrorMap(throwable -> ErrorEnum.DELETE_FORM_FAILED.details(throwable).getException()) // 转换异常类
                         .onErrorResume(throwable -> abortTransaction(throwable, clientSession)) // 回滚事务
                         .flatMap(deleteResult -> commitTransaction(clientSession)) // 提交事务
                         .doFinally(signalType -> clientSession.close()) // 结束会话

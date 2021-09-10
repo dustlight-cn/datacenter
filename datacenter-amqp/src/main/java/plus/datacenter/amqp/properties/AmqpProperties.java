@@ -1,4 +1,4 @@
-package plus.datacenter.amqp;
+package plus.datacenter.amqp.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,4 +12,7 @@ public class AmqpProperties {
     private String exchange = "datacenter";
 
     private int order = 0;
+
+    private SyncProperties sync = new SyncProperties();
+
 }

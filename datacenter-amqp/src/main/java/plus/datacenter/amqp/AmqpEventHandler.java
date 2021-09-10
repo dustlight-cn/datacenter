@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
+import plus.datacenter.amqp.entities.RecodeEventMessage;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.services.RecordEventHandler;

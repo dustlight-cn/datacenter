@@ -8,13 +8,19 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
+import plus.datacenter.amqp.properties.AmqpProperties;
+import plus.datacenter.amqp.properties.SyncProperties;
+import plus.datacenter.amqp.sync.SyncDaemon;
+import plus.datacenter.amqp.sync.SyncHandler;
 
 @Configuration
-@EnableConfigurationProperties(AmqpProperties.class)
+@EnableConfigurationProperties(value = {AmqpProperties.class, SyncProperties.class})
 public class AmqpConfiguration {
 
     @Bean
@@ -33,4 +39,16 @@ public class AmqpConfiguration {
         return new AmqpEventHandler(template);
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "plus.datacenter.amqp.sync", name = "enabled", matchIfMissing = true)
+    public SyncDaemon syncDaemon(@Autowired ConnectionFactory factory,
+                                 @Autowired AmqpProperties properties,
+                                 @Autowired ApplicationContext context) {
+        return new SyncDaemon(factory,
+                properties.getExchange(),
+                properties.getSync().getQueue(),
+                properties.getSync().getDeadLetterQueue(),
+                properties.getSync().getDeadLetterRoutingKey(),
+                context.getBeansOfType(SyncHandler.class).values());
+    }
 }

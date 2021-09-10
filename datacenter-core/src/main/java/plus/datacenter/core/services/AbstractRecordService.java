@@ -40,21 +40,18 @@ public abstract class AbstractRecordService implements RecordService, Applicatio
 
     @Override
     public Mono<Record> createRecord(Record origin, String clientId) {
-        return joinValidator(Arrays.asList(origin), clientId)
-                .map(records -> {
-                    if (records.size() == 0)
-                        return records;
-                    beforeCreate(records.iterator().next(), clientId, Instant.now());
-                    return records;
-                })
-                .flatMap(records -> doInsert(records)
-                        .singleOrEmpty()
-                        .switchIfEmpty(Mono.error(ErrorEnum.CREATE_RECORD_FAILED.getException()))
-                );
+        return createRecords(Arrays.asList(origin), clientId)
+                .singleOrEmpty()
+                .switchIfEmpty(Mono.error(ErrorEnum.CREATE_RECORD_FAILED.getException()));
     }
 
     @Override
     public Flux<Record> createRecords(Collection<Record> origin, String clientId) {
+        if (origin == null || origin.size() == 0)
+            return Flux.empty();
+        for (Record record : origin)
+            record.setFormId(null); // 先置空表单 ID
+        checkRecordFormNames(origin); // 检查是否具有相同表单名
         return joinValidator(origin, clientId)
                 .map(records -> {
                     Instant now = Instant.now();
@@ -88,20 +85,8 @@ public abstract class AbstractRecordService implements RecordService, Applicatio
         return doGet(ids, clientId)
                 .collectList()
                 .flatMap(records -> {
-                    if (records == null || records.size() == 0)
-                        return Mono.empty();
-
-                    String formName = null;
-                    for (Record record : records) {
-                        if (formName == null)
-                            formName = record.getFormName();
-                        else if (!formName.equals(record.getFormName()))
-                            return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.details("Record's form name must be same").getException());
-                    }
-                    if (formName == null)
-                        return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.details("All of Record's form name is empty or null").getException());
                     target.setFormId(null);
-                    target.setFormName(formName);
+                    target.setFormName(checkRecordFormNames(records));
                     return joinValidator(Arrays.asList(target), clientId)
                             .flatMap(recordz -> {
                                 if (recordz == null || recordz.size() == 0)
@@ -201,6 +186,27 @@ public abstract class AbstractRecordService implements RecordService, Applicatio
 
         // 设置 Client ID
         record.setClientId(clientId);
+    }
+
+    /**
+     * 检查记录的表单名是否相同
+     *
+     * @param records 记录集合
+     * @return 表单名
+     */
+    protected String checkRecordFormNames(Collection<Record> records) {
+        if (records == null || records.size() == 0)
+            return null;
+        String formName = null;
+        for (Record record : records) {
+            if (formName == null)
+                formName = record.getFormName();
+            else if (!formName.equals(record.getFormName())) // 表单名必须相同
+                throw ErrorEnum.UPDATE_RECORD_FAILED.details("Record's form name must be same").getException();
+        }
+        if (!StringUtils.hasText(formName))
+            throw ErrorEnum.UPDATE_RECORD_FAILED.details("All of Record's form name is empty or null").getException();
+        return formName;
     }
 
     public void addEventHandler(RecordEventHandler... handler) {

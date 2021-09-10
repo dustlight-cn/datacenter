@@ -44,6 +44,18 @@
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-mongo</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -15,6 +15,7 @@ import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.entities.forms.items.FormItem;
+import plus.datacenter.core.services.EnhancedRecordService;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -30,18 +31,28 @@ public class RecordTestA {
 
     private static final Gson gson = new Gson();
 
+    @Autowired
+    EnhancedRecordService enhancedRecordService;
+
     @Test
     public void run() throws Exception {
 
         String formName = "company";
         String recordId = "6104f1dc92bd3756ecd4582e";
 
-        getFormRecord(recordId);
+//        System.out.println(gson.toJson(getFormRecord("6104f8f092bd3756ecd45855")));
         listRecordAboutRecord(formName, recordId)
                 .forEach(record -> {
-                    System.out.println(gson.toJson(record));
-                    getFormRecord(record.getId());
+//                    System.out.println(gson.toJson(record));
+                    System.out.println(getFormRecord(record.getId()));
                 });
+
+        enhancedRecordService.searchAssociatedRecordByIds(Arrays.asList(recordId), "87de67af7030000")
+                .collectList()
+                .flatMapMany(records -> enhancedRecordService.getFullRecords(records, "87de67af7030000"))
+                .collectList()
+                .block()
+                .forEach(record -> System.out.println(record));
     }
 
     public Record getFormRecord(String recordId) {
@@ -61,11 +72,10 @@ public class RecordTestA {
             for (String field : fields) {
                 pipeline.add(LookupOperation.newLookup().from("form_record").localField("data." + field).foreignField("_id").as("data." + field));
             }
+
             return mongoOperations.aggregate(Aggregation.newAggregation(pipeline.getOperations()), "form_record", Record.class)
                     .collectList()
-                    .flatMap(formRecords -> {
-                        return formRecords.size() == 0 ? Mono.empty() : Mono.just(formRecords.get(0));
-                    }).block();
+                    .flatMap(formRecords -> Mono.just(formRecords.get(0))).block();
         }
         return record;
     }

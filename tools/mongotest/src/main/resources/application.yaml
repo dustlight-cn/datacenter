@@ -5,4 +5,7 @@ spring:
     mongodb:
       host: localhost
       database: datacenter
+  rabbitmq:
+    host: rabbitmq.svc
+    port: 5672
 

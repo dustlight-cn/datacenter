@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import plus.datacenter.core.services.PrincipalHolder;
 import plus.datacenter.mongo.converters.FormValueTransformer;
 import plus.datacenter.mongo.converters.ObjectIdToStringSerializer;
+import plus.datacenter.mongo.services.MongoEnhancedRecordService;
 import plus.datacenter.mongo.services.MongoRecordService;
 import plus.datacenter.mongo.services.MongoFormService;
 
@@ -36,6 +37,13 @@ public class DatacenterMongoConfiguration {
                 properties.getRecordCollection());
         service.setPrincipalHolder(principalHolder);
         return service;
+    }
+
+    @Bean
+    @ConditionalOnBean(value = {ReactiveMongoOperations.class})
+    public MongoEnhancedRecordService mongoEnhancedRecordService(@Autowired DatacenterMongoProperties properties,
+                                                                 @Autowired ReactiveMongoOperations operations) {
+        return new MongoEnhancedRecordService(operations, properties.getRecordCollection(), properties.getFormCollection());
     }
 
     @Bean

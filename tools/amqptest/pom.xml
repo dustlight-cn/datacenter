@@ -8,8 +8,8 @@
         <version>0.0.5-alpha-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>mongotest</artifactId>
-    <description>Mongo Test</description>
+    <artifactId>amqptest</artifactId>
+    <description>Amqp Test</description>
 
     <dependencies>
 
@@ -44,6 +44,12 @@
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-amqp</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-mongo</artifactId>

@@ -1,11 +1,6 @@
 spring:
-  codec:
-    max-in-memory-size: -1
   data:
     mongodb:
       host: localhost
       database: datacenter
-  rabbitmq:
-    host: rabbitmq.svc
-    port: 5672
 

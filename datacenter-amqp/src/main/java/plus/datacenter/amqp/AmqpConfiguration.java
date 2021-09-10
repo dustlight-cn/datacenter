@@ -42,13 +42,11 @@ public class AmqpConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "plus.datacenter.amqp.sync", name = "enabled", matchIfMissing = true)
     public SyncDaemon syncDaemon(@Autowired ConnectionFactory factory,
-                                 @Autowired AmqpProperties properties,
-                                 @Autowired ApplicationContext context) {
+                                 @Autowired AmqpProperties properties) {
         return new SyncDaemon(factory,
                 properties.getExchange(),
                 properties.getSync().getQueue(),
                 properties.getSync().getDeadLetterQueue(),
-                properties.getSync().getDeadLetterRoutingKey(),
-                context.getBeansOfType(SyncHandler.class).values());
+                properties.getSync().getDeadLetterRoutingKey());
     }
 }

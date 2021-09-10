@@ -35,6 +35,7 @@
         <module>datacenter-service</module>
         <module>tools/es2mongo</module>
         <module>tools/mongotest</module>
+        <module>tools/amqptest</module>
     </modules>
 
     <dependencyManagement>
@@ -80,6 +81,11 @@
             <dependency>
                 <groupId>plus.datacenter</groupId>
                 <artifactId>mongotest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-amqp</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

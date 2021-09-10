@@ -101,11 +101,10 @@ public class MongoRecordService extends AbstractRecordService implements Initial
     protected Mono<Void> doDelete(Collection<String> ids, String clientId) {
         return startTransaction()
                 .flatMap(clientSession -> operations.withSession(clientSession)
-                        .remove(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), collectionName) // 删除数据
-                        .flatMap(deleteResult -> buildRecords(null, ids, clientId)
-                                .flatMap(records -> joinHandler(records, RecordEventHandler.EventType.DELETE))
-                                .map(records -> deleteResult)) // 执行 Handler
-                        .flatMap(deleteResult -> deleteResult.getDeletedCount() == ids.size() ?
+                        .findAllAndRemove(Query.query(Criteria.where("clientId").is(clientId).and("_id").in(ids)), Record.class, collectionName) // 删除数据
+                        .collectList()
+                        .flatMap(records -> joinHandler(records, RecordEventHandler.EventType.DELETE)) // 执行 Handler
+                        .flatMap(records -> records.size() == ids.size() ?
                                 commitTransaction(clientSession) : // 提交事务
                                 Mono.error(new DatacenterException())) // 判断删除数量是否一致
                         .onErrorMap(throwable -> ErrorEnum.DELETE_RECORD_FAILED.details(throwable).getException()) // 转换异常类

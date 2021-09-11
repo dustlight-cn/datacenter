@@ -1,0 +1,8 @@
+spring:
+  rabbitmq:
+    host: rabbitmq.svc
+    port: 5672
+plus:
+  datacenter:
+    amqp:
+      exchange: datacenter-test

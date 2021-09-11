@@ -4,14 +4,19 @@ public class DatacenterException extends RuntimeException {
 
     private ErrorDetails errorDetails;
 
+    public DatacenterException() {
+        super();
+        this.errorDetails = new ErrorDetails(0, null);
+    }
+
     public DatacenterException(String message) {
         super(message);
-        this.errorDetails = new ErrorDetails(0,message);
+        this.errorDetails = new ErrorDetails(0, message);
     }
 
     public DatacenterException(String message, Throwable throwable) {
         super(message, throwable);
-        this.errorDetails = new ErrorDetails(0,message);
+        this.errorDetails = new ErrorDetails(0, message);
     }
 
     public DatacenterException(ErrorDetails errorDetails) {

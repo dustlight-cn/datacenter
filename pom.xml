@@ -31,8 +31,11 @@
         <module>datacenter-core</module>
         <module>datacenter-elasticsearch</module>
         <module>datacenter-mongo</module>
+        <module>datacenter-amqp</module>
         <module>datacenter-service</module>
         <module>tools/es2mongo</module>
+        <module>tools/mongotest</module>
+        <module>tools/amqptest</module>
     </modules>
 
     <dependencyManagement>
@@ -57,6 +60,11 @@
             </dependency>
             <dependency>
                 <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -68,6 +76,16 @@
             <dependency>
                 <groupId>plus.datacenter</groupId>
                 <artifactId>es2mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>mongotest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-amqp</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -88,6 +106,12 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-core</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fatboyindustrial.gson-javatime-serialisers</groupId>
+                <artifactId>gson-javatime-serialisers</artifactId>
+                <version>1.1.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

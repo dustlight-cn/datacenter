@@ -15,13 +15,13 @@ import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperatio
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import plus.auth.entities.QueryResult;
-import plus.datacenter.core.entities.forms.FormRecord;
+import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.aggs.DateHistogramAggregation;
 import plus.datacenter.core.entities.queries.aggs.HistogramAggregation;
 import plus.datacenter.core.entities.queries.queries.BetweenQuery;
-import plus.datacenter.core.services.FormRecordSearcher;
+import plus.datacenter.core.services.RecordSearcher;
 import plus.datacenter.elasticsearch.utils.OrderUtil;
 import reactor.core.publisher.Mono;
 
@@ -32,18 +32,18 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
+public class ElasticsearchRecordSearcher implements RecordSearcher {
 
     private ReactiveElasticsearchOperations operations;
     private String indexPrefix;
 
     @Override
-    public Mono<QueryResult<FormRecord>> findRecord(String clientId,
-                                                    String formName,
-                                                    Collection<Query> queries,
-                                                    List<String> orders,
-                                                    int page,
-                                                    int size) {
+    public Mono<QueryResult<Record>> findRecord(String clientId,
+                                                String formName,
+                                                Collection<Query> queries,
+                                                List<String> orders,
+                                                int page,
+                                                int size) {
         IndexCoordinates index = IndexCoordinates.of(indexPrefix + "." + clientId + "." + formName + ".*");
         BoolQueryBuilder bq = new BoolQueryBuilder();
 
@@ -60,7 +60,7 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
             nqb.addSort(Sort.by(OrderUtil.getOrders(orders)));
         }
         return operations.searchForPage(nqb,
-                FormRecord.class,
+                Record.class,
                 index)
                 .map(searchHits -> new QueryResult((int) searchHits.getTotalElements(),
                         searchHits.getContent().stream().map(formSearchHit ->
@@ -84,7 +84,7 @@ public class ElasticsearchFormRecordSearcher implements FormRecordSearcher {
         if(aggregation != null)
             nqb.addAggregation(transform(aggregation));
 
-        return operations.aggregate(nqb, FormRecord.class, index)
+        return operations.aggregate(nqb, Record.class, index)
                 .collectList();
     }
 

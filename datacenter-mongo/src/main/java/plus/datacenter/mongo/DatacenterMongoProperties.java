@@ -9,11 +9,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "plus.datacenter.mongo")
 public class DatacenterMongoProperties {
 
+    /**
+     * 表单集合的名称
+     */
     private String formCollection = "form";
 
-    private String formRecordCollection = "form_record";
+    /**
+     * 记录集合的名称
+     */
+    private String recordCollection = "form_record";
 
-    private boolean enqueue = true;
-    private String exchange = "datacenter";
+    /**
+     * 是否自动注入 Handler
+     */
+    private boolean autoInjectHandlers = true;
+
+    /**
+     * 是否自动注入验证器
+     */
+    private boolean autoInjectValidators = true;
 
 }

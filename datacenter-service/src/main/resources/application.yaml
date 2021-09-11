@@ -15,6 +15,11 @@ plus:
   datacenter:
     mongo:
       form-collection: form
+      record-collection: form_record
+    amqp:
+      exchange: datacenter
+      sync:
+        enabled: true
 # SpringDoc 配置
 springdoc:
   api-docs:
@@ -42,6 +47,8 @@ spring:
   rabbitmq:
     addresses: rabbitmq.svc
     port: 5672
+    username: datacenter
+    password: datacenter
 logging:
   level:
     plus.datacenter.*: debug

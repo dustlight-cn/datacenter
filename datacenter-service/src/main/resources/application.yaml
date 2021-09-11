@@ -17,7 +17,7 @@ plus:
       form-collection: form
       record-collection: form_record
     amqp:
-      exchange: datacenter-test
+      exchange: datacenter
       sync:
         enabled: true
 # SpringDoc 配置
@@ -34,10 +34,10 @@ springdoc:
 spring:
   data:
     mongodb:
-      host: localhost
-      #      username: my-user
-      #      password: MTIzNDU2
-      #      authentication-database: admin
+      host: mongodb.svc
+      username: my-user
+      password: MTIzNDU2
+      authentication-database: admin
       database: datacenter
     elasticsearch:
       client:
@@ -47,8 +47,8 @@ spring:
   rabbitmq:
     addresses: rabbitmq.svc
     port: 5672
-    username: datacenter-test
-    password: datacenter-test
+    username: datacenter
+    password: datacenter
 logging:
   level:
     plus.datacenter.*: debug

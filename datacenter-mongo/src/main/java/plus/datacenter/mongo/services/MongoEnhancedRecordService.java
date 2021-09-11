@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
+import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.Record;
@@ -170,9 +171,11 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                         }
                                     }
                                 }
-                                if (itemMap != null)
-                                    enhancedRecord.setFormItemMap(Collections.unmodifiableMap(itemMap));
-                                return enhancedRecord;
+                                try {
+                                    return enhancedRecord.castToRecord();
+                                } catch (CloneNotSupportedException e) {
+                                    throw new DatacenterException("Fail to cast EnhancedRecord to Record", e);
+                                }
                             });
                 });
     }
@@ -195,9 +198,7 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
         @JsonIgnore
         private transient Map<String, Collection<Record>> _data;
 
-        @JsonIgnore
-        private transient Map<String, FormItem> formItemMap;
-
     }
+
 
 }

@@ -8,6 +8,7 @@ import plus.datacenter.application.services.DefaultPrincipalHolder;
 import plus.datacenter.application.services.ElasticsearchSyncHandler;
 import plus.datacenter.core.services.EnhancedRecordService;
 import plus.datacenter.core.services.PrincipalHolder;
+import plus.datacenter.elasticsearch.services.ElasticsearchRecordService;
 
 @Configuration
 public class ServiceConfig {
@@ -19,7 +20,8 @@ public class ServiceConfig {
     }
 
     @Bean
-    public ElasticsearchSyncHandler elasticsearchSyncHandler(@Autowired EnhancedRecordService recordService) {
-        return new ElasticsearchSyncHandler(recordService);
+    public ElasticsearchSyncHandler elasticsearchSyncHandler(@Autowired EnhancedRecordService recordService,
+                                                             @Autowired ElasticsearchRecordService elasticsearchRecordService) {
+        return new ElasticsearchSyncHandler(recordService, elasticsearchRecordService);
     }
 }

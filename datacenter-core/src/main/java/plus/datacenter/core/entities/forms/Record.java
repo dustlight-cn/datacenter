@@ -10,6 +10,8 @@ import java.util.Map;
 @Setter
 public class Record implements Cloneable {
 
+    private static final Record template = new Record();
+
     private String id;
     private String clientId;
     private String owner;
@@ -28,9 +30,31 @@ public class Record implements Cloneable {
         return super.clone();
     }
 
+    public Record castToRecord() throws CloneNotSupportedException {
+        if (getClass() == Record.class)
+            return this;
+        Record newRecord = (Record) template.clone();
+
+        newRecord.id = this.id;
+        newRecord.clientId = this.clientId;
+        newRecord.owner = this.owner;
+
+        newRecord.formId = this.formId;
+        newRecord.formName = this.formName;
+        newRecord.formVersion = this.formVersion;
+
+
+        newRecord.createdAt = this.createdAt;
+        newRecord.updatedAt = this.updatedAt;
+
+        newRecord.data = this.data;
+
+        return newRecord;
+    }
+
     @Override
     public String toString() {
-        return "FormRecord{" +
+        return "Record{" +
                 "id='" + id + '\'' +
                 ", clientId='" + clientId + '\'' +
                 ", owner='" + owner + '\'' +

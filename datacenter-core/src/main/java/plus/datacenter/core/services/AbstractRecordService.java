@@ -43,11 +43,13 @@ public abstract class AbstractRecordService implements RecordService {
     public Flux<Record> createRecords(Collection<Record> origin, String clientId) {
         if (origin == null || origin.size() == 0)
             return Flux.empty();
-        for (Record record : origin)
-            record.setFormId(null); // 先置空表单 ID
-        checkRecordFormNames(origin); // 检查是否具有相同表单名
+        boolean flag = doBeforeCreate();
+        if (flag)
+            checkRecordFormNames(origin); // 检查是否具有相同表单名
         return joinValidator(origin, clientId)
                 .map(records -> {
+                    if (!flag)
+                        return records;
                     Instant now = Instant.now();
                     for (Record record : records) {
                         beforeCreate(record, clientId, now);
@@ -86,7 +88,8 @@ public abstract class AbstractRecordService implements RecordService {
                                 if (recordz == null || recordz.size() == 0)
                                     return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.getException());
                                 Record record = recordz.iterator().next();
-                                beforeUpdate(record, clientId, Instant.now());
+                                if (doBeforeUpdate())
+                                    beforeUpdate(record, clientId, Instant.now());
                                 return Mono.just(record);
                             })
                             .flatMap(record -> doUpdate(ids, record));
@@ -163,6 +166,8 @@ public abstract class AbstractRecordService implements RecordService {
 
         // 设置 Client ID
         record.setClientId(clientId);
+
+        record.setId(null);
     }
 
     protected void beforeUpdate(Record record, String clientId, Instant now) {
@@ -201,6 +206,24 @@ public abstract class AbstractRecordService implements RecordService {
         if (!StringUtils.hasText(formName))
             throw ErrorEnum.UPDATE_RECORD_FAILED.details("All of Record's form name is empty or null").getException();
         return formName;
+    }
+
+    /**
+     * 是否创建前填充字段
+     *
+     * @return
+     */
+    protected boolean doBeforeCreate() {
+        return true;
+    }
+
+    /**
+     * 是否更新前填充字段
+     *
+     * @return
+     */
+    protected boolean doBeforeUpdate() {
+        return true;
     }
 
     public void addEventHandler(RecordEventHandler... handler) {

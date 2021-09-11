@@ -23,8 +23,8 @@ import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
 import plus.datacenter.core.entities.queries.queries.MatchQuery;
 import plus.datacenter.core.services.RecordSearcher;
-import plus.datacenter.core.services.RecordService;
 import plus.datacenter.core.services.FormService;
+import plus.datacenter.mongo.services.MongoRecordService;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -41,7 +41,7 @@ public class RecordController {
     private FormService formService;
 
     @Autowired
-    private RecordService recordService;
+    private MongoRecordService recordService;
 
     @Autowired
     private RecordSearcher recordSearcher;

@@ -16,6 +16,7 @@ import plus.datacenter.elasticsearch.converters.InstantToStringConverter;
 import plus.datacenter.elasticsearch.converters.ObjectIdToStringConverter;
 import plus.datacenter.elasticsearch.services.ElasticsearchRecordSearcher;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
+import plus.datacenter.elasticsearch.services.ElasticsearchRecordService;
 
 import java.util.Arrays;
 
@@ -34,6 +35,13 @@ public class DatacenterElasticsearchConfiguration {
     public ElasticsearchRecordSearcher elasticsearchFormRecordSearcher(@Autowired ReactiveElasticsearchOperations operations,
                                                                        @Autowired DatacenterElasticsearchProperties properties) {
         return new ElasticsearchRecordSearcher(operations, properties.getRecordPrefix());
+    }
+
+    @Bean
+    @ConditionalOnBean(ReactiveElasticsearchOperations.class)
+    public ElasticsearchRecordService elasticsearchRecordService(@Autowired ReactiveElasticsearchOperations operations,
+                                                                 @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchRecordService(operations, properties.getRecordPrefix());
     }
 
     @Bean

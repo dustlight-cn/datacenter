@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import plus.datacenter.amqp.entities.RecodeEventMessage;
+import plus.datacenter.amqp.entities.RecodeEvent;
 import plus.datacenter.amqp.sync.SyncHandler;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Record;
@@ -29,7 +29,7 @@ public class ElasticsearchSyncHandler implements SyncHandler {
     private static final Log logger = LogFactory.getLog(ElasticsearchSyncHandler.class);
 
     @Override
-    public Mono<Void> sync(RecodeEventMessage eventMessage) {
+    public Mono<Void> sync(RecodeEvent eventMessage) {
         Collection<Record> records = eventMessage.getRecords();
         String clientID = records.iterator().next().getClientId();
 

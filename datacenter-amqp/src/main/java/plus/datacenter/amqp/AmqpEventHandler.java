@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-import plus.datacenter.amqp.entities.RecodeEventMessage;
+import plus.datacenter.amqp.entities.RecodeEvent;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.services.RecordEventHandler;
@@ -44,7 +44,7 @@ public class AmqpEventHandler implements RecordEventHandler, InitializingBean {
         String routingKey = computeRoutingKey(recordTmp, eventType);
         return Mono
                 .fromRunnable(() -> template.convertAndSend(routingKey,
-                        RecodeEventMessage.create(eventType, records).toJson()))
+                        RecodeEvent.create(eventType, records).toJson()))
                 .then(Mono.just(records));
     }
 

@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import plus.datacenter.amqp.entities.RecodeEventMessage;
+import plus.datacenter.amqp.entities.RecodeEvent;
 import plus.datacenter.amqp.sync.SyncHandler;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Record;
@@ -27,7 +27,7 @@ public class MySyncHandler implements SyncHandler {
     EnhancedRecordService enhancedRecordService;
 
     @Override
-    public Mono<Void> sync(RecodeEventMessage event) {
+    public Mono<Void> sync(RecodeEvent event) {
         Collection<Record> records = event.getRecords();
         String clientID = records.iterator().next().getClientId();
 

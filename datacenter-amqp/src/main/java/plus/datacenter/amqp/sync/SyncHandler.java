@@ -1,10 +1,10 @@
 package plus.datacenter.amqp.sync;
 
-import plus.datacenter.amqp.entities.RecodeEventMessage;
+import plus.datacenter.amqp.entities.RecodeEvent;
 import reactor.core.publisher.Mono;
 
 public interface SyncHandler {
 
-    Mono<Void> sync(RecodeEventMessage eventMessage);
+    Mono<Void> sync(RecodeEvent eventMessage);
 
 }

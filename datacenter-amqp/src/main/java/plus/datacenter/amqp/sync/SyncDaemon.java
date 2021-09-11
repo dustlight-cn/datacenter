@@ -15,7 +15,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import plus.datacenter.amqp.entities.RecodeEventMessage;
+import plus.datacenter.amqp.entities.RecodeEvent;
 import plus.datacenter.core.DatacenterException;
 
 import java.util.Collection;
@@ -91,7 +91,7 @@ public class SyncDaemon implements ApplicationRunner, ChannelAwareMessageListene
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
         try {
-            RecodeEventMessage recordEvent = RecodeEventMessage.fromJson(message.getBody());
+            RecodeEvent recordEvent = RecodeEvent.fromJson(message.getBody());
             if (recordEvent == null || recordEvent.getRecords() == null || recordEvent.getRecords().size() == 0) {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 return;

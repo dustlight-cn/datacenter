@@ -17,24 +17,24 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecodeEventMessage implements Serializable {
+public class RecodeEvent implements Serializable {
 
     private final static Gson gson = Converters.registerInstant(new GsonBuilder()).create();
 
     private RecordEventHandler.EventType type;
     private Collection<Record> records;
 
-    public static RecodeEventMessage create(RecordEventHandler.EventType type,
-                                            Collection<Record> records) {
-        return new RecodeEventMessage(type, records);
+    public static RecodeEvent create(RecordEventHandler.EventType type,
+                                     Collection<Record> records) {
+        return new RecodeEvent(type, records);
     }
 
-    public static RecodeEventMessage fromJson(String json) {
-        return gson.fromJson(json, RecodeEventMessage.class);
+    public static RecodeEvent fromJson(String json) {
+        return gson.fromJson(json, RecodeEvent.class);
     }
 
-    public static RecodeEventMessage fromJson(byte[] json) {
-        return gson.fromJson(new String(json), RecodeEventMessage.class);
+    public static RecodeEvent fromJson(byte[] json) {
+        return gson.fromJson(new String(json), RecodeEvent.class);
     }
 
     public String toJson() {

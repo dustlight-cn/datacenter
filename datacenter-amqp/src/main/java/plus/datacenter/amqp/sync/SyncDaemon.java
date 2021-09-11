@@ -90,12 +90,12 @@ public class SyncDaemon implements ApplicationRunner, ChannelAwareMessageListene
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
-        RecodeEventMessage recordEvent = RecodeEventMessage.fromJson(message.getBody());
-        if (recordEvent == null || recordEvent.getRecords() == null || recordEvent.getRecords().size() == 0) {
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-            return;
-        }
         try {
+            RecodeEventMessage recordEvent = RecodeEventMessage.fromJson(message.getBody());
+            if (recordEvent == null || recordEvent.getRecords() == null || recordEvent.getRecords().size() == 0) {
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                return;
+            }
             for (SyncHandler handler : handlers) {
                 handler.sync(recordEvent).block();
             }

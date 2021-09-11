@@ -721,69 +721,6 @@ export declare enum FormItemTypeEnum {
 /**
  *
  * @export
- * @interface FormRecord
- */
-export interface FormRecord {
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    id?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    clientId?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    owner?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    formId?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    formName?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof FormRecord
-     */
-    formVersion?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    createdAt?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FormRecord
-     */
-    updatedAt?: string;
-    /**
-     *
-     * @type {{ [key: string]: object; }}
-     * @memberof FormRecord
-     */
-    data?: {
-        [key: string]: object;
-    };
-}
-/**
- *
- * @export
  * @interface HistogramAggregation
  */
 export interface HistogramAggregation {
@@ -1119,21 +1056,21 @@ export interface QueryResultForm {
 /**
  *
  * @export
- * @interface QueryResultFormRecord
+ * @interface QueryResultRecord
  */
-export interface QueryResultFormRecord {
+export interface QueryResultRecord {
     /**
      *
      * @type {number}
-     * @memberof QueryResultFormRecord
+     * @memberof QueryResultRecord
      */
     count?: number;
     /**
      *
-     * @type {Array<FormRecord>}
-     * @memberof QueryResultFormRecord
+     * @type {Array<Record>}
+     * @memberof QueryResultRecord
      */
-    data?: Array<FormRecord>;
+    data?: Array<Record>;
 }
 /**
  *
@@ -1234,6 +1171,69 @@ export interface RangeableInteger {
      * @memberof RangeableInteger
      */
     openInterval?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface Record
+ */
+export interface Record {
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    id?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    clientId?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    owner?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    formId?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    formName?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof Record
+     */
+    formVersion?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    createdAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Record
+     */
+    updatedAt?: string;
+    /**
+     *
+     * @type {{ [key: string]: object; }}
+     * @memberof Record
+     */
+    data?: {
+        [key: string]: object;
+    };
 }
 /**
  *
@@ -1812,12 +1812,12 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord: (formRecord: FormRecord, cid?: string, options?: any) => Promise<RequestArgs>;
+    createRecord: (record: Record, cid?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
@@ -1863,12 +1863,12 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord: (id: string, formRecord: FormRecord, cid?: string, options?: any) => Promise<RequestArgs>;
+    updateRecord: (id: string, record: Record, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * RecordsApi - functional programming interface
@@ -1888,12 +1888,12 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord(formRecord: FormRecord, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    createRecord(record: Record, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Record>>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
@@ -1925,7 +1925,7 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultFormRecord>>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultRecord>>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
@@ -1934,17 +1934,17 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRecord(id: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    getRecord(id: string, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Record>>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormRecord>>;
+    updateRecord(id: string, record: Record, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
 };
 /**
  * RecordsApi - factory interface
@@ -1964,12 +1964,12 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createRecord(formRecord: FormRecord, cid?: string, options?: any): AxiosPromise<FormRecord>;
+    createRecord(record: Record, cid?: string, options?: any): AxiosPromise<Record>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
@@ -2001,7 +2001,7 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultFormRecord>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): AxiosPromise<QueryResultRecord>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
@@ -2010,17 +2010,17 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getRecord(id: string, cid?: string, options?: any): AxiosPromise<FormRecord>;
+    getRecord(id: string, cid?: string, options?: any): AxiosPromise<Record>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): AxiosPromise<FormRecord>;
+    updateRecord(id: string, record: Record, cid?: string, options?: any): AxiosPromise<void>;
 };
 /**
  * RecordsApi - object-oriented interface
@@ -2043,13 +2043,13 @@ export declare class RecordsApi extends BaseAPI {
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    createRecord(formRecord: FormRecord, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    createRecord(record: Record, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Record>>;
     /**
      * 删除一条表单记录。
      * @summary 删除表单记录
@@ -2084,7 +2084,7 @@ export declare class RecordsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<import("axios").AxiosResponse<QueryResultFormRecord>>;
+    findRecords(name: string, query?: string, orders?: Array<string>, page?: number, size?: number, cid?: string, queryObject?: Array<QueryObject>, options?: any): Promise<import("axios").AxiosResponse<QueryResultRecord>>;
     /**
      * 获取一条表单记录。
      * @summary 获取表单记录
@@ -2094,16 +2094,16 @@ export declare class RecordsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    getRecord(id: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    getRecord(id: string, cid?: string, options?: any): Promise<import("axios").AxiosResponse<Record>>;
     /**
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    updateRecord(id: string, formRecord: FormRecord, cid?: string, options?: any): Promise<import("axios").AxiosResponse<FormRecord>>;
+    updateRecord(id: string, record: Record, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
 }

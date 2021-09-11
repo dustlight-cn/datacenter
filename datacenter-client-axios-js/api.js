@@ -936,14 +936,14 @@ const RecordsApiAxiosParamCreator = function (configuration) {
         /**
          * 提交一条表单记录。
          * @summary 创建表单记录
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord: (formRecord, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // verify required parameter 'formRecord' is not null or undefined
-            common_1.assertParamExists('createRecord', 'formRecord', formRecord);
+        createRecord: (record, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'record' is not null or undefined
+            common_1.assertParamExists('createRecord', 'record', record);
             const localVarPath = `/v1/record`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -964,7 +964,7 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            localVarRequestOptions.data = common_1.serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(record, localVarRequestOptions, configuration);
             return {
                 url: common_1.toPathString(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -1140,16 +1140,16 @@ const RecordsApiAxiosParamCreator = function (configuration) {
          * 更新一条表单记录。
          * @summary 更新表单记录
          * @param {string} id
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord: (id, formRecord, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        updateRecord: (id, record, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('updateRecord', 'id', id);
-            // verify required parameter 'formRecord' is not null or undefined
-            common_1.assertParamExists('updateRecord', 'formRecord', formRecord);
+            // verify required parameter 'record' is not null or undefined
+            common_1.assertParamExists('updateRecord', 'record', record);
             const localVarPath = `/v1/record/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1171,7 +1171,7 @@ const RecordsApiAxiosParamCreator = function (configuration) {
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            localVarRequestOptions.data = common_1.serializeDataIfNeeded(formRecord, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(record, localVarRequestOptions, configuration);
             return {
                 url: common_1.toPathString(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -1205,14 +1205,14 @@ const RecordsApiFp = function (configuration) {
         /**
          * 提交一条表单记录。
          * @summary 创建表单记录
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord(formRecord, cid, options) {
+        createRecord(record, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.createRecord(formRecord, cid, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.createRecord(record, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1281,14 +1281,14 @@ const RecordsApiFp = function (configuration) {
          * 更新一条表单记录。
          * @summary 更新表单记录
          * @param {string} id
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord(id, formRecord, cid, options) {
+        updateRecord(id, record, cid, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateRecord(id, formRecord, cid, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.updateRecord(id, record, cid, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -1317,13 +1317,13 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
         /**
          * 提交一条表单记录。
          * @summary 创建表单记录
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRecord(formRecord, cid, options) {
-            return localVarFp.createRecord(formRecord, cid, options).then((request) => request(axios, basePath));
+        createRecord(record, cid, options) {
+            return localVarFp.createRecord(record, cid, options).then((request) => request(axios, basePath));
         },
         /**
          * 删除一条表单记录。
@@ -1378,13 +1378,13 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
          * 更新一条表单记录。
          * @summary 更新表单记录
          * @param {string} id
-         * @param {FormRecord} formRecord
+         * @param {Record} record
          * @param {string} [cid]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateRecord(id, formRecord, cid, options) {
-            return localVarFp.updateRecord(id, formRecord, cid, options).then((request) => request(axios, basePath));
+        updateRecord(id, record, cid, options) {
+            return localVarFp.updateRecord(id, record, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1412,14 +1412,14 @@ class RecordsApi extends base_1.BaseAPI {
     /**
      * 提交一条表单记录。
      * @summary 创建表单记录
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    createRecord(formRecord, cid, options) {
-        return exports.RecordsApiFp(this.configuration).createRecord(formRecord, cid, options).then((request) => request(this.axios, this.basePath));
+    createRecord(record, cid, options) {
+        return exports.RecordsApiFp(this.configuration).createRecord(record, cid, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 删除一条表单记录。
@@ -1478,14 +1478,14 @@ class RecordsApi extends base_1.BaseAPI {
      * 更新一条表单记录。
      * @summary 更新表单记录
      * @param {string} id
-     * @param {FormRecord} formRecord
+     * @param {Record} record
      * @param {string} [cid]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RecordsApi
      */
-    updateRecord(id, formRecord, cid, options) {
-        return exports.RecordsApiFp(this.configuration).updateRecord(id, formRecord, cid, options).then((request) => request(this.axios, this.basePath));
+    updateRecord(id, record, cid, options) {
+        return exports.RecordsApiFp(this.configuration).updateRecord(id, record, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.RecordsApi = RecordsApi;

@@ -162,7 +162,6 @@ public class MongoRecordService extends AbstractRecordService implements Initial
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        super.afterPropertiesSet();
         Assert.hasText(collectionName, "Record collection name must be set"); // 检查记录集合的名称是否为空
     }
 

@@ -19,4 +19,14 @@ public class DatacenterMongoProperties {
      */
     private String recordCollection = "form_record";
 
+    /**
+     * 是否自动注入 Handler
+     */
+    private boolean autoInjectHandlers = true;
+
+    /**
+     * 是否自动注入验证器
+     */
+    private boolean autoInjectValidators = true;
+
 }

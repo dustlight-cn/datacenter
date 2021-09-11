@@ -2,10 +2,6 @@ package plus.datacenter.core.services;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.DatacenterException;
@@ -24,7 +20,7 @@ import java.util.*;
  * <p>
  * 在进行增删改查之前，将使用 RecordValidator 进行校验。
  */
-public abstract class AbstractRecordService implements RecordService, ApplicationContextAware, InitializingBean {
+public abstract class AbstractRecordService implements RecordService {
 
     @Getter
     private List<RecordEventHandler> joins = new ArrayList<>();
@@ -35,8 +31,6 @@ public abstract class AbstractRecordService implements RecordService, Applicatio
     @Getter
     @Setter
     private PrincipalHolder principalHolder;
-
-    private ApplicationContext applicationContext;
 
     @Override
     public Mono<Record> createRecord(Record origin, String clientId) {
@@ -244,20 +238,5 @@ public abstract class AbstractRecordService implements RecordService, Applicatio
 
     public void removeValidator(Collection<RecordValidator> validators) {
         this.validators.remove(Arrays.asList(validators));
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        if (this.joins == null || this.joins.size() == 0) {
-            addEventHandler(applicationContext.getBeansOfType(RecordEventHandler.class).values());
-        }
-        if (this.validators == null || this.validators.size() == 0) {
-            addValidator(applicationContext.getBeansOfType(RecordValidator.class).values());
-        }
     }
 }

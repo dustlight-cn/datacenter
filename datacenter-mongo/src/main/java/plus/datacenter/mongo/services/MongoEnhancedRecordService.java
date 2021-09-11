@@ -145,7 +145,7 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                     return operations.aggregate(Aggregation.newAggregation(pipeline.getOperations()), recordCollection, EnhancedRecord.class)
                             .map(enhancedRecord -> {
                                 Map<String, Object> data = enhancedRecord.getData();
-                                Map<String, Object> _data = enhancedRecord.get_data();
+                                Map<String, Collection<Record>> _data = enhancedRecord.get_data();
                                 Map<String, FormItem> itemMap = formIdItemMap.get(enhancedRecord.getFormId());
                                 if (_data != null && itemMap != null && itemMap.size() > 0 && _data.size() > 0) {
                                     Iterator<Map.Entry<String, FormItem>> iter = itemMap.entrySet().iterator();
@@ -155,21 +155,14 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                         FormItem formItem = kv.getValue();
                                         Object value = null;
                                         if (_data.containsKey(itemName) && (value = _data.get(itemName)) != null) {
-                                            if (value instanceof Collection) {
-                                                if (formItem.getArray() != null && formItem.getArray())
-                                                    data.put(itemName, value);
-                                                else {
-                                                    Collection arrVal = (Collection) value;
-                                                    if (arrVal.size() == 0)
-                                                        data.put(itemName, null);
-                                                    else
-                                                        data.put(itemName, arrVal.iterator().next());
-                                                }
-                                            } else {
-                                                if (formItem.getArray() != null && formItem.getArray())
-                                                    data.put(itemName, Arrays.asList(value));
+                                            if (formItem.getArray() != null && formItem.getArray())
+                                                data.put(itemName, value);
+                                            else {
+                                                Collection arrVal = (Collection) value;
+                                                if (arrVal.size() == 0)
+                                                    data.put(itemName, null);
                                                 else
-                                                    data.put(itemName, value);
+                                                    data.put(itemName, arrVal.iterator().next());
                                             }
                                         } else {
                                             data.put(itemName, null);
@@ -188,7 +181,6 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                 .flatMapMany(records -> getFullRecords(records, clientId));
     }
 
-
     protected Flux<Record> getRecords(Collection<String> recordIds, String clientId) {
         return operations.find(Query.query(Criteria.where("_id").in(recordIds).and("clientId").is(clientId)), Record.class, recordCollection);
     }
@@ -198,7 +190,8 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
     public static class EnhancedRecord extends Record {
 
         @JsonIgnore
-        private transient Map<String, Object> _data;
+        private transient Map<String, Collection<Record>> _data;
 
     }
+
 }

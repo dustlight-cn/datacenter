@@ -147,6 +147,7 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                 Map<String, Object> data = enhancedRecord.getData();
                                 Map<String, Collection<Record>> _data = enhancedRecord.get_data();
                                 Map<String, FormItem> itemMap = formIdItemMap.get(enhancedRecord.getFormId());
+
                                 if (_data != null && itemMap != null && itemMap.size() > 0 && _data.size() > 0) {
                                     Iterator<Map.Entry<String, FormItem>> iter = itemMap.entrySet().iterator();
                                     while (iter.hasNext()) {
@@ -169,6 +170,8 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                         }
                                     }
                                 }
+                                if (itemMap != null)
+                                    enhancedRecord.setFormItemMap(Collections.unmodifiableMap(itemMap));
                                 return enhancedRecord;
                             });
                 });
@@ -191,6 +194,9 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
 
         @JsonIgnore
         private transient Map<String, Collection<Record>> _data;
+
+        @JsonIgnore
+        private transient Map<String, FormItem> formItemMap;
 
     }
 

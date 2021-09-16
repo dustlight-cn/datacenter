@@ -1,5 +1,7 @@
 {
   "gg": false,
   "xx": "Hansin",
-  "form": false
+  "form": {
+    "ggboy": "ggboy"
+  }
 }

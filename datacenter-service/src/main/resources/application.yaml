@@ -22,7 +22,10 @@ plus:
       sync:
         enabled: true
     schema:
-      prefix: http://localhost:8080/schemas
+      parameters:
+        prefix: v1/schemas
+        endpoint: http://localhost:8080
+      mapping: ${plus.datacenter.schema.parameters.prefix}/**
 # SpringDoc 配置
 springdoc:
   api-docs:

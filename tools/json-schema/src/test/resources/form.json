@@ -1,5 +1,5 @@
 {
-  "$id": "https://live-hls.dustlight.cn/live/",
+  "$id": "http://localhost:8080/v1/schemas/",
   "type": "object",
   "properties": {
     "xx": {
@@ -9,7 +9,8 @@
       "type": "boolean"
     },
     "form": {
-      "$ref": "/live/form.json"
+      "$ref": "recordx",
+      "$form": "order"
     }
   },
   "additionalProperties": false,

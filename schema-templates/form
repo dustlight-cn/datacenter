@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$id": "${prefix}/form.json",
+  "$id": "${endpoint}/${prefix}/",
   "type": "object",
   "properties": {
     "$schema": {
-      "const": "${prefix}/draft-06.json"
+      "const": "${endpoint}/${prefix}/schema"
     },
     "$id": {
       "type": "string",
       "format": "uri",
-      "pattern": "^${prefix}/"
+      "const": "${endpoint}/${prefix}/"
     },
     "type": {
       "const": "object",
@@ -22,7 +22,7 @@
     "properties": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "${prefix}/draft-06.json"
+        "$ref": "schema"
       },
       "default": {}
     },

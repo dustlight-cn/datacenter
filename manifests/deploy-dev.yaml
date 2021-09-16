@@ -47,7 +47,10 @@ data:
           sync:
             enabled: true
         schema:
-          prefix: https://api.json-schema.cloud/schemas
+          parameters:
+            prefix: v1/schemas
+            endpoint: https://api.json-schema.cloud
+          mapping: ${plus.datacenter.schema.parameters.prefix}/**
     # SpringDoc 配置
     springdoc:
       api-docs:

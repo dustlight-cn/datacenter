@@ -12,7 +12,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "plus.datacenter.schema")
 public class SchemaResourceProperties {
 
-    private String prefix = "";
+    private String mapping = "schemas/**";
     private String templatePath = "schema-templates";
     private String outputDir = "schemas";
 

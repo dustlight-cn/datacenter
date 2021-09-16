@@ -14,27 +14,24 @@ import java.util.Map;
 
 public class Schemas {
 
-    private String prefix;
     private ObjectMapper mapper;
     private Map<String, Schema> schemaMap;
     private Map<String, String> parameters;
 
-    public static Schemas get(String prefix, String templatePath, Map<String, String> params) throws IOException {
-        return new Schemas(prefix, templatePath, params);
+    public static Schemas get(String templatePath, Map<String, String> params) throws IOException {
+        return new Schemas(templatePath, params);
     }
 
-    public static Schemas get(String prefix, Map<String, String> params) throws IOException {
-        return get(prefix, "schema-templates", params);
+    public static Schemas get(Map<String, String> params) throws IOException {
+        return get("schema-templates", params);
     }
 
-    public static Schemas get(String prefix) throws IOException {
-        return get(prefix, "schema-templates", null);
+    public static Schemas get() throws IOException {
+        return get("schema-templates", null);
     }
 
-    private Schemas(String prefix, String templatePath, Map<String, String> params) throws IOException {
-        this.prefix = prefix;
+    private Schemas(String templatePath, Map<String, String> params) throws IOException {
         this.parameters = params == null ? new HashMap<>() : params;
-        this.parameters.put("prefix", prefix);
         this.mapper = new ObjectMapper();
         this.schemaMap = new HashMap<>();
         File dir = new File(templatePath);
@@ -84,10 +81,6 @@ public class Schemas {
 
     public Map<String, Schema> getSchemaMap() {
         return schemaMap;
-    }
-
-    public String getPrefix() {
-        return prefix;
     }
 
     public Map<String, String> getParameters() {

@@ -9,7 +9,7 @@
       "type": "boolean"
     },
     "form": {
-      "$ref": "recordx",
+      "$ref": "record",
       "$form": "order"
     }
   },

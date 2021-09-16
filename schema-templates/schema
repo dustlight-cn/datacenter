@@ -59,7 +59,10 @@
     },
     "$ref": {
       "type": "string",
-      "format": "uri-reference"
+      "format": "uri-reference",
+      "enum": [
+        "record"
+      ]
     },
     "$form": {
       "type": "string"

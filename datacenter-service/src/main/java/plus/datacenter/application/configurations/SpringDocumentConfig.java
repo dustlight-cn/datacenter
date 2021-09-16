@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -27,14 +26,14 @@ import org.springframework.context.annotation.Configuration;
 )
 @SecuritySchemes(value = @SecurityScheme(name = "auth",
         type = SecuritySchemeType.OAUTH2,
-        in= SecuritySchemeIn.HEADER,
+        in = SecuritySchemeIn.HEADER,
         scheme = "Bearer",
-        flows =  @OAuthFlows(
+        flows = @OAuthFlows(
                 implicit = @OAuthFlow(
-                        authorizationUrl="http://accounts.wgv/authorize")
+                        authorizationUrl = "${plus.datacenter.authorization-endpoint}")
         )
 )
 )
-@Schema()
 public class SpringDocumentConfig {
+
 }

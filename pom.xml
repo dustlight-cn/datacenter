@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
-    <version>0.0.5-alpha-SNAPSHOT</version>
+    <version>0.0.6-alpha-SNAPSHOT</version>
     <description>PLUS 数据中心服务</description>
 
     <properties>
@@ -28,6 +28,7 @@
     </properties>
 
     <modules>
+        <module>datacenter-schema</module>
         <module>datacenter-core</module>
         <module>datacenter-elasticsearch</module>
         <module>datacenter-mongo</module>
@@ -36,6 +37,7 @@
         <module>tools/es2mongo</module>
         <module>tools/mongotest</module>
         <module>tools/amqptest</module>
+        <module>tools/json-schema</module>
     </modules>
 
     <dependencyManagement>
@@ -46,6 +48,22 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-resources</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -85,7 +103,7 @@
             </dependency>
             <dependency>
                 <groupId>plus.datacenter</groupId>
-                <artifactId>datacenter-amqp</artifactId>
+                <artifactId>json-schema</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

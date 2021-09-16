@@ -13,6 +13,7 @@ plus:
       uri: http://api.wgv/v1/token/validity
       token-type: jwt
   datacenter:
+    authorization-endpoint: "http://accounts.wgv/authorize"
     mongo:
       form-collection: form
       record-collection: form_record
@@ -20,6 +21,8 @@ plus:
       exchange: datacenter
       sync:
         enabled: true
+    schema:
+      prefix: http://localhost:8080/schemas
 # SpringDoc 配置
 springdoc:
   api-docs:

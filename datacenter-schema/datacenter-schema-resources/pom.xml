@@ -4,27 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>plus.datacenter</groupId>
-        <artifactId>datacenter-parent</artifactId>
+        <artifactId>datacenter-schema</artifactId>
         <version>0.0.6-alpha-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>datacenter-elasticsearch</artifactId>
-    <description>PLUS 数据中心服务 - Elasticsearch 模块</description>
+    <artifactId>datacenter-schema-resources</artifactId>
+    <description>PLUS 数据中心服务 - JSON Schema Resources 模块</description>
 
     <properties>
         <java.version>11</java.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -33,12 +24,35 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-schema-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

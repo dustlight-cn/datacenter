@@ -11,6 +11,12 @@
       "format": "uri",
       "const": "${endpoint}/${prefix}/"
     },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
     "type": {
       "const": "object",
       "default": "object"
@@ -39,6 +45,9 @@
   "required": [
     "type",
     "additionalProperties",
+    "properties",
+    "title",
+    "description",
     "$id"
   ]
 }

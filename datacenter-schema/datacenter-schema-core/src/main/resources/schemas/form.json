@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "${prefix}/form.json",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "const": "${prefix}/draft-06.json"
+    },
+    "$id": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^${prefix}/"
+    },
+    "type": {
+      "const": "object",
+      "default": "object"
+    },
+    "additionalProperties": {
+      "const": false,
+      "default": false
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "${prefix}/draft-06.json"
+      },
+      "default": {}
+    },
+    "required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "additionalProperties",
+    "$id"
+  ]
+}

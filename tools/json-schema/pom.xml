@@ -6,31 +6,22 @@
         <groupId>plus.datacenter</groupId>
         <artifactId>datacenter-parent</artifactId>
         <version>0.0.6-alpha-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>datacenter-service</artifactId>
-    <description>PLUS 消息服务</description>
+    <artifactId>json-schema</artifactId>
+    <description>JSON Schema Test</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.experimental</groupId>
             <artifactId>spring-native</artifactId>
             <version>${spring-native.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -53,38 +44,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>plus.auth</groupId>
-            <artifactId>auth-resource-server-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.auth</groupId>
-            <artifactId>auth-client-reactive</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.github.java-json-tools</groupId>-->
+<!--            <artifactId>json-schema-validator</artifactId>-->
+<!--            <version>2.2.14</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-schema-resources</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-mongo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-elasticsearch</artifactId>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>1.0.59</version>
         </dependency>
     </dependencies>
 

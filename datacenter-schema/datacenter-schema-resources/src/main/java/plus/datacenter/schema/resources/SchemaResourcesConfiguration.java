@@ -26,8 +26,10 @@ public class SchemaResourcesConfiguration implements WebFluxConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         URI uri = URI.create(properties.getPrefix());
-        Schemas schemas = Schemas.get(properties.getPrefix(), properties.getTemplateResourcePath());
+        Schemas schemas = Schemas.get(properties.getPrefix(), properties.getTemplatePath(), properties.getParameters());
+
         File dir = new File(properties.getOutputDir());
+
         if ((!dir.exists() || !dir.isDirectory()) && !dir.mkdirs())
             throw new RuntimeException(String.format("Fail to make dir '%s'", dir.getAbsoluteFile()));
         Map<String, Schemas.Schema> map = schemas.getSchemaMap();

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
 import java.util.HashMap;
@@ -20,22 +19,30 @@ public class Schemas {
     private Map<String, Schema> schemaMap;
     private Map<String, String> parameters;
 
-    public static Schemas get(String prefix, String templateResourcePath) throws IOException {
-        return new Schemas(prefix, templateResourcePath);
+    public static Schemas get(String prefix, String templatePath, Map<String, String> params) throws IOException {
+        return new Schemas(prefix, templatePath, params);
+    }
+
+    public static Schemas get(String prefix, Map<String, String> params) throws IOException {
+        return get(prefix, "schema-templates", params);
     }
 
     public static Schemas get(String prefix) throws IOException {
-        return get(prefix, "schemas");
+        return get(prefix, "schema-templates", null);
     }
 
-    private Schemas(String prefix, String templateResourcePath) throws IOException {
+    private Schemas(String prefix, String templatePath, Map<String, String> params) throws IOException {
         this.prefix = prefix;
-        this.parameters = new HashMap<>();
+        this.parameters = params == null ? new HashMap<>() : params;
         this.parameters.put("prefix", prefix);
         this.mapper = new ObjectMapper();
         this.schemaMap = new HashMap<>();
-        ClassPathResource dir = new ClassPathResource(templateResourcePath);
-        searchSchemas(dir.getFile(), "", schemaMap, 0);
+        File dir = new File(templatePath);
+        if (!dir.exists())
+            throw new RuntimeException(String.format("Dir '%s' do not exists", templatePath));
+        if (!dir.isDirectory())
+            throw new RuntimeException(String.format("Path '%s' is not a directory", templatePath));
+        searchSchemas(dir, "", schemaMap, 0);
     }
 
     private void searchSchemas(File file, String prefix, Map<String, Schema> fileMap, int deep) throws IOException {

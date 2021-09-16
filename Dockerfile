@@ -1,6 +1,7 @@
 FROM registry.cn-hangzhou.aliyuncs.com/wgv/openjdk:11.0.11-jre
 
 COPY app.jar app.jar
+COPY schema-templates schema-templates
 
 # 暴露端口
 EXPOSE 8080

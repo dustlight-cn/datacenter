@@ -1,18 +1,21 @@
 {
-  "$id": "http://localhost:8080/v1/schemas/",
+  "$id": "https://api.json-schema.cloud/v1/schemas/",
   "type": "object",
+  "title": "客户",
+  "description": "客户信息",
   "properties": {
-    "xx": {
+    "name": {
       "type": "string"
     },
-    "gg": {
-      "type": "boolean"
+    "birth": {
+      "type": "string",
+      "format": "date"
     },
-    "form": {
+    "company": {
       "$ref": "record",
-      "$form": "order"
+      "$form": "company"
     }
   },
   "additionalProperties": false,
-  "required": ["xx","form"]
+  "required": ["name","company"]
 }

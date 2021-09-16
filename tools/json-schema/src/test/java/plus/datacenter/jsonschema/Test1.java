@@ -22,7 +22,8 @@ public class Test1 {
         ClassPathResource dataResource = new ClassPathResource("data.json");
 
 
-        JsonSchema schema = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V6).getSchema(new URI("http://localhost:8080/v1/schemas/form"));
+        JsonSchema schema = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V6)
+                .getSchema(new URI("https://api.json-schema.cloud/v1/schemas/form"));
 
         JsonNode node = mapper.readValue(fromSchemaResource.getInputStream(), JsonNode.class);
 

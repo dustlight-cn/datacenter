@@ -1,7 +1,7 @@
 {
-  "gg": false,
-  "xx": "Hansin",
-  "form": {
-    "ggboy": "ggboy"
-  }
+  "name": "Hansin",
+  "company": {
+    "name": "广州金嗓音"
+  },
+  "birth": "1997-01-15"
 }

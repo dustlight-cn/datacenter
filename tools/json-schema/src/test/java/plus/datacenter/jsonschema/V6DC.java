@@ -1,7 +1,9 @@
 package plus.datacenter.jsonschema;
 
 import com.networknt.schema.*;
+import plus.datacenter.schema.Schemas;
 
+import java.io.IOException;
 import java.util.*;
 
 public class V6DC {
@@ -18,7 +20,15 @@ public class V6DC {
         //BUILTIN_FORMATS.add(pattern("phone", "^\\+(?:[0-9] ?){6,14}[0-9]$"));
     }
 
-    public static JsonSchemaFactory factory() {
+    public static JsonSchemaFactory factory() throws IOException {
+        Map<String, String> params = new HashMap<>();
+        params.put("endpoint", "https://api.json-schema.cloud");
+        params.put("prefix", "v1/schemas");
+        Schemas schemas = Schemas.get("schema-templates", params);
+
+        for(var kv : schemas.getSchemaMap().entrySet()){
+
+        }
         JsonMetaSchema metaSchema = getInstance();
 
         return new JsonSchemaFactory.Builder()

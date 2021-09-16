@@ -1,6 +1,8 @@
 # DataCenter
 [简介](#简介) | [使用](#使用) | [构建](#构建) | [部署](#部署)
 
+[Schema 说明](SCHEMA.md)
+
 ## 简介
 **DataCenter** 是一个基于 **Spring Boot** 的微服务项目，
 基于 **OAuth2.0** 进行接口保护，

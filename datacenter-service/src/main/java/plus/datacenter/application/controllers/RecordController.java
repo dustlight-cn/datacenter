@@ -16,8 +16,6 @@ import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
-import plus.datacenter.core.entities.forms.Item;
-import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
@@ -121,36 +119,36 @@ public class RecordController {
                                                  AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
-                    if (StringUtils.hasText(query)) {
-                        return formService.getLatestForm(name, cid)
-                                .map(form -> {
-                                    MatchQuery q = new MatchQuery();
-                                    StringBuilder builder = new StringBuilder();
-                                    Collection<Item> items = form.getItems().values();
-                                    for (Item item : items) {
-                                        if (item.getType() != ItemType.STRING)
-                                            continue;
-                                        if (builder.length() > 0)
-                                            builder.append(',');
-                                        builder.append("data.");
-                                        builder.append(item.getName());
-                                    }
-                                    q.setName(builder.toString());
-                                    q.setOpt(QueryOperation.MATCH);
-                                    q.setValue(query);
-                                    Collection<Query> qs = new HashSet<>();
-                                    if (queries != null)
-                                        qs.addAll(queries);
-                                    qs.add(q);
-                                    return qs;
-                                })
-                                .flatMap(qs -> recordSearcher.findRecord(cid,
-                                        name,
-                                        qs,
-                                        orders,
-                                        page,
-                                        size));
-                    }
+//                    if (StringUtils.hasText(query)) {
+//                        return formService.getLatestForm(name, cid)
+//                                .map(form -> {
+//                                    MatchQuery q = new MatchQuery();
+//                                    StringBuilder builder = new StringBuilder();
+//                                    Collection<Item> items = form.getItems().values();
+//                                    for (Item item : items) {
+//                                        if (item.getType() != ItemType.STRING)
+//                                            continue;
+//                                        if (builder.length() > 0)
+//                                            builder.append(',');
+//                                        builder.append("data.");
+//                                        builder.append(item.getName());
+//                                    }
+//                                    q.setName(builder.toString());
+//                                    q.setOpt(QueryOperation.MATCH);
+//                                    q.setValue(query);
+//                                    Collection<Query> qs = new HashSet<>();
+//                                    if (queries != null)
+//                                        qs.addAll(queries);
+//                                    qs.add(q);
+//                                    return qs;
+//                                })
+//                                .flatMap(qs -> recordSearcher.findRecord(cid,
+//                                        name,
+//                                        qs,
+//                                        orders,
+//                                        page,
+//                                        size));
+//                    }
                     return recordSearcher.findRecord(cid,
                             name,
                             queries,

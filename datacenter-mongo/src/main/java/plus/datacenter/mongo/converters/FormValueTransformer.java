@@ -1,7 +1,7 @@
 package plus.datacenter.mongo.converters;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.bson.types.ObjectId;
-import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.services.ItemValueTransformer;
 
 /**
@@ -12,8 +12,8 @@ import plus.datacenter.core.services.ItemValueTransformer;
 public class FormValueTransformer implements ItemValueTransformer {
 
     @Override
-    public ItemType getItemType() {
-        return ItemType.FORM;
+    public boolean check(JsonNode schema) {
+        return false;
     }
 
     @Override

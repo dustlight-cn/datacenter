@@ -15,8 +15,8 @@ plus:
   datacenter:
     authorization-endpoint: "http://accounts.wgv/authorize"
     mongo:
-      form-collection: form
-      record-collection: form_record
+      form-collection: test_form
+      record-collection: test_form_record
     amqp:
       exchange: datacenter
       sync:
@@ -26,6 +26,13 @@ plus:
         prefix: v1/schemas
         endpoint: http://localhost:8080
       mapping: ${plus.datacenter.schema.parameters.prefix}/**
+      adapter:
+        meta-schema: /schema
+        form-schema: /form
+        non-validation-keywords:
+          - $form
+    elasticsearch:
+      record-prefix: test
 # SpringDoc 配置
 springdoc:
   api-docs:

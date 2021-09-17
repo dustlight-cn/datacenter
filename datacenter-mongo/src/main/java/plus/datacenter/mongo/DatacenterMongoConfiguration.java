@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import plus.datacenter.core.services.FormValidator;
 import plus.datacenter.core.services.PrincipalHolder;
 import plus.datacenter.core.services.RecordEventHandler;
 import plus.datacenter.core.services.RecordValidator;
@@ -22,11 +23,18 @@ import plus.datacenter.mongo.services.MongoFormService;
 public class DatacenterMongoConfiguration {
 
     @Bean
-    @ConditionalOnBean(ReactiveMongoOperations.class)
+    @ConditionalOnBean(value = {ReactiveMongoOperations.class, PrincipalHolder.class})
     public MongoFormService mongoFormService(@Autowired DatacenterMongoProperties properties,
                                              @Autowired ReactiveMongoOperations operations,
-                                             @Autowired MongoClient mongoClient) {
-        return new MongoFormService(mongoClient, operations, properties.getFormCollection());
+                                             @Autowired MongoClient mongoClient,
+                                             @Autowired PrincipalHolder principalHolder,
+                                             @Autowired ApplicationContext applicationContext) {
+        MongoFormService service = new MongoFormService(mongoClient, operations, properties.getFormCollection());
+        service.setPrincipalHolder(principalHolder);
+        if (properties.isAutoInjectValidators()) {
+            service.addValidator(applicationContext.getBeansOfType(FormValidator.class).values());
+        }
+        return service;
     }
 
     @Bean
@@ -56,6 +64,7 @@ public class DatacenterMongoConfiguration {
                                                                  @Autowired ReactiveMongoOperations operations) {
         return new MongoEnhancedRecordService(operations, properties.getRecordCollection(), properties.getFormCollection());
     }
+
 
     @Bean
     public ObjectIdToStringSerializer objectIdToStringSerializer() {

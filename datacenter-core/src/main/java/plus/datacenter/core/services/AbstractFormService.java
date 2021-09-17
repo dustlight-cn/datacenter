@@ -1,24 +1,34 @@
 package plus.datacenter.core.services;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
+import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Form;
+import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 抽象表单服务
  */
 public abstract class AbstractFormService implements FormService {
 
+    @Getter
+    @Setter
+    private PrincipalHolder principalHolder;
+
+    @Getter
+    private List<FormValidator> validators = new ArrayList<>();
+
     @Override
     public Mono<Form> createForm(Form origin, String clientId) {
-        beforeCreate(origin, clientId, Instant.now());
-        return doInsert(Arrays.asList(origin))
+        return createForms(Arrays.asList(origin), clientId)
                 .singleOrEmpty()
                 .switchIfEmpty(Mono.error(ErrorEnum.CREATE_FORM_FAILED.getException()));
     }
@@ -30,7 +40,8 @@ public abstract class AbstractFormService implements FormService {
         for (Form form : origins) {
             beforeCreate(form, clientId, now);
         }
-        return doInsert(origins);
+        return joinValidator(origins, clientId)
+                .flatMapMany(forms -> doInsert(origins));
     }
 
     @Override
@@ -59,8 +70,7 @@ public abstract class AbstractFormService implements FormService {
 
     @Override
     public Mono<Form> updateForm(Form target, String clientId) {
-        beforeUpdate(target, clientId, Instant.now());
-        return doUpdate(Arrays.asList(target))
+        return updateForms(Arrays.asList(target), clientId)
                 .singleOrEmpty()
                 .switchIfEmpty(Mono.error(ErrorEnum.UPDATE_FORM_FAILED.getException()));
     }
@@ -68,7 +78,8 @@ public abstract class AbstractFormService implements FormService {
     @Override
     public Flux<Form> updateForms(Collection<Form> targets, String clientId) {
         beforeUpdate(targets, clientId, Instant.now());
-        return doUpdate(targets);
+        return joinValidator(targets, clientId)
+                .flatMapMany(forms -> doUpdate(targets));
     }
 
     @Override
@@ -104,6 +115,8 @@ public abstract class AbstractFormService implements FormService {
 
         // 设置 Client ID
         form.setClientId(clientId);
+        form.setId(null);
+        FormUtils.fillReference(form);
     }
 
     protected void beforeUpdate(Form target, String clientId, Instant now) {
@@ -114,5 +127,46 @@ public abstract class AbstractFormService implements FormService {
         for (Form target : targets) {
             beforeUpdate(target, clientId, now);
         }
+    }
+
+    /**
+     * 执行校验
+     *
+     * @param forms
+     * @param clientId
+     * @return
+     */
+    private Mono<Collection<Form>> joinValidator(Collection<Form> forms, String clientId) {
+        if (validators == null || validators.size() == 0)
+            return Mono.just(forms);
+        if (principalHolder == null)
+            return Mono.error(new DatacenterException("PrincipalHolder must be set"));
+        return principalHolder.getPrincipal()
+                .switchIfEmpty(Mono.error(new DatacenterException("principal is null")))
+                .flatMap(principal -> {
+                    Mono<Collection<Form>> result = Mono.just(forms);
+                    for (FormValidator validator : validators) {
+                        result = result.flatMap(formz -> validator.validate(formz, principal, clientId));
+                    }
+                    return result;
+                });
+    }
+
+    public void addValidator(FormValidator... validator) {
+        this.validators.addAll(Arrays.asList(validator));
+        this.validators.sort(Comparator.comparingInt(Ordered::getOrder));
+    }
+
+    public void removeValidator(FormValidator... validator) {
+        this.validators.remove(Arrays.asList(validator));
+    }
+
+    public void addValidator(Collection<FormValidator> validators) {
+        this.validators.addAll(validators);
+        this.validators.sort(Comparator.comparingInt(Ordered::getOrder));
+    }
+
+    public void removeValidator(Collection<FormValidator> validators) {
+        this.validators.remove(Arrays.asList(validators));
     }
 }

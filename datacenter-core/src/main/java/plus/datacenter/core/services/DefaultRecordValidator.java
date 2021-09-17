@@ -1,5 +1,6 @@
 package plus.datacenter.core.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,8 +8,6 @@ import org.springframework.util.StringUtils;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.DatacenterPrincipal;
 import plus.datacenter.core.entities.forms.Form;
-import plus.datacenter.core.entities.forms.Item;
-import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.utils.FormUtils;
 import reactor.core.publisher.Flux;
@@ -26,7 +25,7 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
     @Setter
     private FormService formService;
 
-    private Map<ItemType, ItemValueTransformer> transformerMap = new HashMap<>();
+    private Collection<ItemValueTransformer> transformers = new HashSet<>();
 
     public DefaultRecordValidator(int order, FormService formService) {
         super(order);
@@ -39,7 +38,9 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
     }
 
     @Override
-    public Mono<Collection<Record>> validate(Collection<Record> records, DatacenterPrincipal principal, String clientId) {
+    public Mono<Collection<Record>> validate(Collection<Record> records,
+                                             DatacenterPrincipal principal,
+                                             String clientId) {
         if (records == null || records.size() == 0)
             return Mono.empty();
         return getForms(records, clientId)
@@ -60,12 +61,14 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
 
                     return Flux.fromIterable(contexts);
                 })
+                .flatMap(context -> beforeValidate(context))
                 .flatMap(context -> doValidate(context))
+                .flatMap(context -> afterValidate(context))
                 .collectList()
                 .map(records1 -> records1);
     }
 
-    protected Mono<Record> doValidate(Context context) {
+    protected Mono<Context> beforeValidate(Context context) {
         Form form = context.getForm();
         Record record = context.getRecord();
         DatacenterPrincipal principal = context.getPrincipal();
@@ -77,61 +80,31 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
         record.setFormName(form.getName());
         record.setFormVersion(form.getVersion());
 
-        Map<String, Item> itemMap = form.getItems();
-        Map<String, Object> recordData = record.getData();
-        Map<String, Object> validatedRecordData = new HashMap<>();
+        return Mono.just(context);
+    }
 
-        Iterator<Map.Entry<String, Item>> iterator = itemMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Item> kv = iterator.next();
+    protected Mono<Context> doValidate(Context context) {
+        return Mono.just(context);
+    }
 
-            String key = kv.getKey();
-            Item item = kv.getValue(); // 被校验的 Item
+    protected Mono<Record> afterValidate(Context context) {
+        Form form = context.getForm();
+        Record record = context.getRecord();
+        Map<String, Object> data = record.getData();
 
-            if (item == null)
+        JsonNode schema = FormUtils.transformMapToJsonNode(form.getSchema());
+        Iterator<Map.Entry<String, JsonNode>> iter = schema.fields();
+        while (iter.hasNext()) {
+            Map.Entry<String, JsonNode> kv = iter.next();
+            String name = kv.getKey();
+            JsonNode itemSchema = kv.getValue();
+            if (!data.containsKey(name))
                 continue;
-
-            boolean isItemRequired = item.getRequired() != null && item.getRequired(); // Item 是否必填
-            ItemType itemType = item.getType(); // Item 类型
-
-            Object itemValue = recordData == null ? null : recordData.get(key); // 被校验的值
-
-            if (item.getArray() != null && item.getArray()) { // 当 Item 为数组时
-                if (itemValue != null && !(itemValue instanceof Collection))
-                    throw new IllegalArgumentException("Validation failed: '" + key + "' require an array value");
-                Collection itemValueCollection = (Collection) itemValue;
-                if (itemValueCollection == null) {
-                    if (isItemRequired)
-                        throw new IllegalArgumentException("Validation failed: '" + key + "' is null but required");
-                } else if (itemValueCollection.size() == 0) {
-                    if (isItemRequired)
-                        throw new IllegalArgumentException("Validation failed: '" + key + "' is empty but required");
-                } else {
-                    int i = 0;
-                    Collection<Object> transformedValues = new ArrayList<>();
-                    for (Object originValue : itemValueCollection) {
-                        Object transformedValue = FormUtils.transformItemValue(originValue, itemType);
-                        if (!item.validate(transformedValue))
-                            throw new IllegalArgumentException("Validation failed: '" + key + "[" + i + "]'");
-                        transformedValues.add(transform(transformedValue, itemType));
-                        i++;
-                    }
-                    validatedRecordData.put(key, transformedValues);
-                }
-
-            } else {
-                if (itemValue instanceof Collection && itemType != ItemType.SELECT)
-                    throw new IllegalArgumentException("Validation failed: '" + key + "' require an non-array value");
-                if (itemValue != null && !(itemValue instanceof Collection) && itemType == ItemType.SELECT)
-                    throw new IllegalArgumentException("Validation failed: '" + key + "' require an array value");
-                Object transformedValue = FormUtils.transformItemValue(itemValue, itemType);
-                if (!item.validate(transformedValue))
-                    throw new IllegalArgumentException("Validation failed: '" + key + "'");
-                validatedRecordData.put(key, transform(transformedValue, itemType));
-            }
+            Object val = data.get(name);
+            val = transform(val, itemSchema);
+            data.put(name, val);
         }
-        record.setData(validatedRecordData);
-        return Mono.just(record);
+        return Mono.just(context.getRecord());
     }
 
     /**
@@ -188,27 +161,28 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
         return map;
     }
 
-    private Object transform(Object originObject, ItemType type) {
-        ItemValueTransformer transformer = null;
-        if (this.transformerMap == null || (transformer = this.transformerMap.get(type)) == null)
+    private Object transform(Object originObject, JsonNode schema) {
+        if (this.transformers == null || this.transformers.size() == 0)
             return originObject;
-        return transformer.transform(originObject);
+        for (ItemValueTransformer transformer : transformers) {
+            if (transformer.check(schema))
+                return transformer.transform(originObject);
+        }
+        return originObject;
     }
 
     public void setTransformers(ItemValueTransformer... transformers) {
         if (transformers == null)
             return;
-        this.transformerMap.clear();
-        for (ItemValueTransformer transformer : transformers)
-            this.transformerMap.put(transformer.getItemType(), transformer);
+        this.transformers.clear();
+        this.transformers.addAll(Arrays.asList(transformers));
     }
 
     public void setTransformers(Collection<ItemValueTransformer> transformers) {
         if (transformers == null)
             return;
-        this.transformerMap.clear();
-        for (ItemValueTransformer transformer : transformers)
-            this.transformerMap.put(transformer.getItemType(), transformer);
+        this.transformers.clear();
+        this.transformers.addAll(transformers);
     }
 
     @Getter

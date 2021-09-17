@@ -14,9 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.entities.forms.Form;
-import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.forms.Record;
-import plus.datacenter.core.entities.forms.items.FormItem;
 import plus.datacenter.core.services.EnhancedRecordService;
 import reactor.core.publisher.Flux;
 
@@ -60,22 +58,22 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                 .flatMapMany(forms -> {
                     Collection<Criteria> criteriaCollection = new HashSet<>();
                     for (Form form : forms) {
-                        Map<String, Item> itemMap = form.getItems();
-                        Iterator<Map.Entry<String, Item>> iter = itemMap.entrySet().iterator();
-
-                        while (iter.hasNext()) {
-                            Map.Entry<String, Item> kv = iter.next();
-                            String itemName = kv.getKey();
-                            Item item = kv.getValue();
-                            if (!(item instanceof FormItem))
-                                continue;
-                            FormItem formItem = (FormItem) item;
-                            if (!formNames.contains(formItem.getForm()))
-                                continue;
-                            criteriaCollection.add(Criteria.where("clientId").is(clientId)
-                                    .and("formId").is(form.getId())
-                                    .and("data." + itemName).in(formNameRecordMap.get(formItem.getForm())));
-                        }
+//                        Map<String, Item> itemMap = form.getItems();
+//                        Iterator<Map.Entry<String, Item>> iter = itemMap.entrySet().iterator();
+//
+//                        while (iter.hasNext()) {
+//                            Map.Entry<String, Item> kv = iter.next();
+//                            String itemName = kv.getKey();
+//                            Item item = kv.getValue();
+//                            if (!(item instanceof FormItem))
+//                                continue;
+//                            FormItem formItem = (FormItem) item;
+//                            if (!formNames.contains(formItem.getForm()))
+//                                continue;
+//                            criteriaCollection.add(Criteria.where("clientId").is(clientId)
+//                                    .and("formId").is(form.getId())
+//                                    .and("data." + itemName).in(formNameRecordMap.get(formItem.getForm())));
+//                        }
                     }
                     return operations.find(Query.query(new Criteria().orOperator(criteriaCollection)), Record.class, recordCollection);
                 });
@@ -108,27 +106,27 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                 .collectList()
                 .flatMapMany(forms -> {
                     Map<String, Form> formIdMap = new HashMap<>();
-                    Map<String, Map<String, FormItem>> formIdItemMap = new HashMap<>();
+//                    Map<String, Map<String, FormItem>> formIdItemMap = new HashMap<>();
 
                     Collection<String> fields = new HashSet<>();
 
                     for (Form form : forms) {
-                        String formId = form.getId();
-                        Map<String, Item> itemMap = form.getItems();
-                        Map<String, FormItem> formItemMap = new HashMap<>();
-
-                        Iterator<Map.Entry<String, Item>> iter = itemMap.entrySet().iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry<String, Item> kv = iter.next();
-                            String itemName = kv.getKey();
-                            Item item = kv.getValue();
-                            if (item instanceof FormItem) {
-                                formItemMap.put(itemName, (FormItem) item);
-                                fields.add(itemName);
-                            }
-                        }
-                        formIdMap.put(formId, form);
-                        formIdItemMap.put(formId, formItemMap);
+//                        String formId = form.getId();
+//                        Map<String, Item> itemMap = form.getItems();
+//                        Map<String, FormItem> formItemMap = new HashMap<>();
+//
+//                        Iterator<Map.Entry<String, Item>> iter = itemMap.entrySet().iterator();
+//                        while (iter.hasNext()) {
+//                            Map.Entry<String, Item> kv = iter.next();
+//                            String itemName = kv.getKey();
+//                            Item item = kv.getValue();
+//                            if (item instanceof FormItem) {
+//                                formItemMap.put(itemName, (FormItem) item);
+//                                fields.add(itemName);
+//                            }
+//                        }
+//                        formIdMap.put(formId, form);
+//                        formIdItemMap.put(formId, formItemMap);
                     }
 
                     if (fields.size() == 0)
@@ -147,30 +145,30 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                             .map(enhancedRecord -> {
                                 Map<String, Object> data = enhancedRecord.getData();
                                 Map<String, Collection<Record>> _data = enhancedRecord.get_data();
-                                Map<String, FormItem> itemMap = formIdItemMap.get(enhancedRecord.getFormId());
-
-                                if (_data != null && itemMap != null && itemMap.size() > 0 && _data.size() > 0) {
-                                    Iterator<Map.Entry<String, FormItem>> iter = itemMap.entrySet().iterator();
-                                    while (iter.hasNext()) {
-                                        Map.Entry<String, FormItem> kv = iter.next();
-                                        String itemName = kv.getKey();
-                                        FormItem formItem = kv.getValue();
-                                        Object value = null;
-                                        if (_data.containsKey(itemName) && (value = _data.get(itemName)) != null) {
-                                            if (formItem.getArray() != null && formItem.getArray())
-                                                data.put(itemName, value);
-                                            else {
-                                                Collection arrVal = (Collection) value;
-                                                if (arrVal.size() == 0)
-                                                    data.put(itemName, null);
-                                                else
-                                                    data.put(itemName, arrVal.iterator().next());
-                                            }
-                                        } else {
-                                            data.put(itemName, null);
-                                        }
-                                    }
-                                }
+//                                Map<String, FormItem> itemMap = formIdItemMap.get(enhancedRecord.getFormId());
+//
+//                                if (_data != null && itemMap != null && itemMap.size() > 0 && _data.size() > 0) {
+//                                    Iterator<Map.Entry<String, FormItem>> iter = itemMap.entrySet().iterator();
+//                                    while (iter.hasNext()) {
+//                                        Map.Entry<String, FormItem> kv = iter.next();
+//                                        String itemName = kv.getKey();
+//                                        FormItem formItem = kv.getValue();
+//                                        Object value = null;
+//                                        if (_data.containsKey(itemName) && (value = _data.get(itemName)) != null) {
+//                                            if (formItem.getArray() != null && formItem.getArray())
+//                                                data.put(itemName, value);
+//                                            else {
+//                                                Collection arrVal = (Collection) value;
+//                                                if (arrVal.size() == 0)
+//                                                    data.put(itemName, null);
+//                                                else
+//                                                    data.put(itemName, arrVal.iterator().next());
+//                                            }
+//                                        } else {
+//                                            data.put(itemName, null);
+//                                        }
+//                                    }
+//                                }
                                 try {
                                     return enhancedRecord.castToRecord();
                                 } catch (CloneNotSupportedException e) {

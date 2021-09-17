@@ -1,0 +1,7 @@
+plus:
+  datacenter:
+    schema:
+      adapter:
+        meta-key: /schema
+        non-validation-keywords:
+          - $form

@@ -1,5 +1,5 @@
 {
-  "$id": "https://api.json-schema.cloud/v1/schemas/",
+  "$id": "http://localhost:8080/v1/schemas/",
   "type": "object",
   "title": "客户",
   "description": "客户信息",

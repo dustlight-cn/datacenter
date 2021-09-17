@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$id": "${endpoint}/${prefix}/",
+  "$id": "${endpoint}/${prefix}/form",
   "type": "object",
   "properties": {
     "$schema": {

@@ -14,11 +14,13 @@
 
     <properties>
         <java.version>11</java.version>
+        <validator.version>1.0.59</validator.version>
     </properties>
 
     <modules>
         <module>datacenter-schema-core</module>
         <module>datacenter-schema-resources</module>
+        <module>datacenter-schema-adapter</module>
     </modules>
 
     <dependencyManagement>
@@ -32,6 +34,15 @@
                 <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-schema-resources</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-adapter</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>com.networknt</groupId>
+                <artifactId>json-schema-validator</artifactId>
+                <version>${validator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

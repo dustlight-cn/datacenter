@@ -28,11 +28,6 @@ public class FormController {
     @Autowired
     private FormSearcher formSearcher;
 
-    @GetMapping("schemas/_/{name}")
-    public Mono<Void> schemas(@PathVariable String name) {
-        return Mono.empty();
-    }
-
     @PostMapping("form")
     @Operation(summary = "创建表单", description = "创建一个表单，返回创建后的表单。")
     public Mono<Form> createForm(@RequestBody Form form,

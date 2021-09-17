@@ -20,7 +20,7 @@ public class SecurityConfig extends AuthSecurityWebFilterChainConfiguration {
         return http.authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .pathMatchers(HttpMethod.GET, "/" + schemaResourceProperties.getMapping()).permitAll()
-                .pathMatchers("/v1/**").authenticated()
+                .pathMatchers("/v*/**").authenticated()
                 .anyExchange().permitAll()
                 .and();
     }

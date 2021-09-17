@@ -3,8 +3,8 @@ package plus.datacenter.schema.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import plus.datacenter.schema.Schemas;
@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.util.Map;
 
 @Configuration
-@EnableConfigurationProperties(SchemaResourceProperties.class)
+@Import(SchemaConfiguration.class)
 public class SchemaResourcesConfiguration implements WebFluxConfigurer {
+
+    @Autowired
+    private Schemas schemas;
 
     @Autowired
     private SchemaResourceProperties properties;
@@ -26,7 +29,6 @@ public class SchemaResourcesConfiguration implements WebFluxConfigurer {
     @SneakyThrows
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Schemas schemas = Schemas.get(properties.getTemplatePath(), properties.getParameters());
 
         File dir = new File(properties.getOutputDir());
 
@@ -37,9 +39,10 @@ public class SchemaResourcesConfiguration implements WebFluxConfigurer {
             writeSchema(dir, kv.getKey(), kv.getValue());
         }
 
-        registry.addResourceHandler(properties.getMapping())
-                .addResourceLocations(dir.toURI().toASCIIString())
-                .setUseLastModified(true);
+        if (map.size() > 0)
+            registry.addResourceHandler(properties.getMapping())
+                    .addResourceLocations(dir.toURI().toASCIIString())
+                    .setUseLastModified(true);
     }
 
     private static void writeSchema(File dir, String name, Schemas.Schema schema) throws IOException {

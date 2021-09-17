@@ -52,6 +52,10 @@
             <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-schema-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

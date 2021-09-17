@@ -6,14 +6,11 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import lombok.SneakyThrows;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 
-import java.net.URI;
 import java.util.Set;
 
 @SpringBootTest
@@ -22,8 +19,10 @@ public class SchemaTest {
     @Autowired
     JsonSchemaFactory factory;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    JsonSchema formSchema;
 
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @SneakyThrows
@@ -31,9 +30,7 @@ public class SchemaTest {
         JsonNode formNode = objectMapper.readValue(new ClassPathResource("form.json").getInputStream(), JsonNode.class);
         JsonNode dataNode = objectMapper.readValue(new ClassPathResource("data.json").getInputStream(), JsonNode.class);
 
-        JsonSchema schema = factory.getSchema(URI.create("http://localhost:8080/v1/schemas/form"));
-
-        check(schema.validate(formNode));
+        check(formSchema.validate(formNode));
 
         JsonSchema formSchema = factory.getSchema(formNode);
 

@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "plus.datacenter.schema.adapter")
 public class SchemaAdapterProperties {
 
-    private String metaKey;
+    private String metaSchema;
+    private String formSchema;
     private String[] nonValidationKeywords;
 }

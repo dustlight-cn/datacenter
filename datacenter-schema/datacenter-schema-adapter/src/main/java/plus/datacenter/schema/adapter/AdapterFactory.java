@@ -3,7 +3,6 @@ package plus.datacenter.schema.adapter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.*;
 import com.networknt.schema.uri.ClasspathURLFactory;
-import com.networknt.schema.uri.URIFetcher;
 import com.networknt.schema.uri.URLFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +10,6 @@ import lombok.Setter;
 import plus.datacenter.schema.Schemas;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -29,7 +25,7 @@ public class AdapterFactory {
 
     private Schemas schemas;
 
-    private String metaKey;
+    private String metaSchema;
 
     private Set<String> nonValidationKeywords;
 
@@ -37,9 +33,9 @@ public class AdapterFactory {
         Map<String, Schemas.Schema> map;
         Schemas.Schema schema;
         JsonNode node;
-        if (schemas == null || metaKey == null ||
+        if (schemas == null || metaSchema == null ||
                 (map = schemas.getSchemaMap()) == null ||
-                (schema = map.get(metaKey)) == null ||
+                (schema = map.get(metaSchema)) == null ||
                 (node = schema.getJsonNode()) == null)
             throw new RuntimeException("Fail to get meta node");
         if (!node.has(ID))

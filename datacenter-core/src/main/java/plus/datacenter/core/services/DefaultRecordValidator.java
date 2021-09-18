@@ -92,7 +92,7 @@ public class DefaultRecordValidator extends AbstractRecordValidator {
         Record record = context.getRecord();
         Map<String, Object> data = record.getData();
 
-        JsonNode schema = FormUtils.transformMapToJsonNode(form.getSchema());
+        JsonNode schema = FormUtils.transformMapToJsonNode(form.getSchema()).get(FormUtils.propertiesFieldName);
         Iterator<Map.Entry<String, JsonNode>> iter = schema.fields();
         while (iter.hasNext()) {
             Map.Entry<String, JsonNode> kv = iter.next();

@@ -13,7 +13,7 @@ public class FormValueTransformer implements ItemValueTransformer {
 
     @Override
     public boolean check(JsonNode schema) {
-        return false;
+        return schema != null && schema.has("$ref");
     }
 
     @Override

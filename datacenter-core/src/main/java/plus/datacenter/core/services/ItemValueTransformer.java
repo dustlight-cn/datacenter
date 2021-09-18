@@ -1,6 +1,6 @@
 package plus.datacenter.core.services;
 
-import plus.datacenter.core.entities.forms.ItemType;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 表单项值转换器
@@ -8,11 +8,12 @@ import plus.datacenter.core.entities.forms.ItemType;
 public interface ItemValueTransformer {
 
     /**
-     * 目标类型
+     * 检查是否需要转换
      *
+     * @param schema
      * @return
      */
-    ItemType getItemType();
+    boolean check(JsonNode schema);
 
     /**
      * 值转换

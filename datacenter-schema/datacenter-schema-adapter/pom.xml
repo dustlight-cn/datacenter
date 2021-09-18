@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>plus.datacenter</groupId>
-        <artifactId>datacenter-parent</artifactId>
+        <artifactId>datacenter-schema</artifactId>
         <version>0.0.6-alpha-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>datacenter-mongo</artifactId>
-    <description>PLUS 数据中心服务 - MongoDB 模块</description>
+    <artifactId>datacenter-schema-adapter</artifactId>
+    <description>PLUS 数据中心服务 - JSON Schema 适配器模块</description>
 
     <properties>
         <java.version>11</java.version>
@@ -17,26 +17,44 @@
 
     <dependencies>
         <dependency>
-            <groupId>plus.datacenter</groupId>
-            <artifactId>datacenter-core</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-schema-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>jakarta.mail</artifactId>
+            <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-core</artifactId>
         </dependency>
     </dependencies>
 

@@ -76,6 +76,10 @@
         </dependency>
         <dependency>
             <groupId>plus.datacenter</groupId>
+            <artifactId>datacenter-schema-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>plus.datacenter</groupId>
             <artifactId>datacenter-mongo</artifactId>
         </dependency>
         <dependency>

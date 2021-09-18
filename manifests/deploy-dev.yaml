@@ -43,14 +43,24 @@ data:
           form-collection: form
           record-collection: form_record
         amqp:
-          exchange: datacenter
+          exchange: datacenter-test
           sync:
             enabled: true
+            queue: datacenter-sync-test
+            dead-letter-queue: datacenter-sync-dead-test
         schema:
           parameters:
             prefix: v1/schemas
             endpoint: https://api.json-schema.cloud
           mapping: ${plus.datacenter.schema.parameters.prefix}/**
+          adapter:
+            meta-schema: /schema
+            form-schema: /form
+            non-validation-keywords:
+              - form
+        elasticsearch:
+          record-prefix: datacenter_test.form_record
+          form-prefix: datacenter_test.form
     # SpringDoc 配置
     springdoc:
       api-docs:
@@ -69,7 +79,7 @@ data:
           username: my-user
           password: MTIzNDU2
           authentication-database: admin
-          database: datacenter
+          database: datacenter_test
         elasticsearch:
           client:
             reactive:
@@ -78,8 +88,8 @@ data:
       rabbitmq:
         addresses: rabbit-mq.default
         port: 5672
-        username: datacenter
-        password: datacenter
+        username: datacenter-test
+        password: datacenter-test
     logging:
       level:
         plus.datacenter.*: debug

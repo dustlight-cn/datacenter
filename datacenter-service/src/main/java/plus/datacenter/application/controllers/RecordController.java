@@ -1,5 +1,7 @@
 package plus.datacenter.application.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,14 +18,13 @@ import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
-import plus.datacenter.core.entities.forms.Item;
-import plus.datacenter.core.entities.forms.ItemType;
 import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
 import plus.datacenter.core.entities.queries.queries.MatchQuery;
 import plus.datacenter.core.services.RecordSearcher;
 import plus.datacenter.core.services.FormService;
+import plus.datacenter.core.utils.FormUtils;
 import plus.datacenter.mongo.services.MongoRecordService;
 import reactor.core.publisher.Mono;
 
@@ -45,6 +46,8 @@ public class RecordController {
 
     @Autowired
     private RecordSearcher recordSearcher;
+
+    private static final Set<String> notStringFormat = Set.of("date-time", "date", "time");
 
     @PostMapping("record")
     @Operation(summary = "创建表单记录", description = "提交一条表单记录。")
@@ -124,25 +127,35 @@ public class RecordController {
                     if (StringUtils.hasText(query)) {
                         return formService.getLatestForm(name, cid)
                                 .map(form -> {
-                                    MatchQuery q = new MatchQuery();
-                                    StringBuilder builder = new StringBuilder();
-                                    Collection<Item> items = form.getItems().values();
-                                    for (Item item : items) {
-                                        if (item.getType() != ItemType.STRING)
-                                            continue;
-                                        if (builder.length() > 0)
-                                            builder.append(',');
-                                        builder.append("data.");
-                                        builder.append(item.getName());
+                                    Set<String> stringFields = FormUtils.getFieldsByType(form, "string", node -> {
+                                        JsonNode n;
+                                        if (node == null ||
+                                                !node.has("format") ||
+                                                (n = node.get("format")) == null ||
+                                                !(n instanceof TextNode))
+                                            return true;
+                                        return !notStringFormat.contains(n.asText());
+                                    });
+                                    if (stringFields != null && stringFields.size() > 0) {
+                                        StringBuilder builder = new StringBuilder();
+                                        for (String field : stringFields) {
+                                            if (builder.length() > 0)
+                                                builder.append(',');
+                                            builder.append("data.");
+                                            builder.append(field.replace('/', '.'));
+                                        }
+
+                                        MatchQuery q = new MatchQuery();
+                                        q.setName(builder.toString());
+                                        q.setOpt(QueryOperation.MATCH);
+                                        q.setValue(query);
+                                        Collection<Query> qs = new HashSet<>();
+                                        if (queries != null)
+                                            qs.addAll(queries);
+                                        qs.add(q);
+                                        return qs;
                                     }
-                                    q.setName(builder.toString());
-                                    q.setOpt(QueryOperation.MATCH);
-                                    q.setValue(query);
-                                    Collection<Query> qs = new HashSet<>();
-                                    if (queries != null)
-                                        qs.addAll(queries);
-                                    qs.add(q);
-                                    return qs;
+                                    return queries;
                                 })
                                 .flatMap(qs -> recordSearcher.findRecord(cid,
                                         name,

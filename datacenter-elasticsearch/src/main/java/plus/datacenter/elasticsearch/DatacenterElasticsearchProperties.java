@@ -9,5 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "plus.datacenter.elasticsearch")
 public class DatacenterElasticsearchProperties {
 
+    private String formPrefix = "datacenter.form";
     private String recordPrefix = "datacenter.form_record";
 }

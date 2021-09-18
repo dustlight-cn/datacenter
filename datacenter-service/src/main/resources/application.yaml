@@ -15,12 +15,14 @@ plus:
   datacenter:
     authorization-endpoint: "http://accounts.wgv/authorize"
     mongo:
-      form-collection: test_form
-      record-collection: test_form_record
+      form-collection: form
+      record-collection: form_record
     amqp:
-      exchange: datacenter
+      exchange: datacenter-test
       sync:
         enabled: true
+        queue: datacenter-sync-test
+        dead-letter-queue: datacenter-sync-dead-test
     schema:
       parameters:
         prefix: v1/schemas
@@ -32,7 +34,8 @@ plus:
         non-validation-keywords:
           - form
     elasticsearch:
-      record-prefix: test
+      record-prefix: datacenter_test.form_record
+      form-prefix: datacenter_test.form
 # SpringDoc 配置
 springdoc:
   api-docs:
@@ -51,7 +54,7 @@ spring:
       username: my-user
       password: MTIzNDU2
       authentication-database: admin
-      database: datacenter
+      database: datacenter_test
     elasticsearch:
       client:
         reactive:
@@ -60,8 +63,8 @@ spring:
   rabbitmq:
     addresses: rabbitmq.svc
     port: 5672
-    username: datacenter
-    password: datacenter
+    username: datacenter-test
+    password: datacenter-test
 logging:
   level:
     plus.datacenter.*: debug

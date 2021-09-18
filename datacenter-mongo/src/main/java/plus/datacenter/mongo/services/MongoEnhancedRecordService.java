@@ -17,6 +17,7 @@ import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.services.EnhancedRecordService;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.function.Function;
@@ -69,6 +70,8 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                     .and("data." + kv.getKey().replace('/', '.')).in(formNameRecordMap.get(refForm)));
                         }
                     }
+                    if(criteriaCollection == null || criteriaCollection.size() == 0)
+                        return Mono.empty();
                     return operations.find(Query.query(new Criteria().orOperator(criteriaCollection)), Record.class, recordCollection);
                 });
     }

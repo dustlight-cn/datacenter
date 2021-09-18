@@ -26,8 +26,9 @@ public class DatacenterElasticsearchConfiguration {
 
     @Bean
     @ConditionalOnBean(ReactiveElasticsearchOperations.class)
-    public ElasticsearchFormSearcher elasticsearchFormSearcher(@Autowired ReactiveElasticsearchOperations operations) {
-        return new ElasticsearchFormSearcher(operations);
+    public ElasticsearchFormSearcher elasticsearchFormSearcher(@Autowired ReactiveElasticsearchOperations operations,
+                                                               @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchFormSearcher(operations, properties.getFormPrefix());
     }
 
     @Bean

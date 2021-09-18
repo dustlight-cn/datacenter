@@ -22,13 +22,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ElasticsearchFormSearcher implements FormSearcher {
 
-    ReactiveElasticsearchOperations operations;
+    private ReactiveElasticsearchOperations operations;
+    private String indexPrefix;
 
     public Mono<QueryResult<Form>> search(String clientId, String query, int page, int size) {
-        BoolQueryBuilder bq = new BoolQueryBuilder().must(new MultiMatchQueryBuilder(query, "name", "label", "description"))
+        BoolQueryBuilder bq = new BoolQueryBuilder().must(new MultiMatchQueryBuilder(query, "name", "schema.title", "schema.description"))
                 .filter(new MatchQueryBuilder("clientId", clientId));
         Query nsq = new NativeSearchQuery(bq).setPageable(Pageable.ofSize(size).withPage(page));
-        IndexCoordinates indexCoordinates = IndexCoordinates.of("datacenter.form");
+        IndexCoordinates indexCoordinates = IndexCoordinates.of(indexPrefix);
         return operations.searchForPage(nsq
                 , Form.class, indexCoordinates)
                 .map(searchHits ->
@@ -38,11 +39,11 @@ public class ElasticsearchFormSearcher implements FormSearcher {
     }
 
     public Mono<QueryResult<Form>> search(String clientId, String query, String name, int page, int size) {
-        BoolQueryBuilder bq = new BoolQueryBuilder().must(new MultiMatchQueryBuilder(query, "label", "description"))
+        BoolQueryBuilder bq = new BoolQueryBuilder().must(new MultiMatchQueryBuilder(query, "schema.title", "schema.description"))
                 .filter(new MatchQueryBuilder("clientId", clientId))
                 .filter(new MatchQueryBuilder("name", name));
         Query nsq = new NativeSearchQuery(bq).setPageable(Pageable.ofSize(size).withPage(page));
-        IndexCoordinates indexCoordinates = IndexCoordinates.of("datacenter.form");
+        IndexCoordinates indexCoordinates = IndexCoordinates.of(indexPrefix);
         return operations.searchForPage(nsq
                 , Form.class, indexCoordinates)
                 .map(searchHits ->

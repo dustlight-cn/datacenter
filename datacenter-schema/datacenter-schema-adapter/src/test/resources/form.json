@@ -13,7 +13,7 @@
     },
     "company": {
       "$ref": "record",
-      "$form": "company"
+      "form": "company"
     }
   },
   "additionalProperties": false,

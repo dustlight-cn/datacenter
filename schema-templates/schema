@@ -64,7 +64,7 @@
         "record"
       ]
     },
-    "$form": {
+    "form": {
       "type": "string"
     },
     "title": {
@@ -222,7 +222,7 @@
   },
   "dependencies": {
     "$ref": [
-      "$form"
+      "form"
     ]
   },
   "default": {}

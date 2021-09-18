@@ -10,7 +10,8 @@ import java.util.*;
 
 public class FormUtils {
 
-    public static final String referenceFieldName = "$form";
+    public static final String referenceFieldName = "form";
+    public static final String propertiesFieldName = "properties";
     public static final ObjectMapper mapper = new ObjectMapper();
 
     public static JsonNode transformMapToJsonNode(Map map) {
@@ -36,7 +37,8 @@ public class FormUtils {
     public static Map<String, String> getReference(Form form) {
         if (form == null)
             Collections.emptySet();
-        return getReference(transformMapToJsonNode(form.getSchema()));
+        JsonNode node = transformMapToJsonNode(form.getSchema());
+        return getReference(node.get(propertiesFieldName));
     }
 
     public static Map<String, String> getReference(JsonNode node) {
@@ -55,11 +57,10 @@ public class FormUtils {
             Map.Entry<String, JsonNode> kv = iter.next();
             String key = kv.getKey();
             JsonNode val = kv.getValue();
-            String prefix = path.length() > 0 ? path + "/" + key : key;
             if (referenceFieldName.equals(key) && val instanceof TextNode)
-                result.put(prefix, val.asText());
+                result.put(path, val.asText());
             else if (val instanceof ObjectNode)
-                searchReference(val, result, prefix);
+                searchReference(val, result, path.length() > 0 ? path + "/" + key : key);
         }
     }
 }

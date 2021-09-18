@@ -53,27 +53,20 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
             return Flux.empty();
 
         Set<String> formNames = formNameRecordMap.keySet();
-        return operations.find(Query.query(Criteria.where("groups.items.form").in(formNames).and("clientId").is(clientId)), Form.class, formCollection)
+        return operations.find(Query.query(Criteria.where("references").in(formNames).and("clientId").is(clientId)), Form.class, formCollection)
                 .collectList()
                 .flatMapMany(forms -> {
                     Collection<Criteria> criteriaCollection = new HashSet<>();
                     for (Form form : forms) {
-//                        Map<String, Item> itemMap = form.getItems();
-//                        Iterator<Map.Entry<String, Item>> iter = itemMap.entrySet().iterator();
-//
-//                        while (iter.hasNext()) {
-//                            Map.Entry<String, Item> kv = iter.next();
-//                            String itemName = kv.getKey();
-//                            Item item = kv.getValue();
-//                            if (!(item instanceof FormItem))
-//                                continue;
-//                            FormItem formItem = (FormItem) item;
-//                            if (!formNames.contains(formItem.getForm()))
-//                                continue;
-//                            criteriaCollection.add(Criteria.where("clientId").is(clientId)
-//                                    .and("formId").is(form.getId())
-//                                    .and("data." + itemName).in(formNameRecordMap.get(formItem.getForm())));
-//                        }
+                        Map<String, String> referenceMap = form.getReferenceMap();
+                        for (var kv : referenceMap.entrySet()) {
+                            var refForm = kv.getValue();
+                            if (!formNames.contains(refForm))
+                                continue;
+                            criteriaCollection.add(Criteria.where("clientId").is(clientId)
+                                    .and("formId").is(form.getId())
+                                    .and("data." + kv.getKey().replace('/', '.')).in(formNameRecordMap.get(refForm)));
+                        }
                     }
                     return operations.find(Query.query(new Criteria().orOperator(criteriaCollection)), Record.class, recordCollection);
                 });
@@ -111,6 +104,8 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                     Collection<String> fields = new HashSet<>();
 
                     for (Form form : forms) {
+                        if(form.getReferenceMap() != null)
+                            fields.addAll(form.getReferenceMap().keySet());
 //                        String formId = form.getId();
 //                        Map<String, Item> itemMap = form.getItems();
 //                        Map<String, FormItem> formItemMap = new HashMap<>();

@@ -1,8 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "${endpoint}/${prefix}/record",
-  "type": [
-    "string",
-    "object"
-  ]
+  "type": "string"
 }

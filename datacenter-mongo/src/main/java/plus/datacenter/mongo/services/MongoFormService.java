@@ -117,7 +117,7 @@ public class MongoFormService extends AbstractFormService implements Initializin
                     Collection<Form> forms = formMap.values(); // 去重后的表单对象
                     Map<String, Form> formIdMap = new HashMap<>(); // 表单 ID 与表单的映射
 
-                    Flux<FormMeta> formMetaFlux = null;
+                    Flux<FormMeta> formMetaFlux = Flux.empty();
                     for (Form form : forms) {
                         form.setId(new ObjectId().toHexString()); // 生成 ObjectID
                         form.setVersion(null); // 置空版本
@@ -127,24 +127,18 @@ public class MongoFormService extends AbstractFormService implements Initializin
                         update.set("currentId", form.getId());
                         update.inc("version", 1);
 
-                        Mono<FormMeta> tmp = operations.withSession(clientSession)
-                                .findAndModify(Query.query(Criteria.where("clientId").is(form.getClientId()).and("_id").is(getFormMetaId(form))),
-                                        update,
-                                        FormMeta.class,
-                                        getFormMetaCollectionName()) // 更新 Meta 并获取旧数据
-                                .onErrorMap(throwable -> new DatacenterException(throwable.getMessage(), throwable))
-                                .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.details(form.getName()).getException()))
-                                .flatMap(formMeta -> Mono.fromRunnable(() -> formMeta.setCurrentId(form.getId()))
-                                        .then(Mono.just(formMeta))); // 更新 currentId 以便后面查找
-
-                        if (formMetaFlux == null)
-                            formMetaFlux = tmp.flux();
-                        else
-                            formMetaFlux.concatWith(tmp);
+                        formMetaFlux = formMetaFlux.transform(f -> f.concatWith(
+                                operations.withSession(clientSession)
+                                        .findAndModify(Query.query(Criteria.where("clientId").is(form.getClientId()).and("_id").is(getFormMetaId(form))),
+                                                update,
+                                                FormMeta.class,
+                                                getFormMetaCollectionName()) // 更新 Meta 并获取旧数据
+                                        .onErrorMap(throwable -> new DatacenterException(throwable.getMessage(), throwable))
+                                        .switchIfEmpty(Mono.error(ErrorEnum.FORM_NOT_FOUND.details(form.getName()).getException()))
+                                        .flatMap(formMeta -> Mono.fromRunnable(() -> formMeta.setCurrentId(form.getId()))
+                                                .then(Mono.just(formMeta))) // 更新 currentId 以便后面查找
+                        ));
                     }
-
-                    if (formMetaFlux == null)
-                        return Flux.empty();
                     return formMetaFlux.collectList()
                             .flatMapMany(formMetas -> {
                                 for (FormMeta meta : formMetas) {

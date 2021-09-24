@@ -24,6 +24,10 @@ public class JsonSchemaRecordValidator extends DefaultRecordValidator {
     @Setter
     private JsonSchemaFactory factory;
 
+    @Getter
+    @Setter
+    private String formSchemaId;
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JsonSchemaRecordValidator(int order, FormService formService, JsonSchemaFactory factory) {
@@ -40,8 +44,9 @@ public class JsonSchemaRecordValidator extends DefaultRecordValidator {
     protected Mono<Context> doValidate(Context context) {
         Form form = context.getForm();
         Record record = context.getRecord();
-
-        JsonSchema schema = factory.getSchema(FormUtils.transformMapToJsonNode(form.getSchema()));
+        Map<String, Object> map = form.getSchema();
+        map.put("$id", formSchemaId);
+        JsonSchema schema = factory.getSchema(FormUtils.transformMapToJsonNode(map));
 
         Map<String, Object> data;
         JsonNode node;

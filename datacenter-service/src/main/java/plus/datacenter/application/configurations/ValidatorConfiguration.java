@@ -17,8 +17,10 @@ public class ValidatorConfiguration {
     @Bean
     public JsonSchemaRecordValidator jsonSchemaRecordValidator(@Autowired FormService formService,
                                                                @Autowired JsonSchemaFactory factory,
+                                                               @Autowired JsonSchema formSchema,
                                                                @Autowired ApplicationContext context) {
         JsonSchemaRecordValidator validator = new JsonSchemaRecordValidator(formService, factory);
+        validator.setFormSchemaId(formSchema.getCurrentUri().toASCIIString() + "_INSTANCE");
         validator.setTransformers(context.getBeansOfType(ItemValueTransformer.class).values());
         return validator;
     }

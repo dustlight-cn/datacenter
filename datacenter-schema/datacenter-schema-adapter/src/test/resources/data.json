@@ -1,5 +1,7 @@
 {
   "name": "Hansin",
-  "company": "ggboy",
+  "company": {
+    "xx": "!@3"
+  },
   "birth": "1997-01-15"
 }

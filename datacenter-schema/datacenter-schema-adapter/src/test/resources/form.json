@@ -12,10 +12,20 @@
       "format": "date"
     },
     "company": {
-      "$ref": "record",
-      "form": "company"
+      "anyOf": [
+        {
+          "$ref": "record",
+          "form": "company"
+        },
+        {
+          "type": "object"
+        }
+      ]
     }
   },
   "additionalProperties": false,
-  "required": ["name","company"]
+  "required": [
+    "name",
+    "company"
+  ]
 }

@@ -36,6 +36,8 @@ public class FormValueTransformer implements ItemValueTransformer {
 
     @Override
     public Object transform(Object originValue) {
-        return originValue instanceof ObjectId ? originValue : new ObjectId(String.valueOf(originValue));
+        return (originValue instanceof ObjectId || !(originValue instanceof String)) ?
+                originValue :
+                new ObjectId((String) originValue);
     }
 }

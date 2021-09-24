@@ -94,6 +94,13 @@ public class FormUtils {
                 }
             } else if (val instanceof ObjectNode)
                 searchFieldsByType(val, result, path.length() > 0 ? path + "/" + key : key, targetType, checker);
+            else if (val instanceof ArrayNode) {
+                ArrayNode arrayNode = (ArrayNode) val;
+                Iterator<JsonNode> elem = arrayNode.elements();
+                while (elem.hasNext()) {
+                    searchFieldsByType(elem.next(), result, path, targetType, checker);
+                }
+            }
         }
     }
 

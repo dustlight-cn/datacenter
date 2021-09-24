@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.util.StringUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
@@ -90,30 +91,47 @@ public class ElasticsearchRecordService extends AbstractRecordService {
         stringBuilder.append(record.getFormName());
         stringBuilder.append('.');
         stringBuilder.append(record.getFormId());
+
         Map<String, Object> data = record.getData();
+        String hash = computeDataTypeHash(data);
+        if (StringUtils.hasText(hash)) {
+            stringBuilder.append('_');
+            stringBuilder.append(hash);
+        }
+        return stringBuilder.toString();
+    }
+
+    private static String computeDataTypeHash(Map<String, Object> data) {
+        StringBuilder stringBuilder = new StringBuilder();
         if (data != null && data.size() > 0) {
             Set<String> names = data.keySet();
             String[] arr = new String[names.size()];
             names.toArray(arr);
             Arrays.sort(arr);
-            boolean flag = false;
+
             for (String name : arr) {
                 Object val;
                 if ((val = data.get(name)) instanceof Record) {
                     Record innerRecord = (Record) val;
-                    if (flag)
-                        stringBuilder.append('.');
-                    else {
-                        stringBuilder.append('.');
-                        flag = true;
-                    }
+
                     stringBuilder.append(name);
                     stringBuilder.append('-');
                     stringBuilder.append(innerRecord.getFormId());
+                } else if (val instanceof Map) {
+
+                    stringBuilder.append(name);
+                    stringBuilder.append('-');
+                    stringBuilder.append(computeDataTypeHash((Map<String, Object>) val));
+                } else if (val != null) {
+                    stringBuilder.append(name);
+                    stringBuilder.append('-');
+                    stringBuilder.append(val.getClass().getName());
                 }
             }
         }
-        return stringBuilder.toString();
+        if (stringBuilder.length() > 0)
+            return String.valueOf(stringBuilder.toString().hashCode());
+        return "";
     }
 
     @Override

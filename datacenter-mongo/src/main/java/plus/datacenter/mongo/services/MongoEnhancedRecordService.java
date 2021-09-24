@@ -70,7 +70,7 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                     .and("data." + kv.getKey().replace('/', '.')).in(formNameRecordMap.get(refForm)));
                         }
                     }
-                    if(criteriaCollection == null || criteriaCollection.size() == 0)
+                    if (criteriaCollection == null || criteriaCollection.size() == 0)
                         return Mono.empty();
                     return operations.find(Query.query(new Criteria().orOperator(criteriaCollection)), Record.class, recordCollection);
                 });
@@ -143,7 +143,13 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                             if (obj instanceof Collection || obj.getClass().isArray()) {
                                                 return (newVal instanceof Collection) ? newVal : Arrays.asList(newVal);
                                             } else {
-                                                return (newVal instanceof Collection) ? ((Collection<?>) newVal).iterator().next() : newVal;
+                                                if (newVal instanceof Collection) {
+                                                    Iterator<?> iter = ((Collection<?>) newVal).iterator();
+                                                    if (iter != null && iter.hasNext())
+                                                        return iter.next();
+                                                    return null;
+                                                } else
+                                                    return newVal;
                                             }
                                         });
                                     }

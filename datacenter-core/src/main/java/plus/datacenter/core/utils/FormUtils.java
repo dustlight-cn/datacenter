@@ -2,6 +2,7 @@ package plus.datacenter.core.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import plus.datacenter.core.entities.forms.Form;
@@ -63,6 +64,13 @@ public class FormUtils {
                 result.put(path, val.asText());
             else if (val instanceof ObjectNode)
                 searchReference(val, result, path.length() > 0 ? path + "/" + key : key);
+            else if (val instanceof ArrayNode) {
+                ArrayNode arrayNode = (ArrayNode) val;
+                Iterator<JsonNode> elem = arrayNode.elements();
+                while (elem.hasNext()) {
+                    searchReference(elem.next(), result, path);
+                }
+            }
         }
     }
 

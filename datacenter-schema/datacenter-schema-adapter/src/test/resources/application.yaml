@@ -5,4 +5,4 @@ plus:
         meta-schema: /schema
         form-schema: /form
         non-validation-keywords:
-          - $form
+          - form

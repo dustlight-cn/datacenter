@@ -27,6 +27,10 @@ public class JsonSchemaFormValidator extends AbstractFormValidator {
         for (Form form : forms) {
             JsonNode formNode = FormUtils.transformMapToJsonNode(form.getSchema());
             Set<ValidationMessage> msgs = formSchema.validate(formNode);
+            if (form.getSchema() != null) {
+                form.getSchema().remove("$id");
+                form.getSchema().remove("$schema");
+            }
             if (msgs != null && msgs.size() != 0)
                 return Mono.error(ValidationExceptionUtil.getException(msgs));
         }

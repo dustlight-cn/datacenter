@@ -1,0 +1,31 @@
+{
+  "$id": "http://localhost:8080/v1/schemas/",
+  "type": "object",
+  "title": "客户",
+  "description": "客户信息",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "birth": {
+      "type": "string",
+      "format": "date"
+    },
+    "company": {
+      "anyOf": [
+        {
+          "$ref": "record",
+          "form": "company"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "company"
+  ]
+}

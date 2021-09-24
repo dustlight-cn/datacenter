@@ -1,130 +1,142 @@
 package plus.datacenter.core.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import plus.datacenter.core.entities.forms.Form;
-import plus.datacenter.core.entities.forms.Item;
-import plus.datacenter.core.entities.forms.ItemType;
-import plus.datacenter.core.entities.forms.items.*;
 
-import java.time.Instant;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 public class FormUtils {
 
-    public static Form transformForm(Map<String, Object> form) {
+    public static final String referenceFieldName = "form";
+    public static final String propertiesFieldName = "properties";
+    private static final String typeFieldName = "type";
+    public static final ObjectMapper mapper = new ObjectMapper();
+
+    public static JsonNode transformMapToJsonNode(Map map) {
+        if (map == null)
+            return null;
+        return mapper.convertValue(map, JsonNode.class);
+    }
+
+    public static void fillReference(Form form) {
+        if (form == null || form.getSchema() == null)
+            return;
+        Map<String, String> map = getReference(form);
+        if (map == null || map.size() == 0) {
+            form.setReferences(null);
+            form.setReferenceMap(null);
+            return;
+        }
+        Set<String> references = new HashSet<>(map.values());
+        form.setReferences(references);
+        form.setReferenceMap(map);
+    }
+
+    public static Map<String, String> getReference(Form form) {
         if (form == null)
-            return null;
-        try {
-            ObjectMapper mapper = Json.mapper();
-            return mapper.readValue(mapper.writeValueAsString(form), Form.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return Collections.emptyMap();
+        JsonNode node = transformMapToJsonNode(form.getSchema());
+        return getReference(node.get(propertiesFieldName));
+    }
+
+    public static Map<String, String> getReference(JsonNode node) {
+        if (node == null)
+            return Collections.emptyMap();
+        Map<String, String> result = new HashMap<>();
+        searchReference(node, result, "");
+        return result;
+    }
+
+    private static void searchReference(JsonNode root, Map<String, String> result, String path) {
+        if (root == null || !root.fields().hasNext())
+            return;
+        Iterator<Map.Entry<String, JsonNode>> iter = root.fields();
+        while (iter.hasNext()) {
+            Map.Entry<String, JsonNode> kv = iter.next();
+            String key = kv.getKey();
+            JsonNode val = kv.getValue();
+            if (referenceFieldName.equals(key) && val instanceof TextNode)
+                result.put(path, val.asText());
+            else if (val instanceof ObjectNode)
+                searchReference(val, result, path.length() > 0 ? path + "/" + key : key);
+            else if (val instanceof ArrayNode) {
+                ArrayNode arrayNode = (ArrayNode) val;
+                Iterator<JsonNode> elem = arrayNode.elements();
+                while (elem.hasNext()) {
+                    searchReference(elem.next(), result, path);
+                }
+            }
         }
     }
 
-    public static Item transformItem(Map<String, Object> item) {
-        if (item == null)
-            return null;
-        try {
-            Class<? extends Item> targetClass = item.get("type") == null ? Item.class : getItemClass(getItemType(item.get("type").toString()));
-            ObjectMapper mapper = Json.mapper();
-            return mapper.readValue(mapper.writeValueAsString(item), targetClass);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+    private static void searchFieldsByType(JsonNode root,
+                                           Set<String> result,
+                                           String path,
+                                           String targetType,
+                                           Function<JsonNode, Boolean> checker) {
+        if (root == null || !root.fields().hasNext())
+            return;
+        Iterator<Map.Entry<String, JsonNode>> iter = root.fields();
+        while (iter.hasNext()) {
+            Map.Entry<String, JsonNode> kv = iter.next();
+            String key = kv.getKey();
+            JsonNode val = kv.getValue();
+            if (typeFieldName.equals(key) && val instanceof TextNode) {
+                Boolean checkResult;
+                if (val.asText().equals(targetType) &&
+                        (checker == null || (checkResult = checker.apply(root)) != null && checkResult)) {
+                    result.add(path);
+                }
+            } else if (val instanceof ObjectNode)
+                searchFieldsByType(val, result, path.length() > 0 ? path + "/" + key : key, targetType, checker);
+            else if (val instanceof ArrayNode) {
+                ArrayNode arrayNode = (ArrayNode) val;
+                Iterator<JsonNode> elem = arrayNode.elements();
+                while (elem.hasNext()) {
+                    searchFieldsByType(elem.next(), result, path, targetType, checker);
+                }
+            }
         }
     }
 
-    public static Object transformItemValue(Object value, ItemType type) {
-        if (value == null)
-            return null;
-        try {
-            Class<?> targetClass = getItemValueClass(type);
-            if (targetClass == value.getClass())
-                return value;
-            ObjectMapper mapper = Json.mapper();
-            return mapper.readValue(mapper.writeValueAsString(value), targetClass);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public static Set<String> getFieldsByType(JsonNode node,
+                                              String targetType,
+                                              Function<JsonNode, Boolean> checker) {
+        if (node == null)
+            return Collections.emptySet();
+        Set<String> result = new HashSet<>();
+        searchFieldsByType(node, result, "", targetType, checker);
+        return result;
     }
 
-    public static Class<? extends Item> getItemClass(ItemType type) {
-        switch (type) {
-            case INT:
-                return IntItem.class;
-            case DOUBLE:
-                return DoubleItem.class;
-            case USER:
-                return UserItem.class;
-            case STRING:
-                return StringItem.class;
-            case FILE:
-                return FileItem.class;
-            case SELECT:
-                return SelectItem.class;
-            case FORM:
-                return FormItem.class;
-            case DATE:
-                return DateItem.class;
-            case BOOLEAN:
-                return BooleanItem.class;
-            case ELASTIC:
-                return ElasticItem.class;
-            default:
-                return Item.class;
-        }
+    public static Set<String> getFieldsByType(JsonNode node,
+                                              String targetType) {
+        if (node == null)
+            return Collections.emptySet();
+        Set<String> result = new HashSet<>();
+        searchFieldsByType(node, result, "", targetType, null);
+        return result;
     }
 
-    public static Class<?> getItemValueClass(ItemType type) {
-        switch (type) {
-            case INT:
-                return Integer.class;
-            case DOUBLE:
-                return Double.class;
-            case SELECT:
-                return SelectItem.Selected.class;
-            case DATE:
-                return Instant.class;
-            case BOOLEAN:
-                return Boolean.class;
-            case ELASTIC:
-                return ElasticItem.ElasticValue.class;
-            case USER:
-            case FORM:
-            case FILE:
-            case STRING:
-            default:
-                return String.class;
-        }
+    public static Set<String> getFieldsByType(Form form,
+                                              String targetType,
+                                              Function<JsonNode, Boolean> checker) {
+        if (form == null)
+            return Collections.emptySet();
+        JsonNode node = transformMapToJsonNode(form.getSchema());
+        return getFieldsByType(node.get(propertiesFieldName), targetType, checker);
     }
 
-    public static ItemType getItemType(String type) {
-        if (type == null)
-            return ItemType.STRING;
-        switch (type.toUpperCase()) {
-            case "INT":
-                return ItemType.INT;
-            case "DOUBLE":
-                return ItemType.DOUBLE;
-            case "FILE":
-                return ItemType.FILE;
-            case "SELECT":
-                return ItemType.SELECT;
-            case "FORM":
-                return ItemType.FORM;
-            case "DATE":
-                return ItemType.DATE;
-            case "BOOLEAN":
-                return ItemType.BOOLEAN;
-            case "USER":
-                return ItemType.USER;
-            case "ELASTIC":
-                return ItemType.ELASTIC;
-            case "STRING":
-            default:
-                return ItemType.STRING;
-        }
+    public static Set<String> getFieldsByType(Form form,
+                                              String targetType) {
+        if (form == null)
+            return Collections.emptySet();
+        JsonNode node = transformMapToJsonNode(form.getSchema());
+        return getFieldsByType(node.get(propertiesFieldName), targetType);
     }
 }

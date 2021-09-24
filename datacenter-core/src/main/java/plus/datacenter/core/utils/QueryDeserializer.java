@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import plus.datacenter.core.entities.forms.Item;
 import plus.datacenter.core.entities.queries.Query;
 import plus.datacenter.core.entities.queries.QueryOperation;
 
@@ -22,7 +21,7 @@ public class QueryDeserializer extends StdScalarDeserializer<Query> {
     private Gson gson = Converters.registerInstant(new GsonBuilder()).create();
 
     protected QueryDeserializer() {
-        super(Item.class);
+        super(Query.class);
     }
 
     protected QueryDeserializer(Class<?> vc) {

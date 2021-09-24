@@ -12,10 +12,13 @@ import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverte
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
-import plus.datacenter.elasticsearch.converters.LongToInstantConverter;
-import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordSearcher;
-import plus.datacenter.elasticsearch.services.ElasticsearchFormRecordService;
+import plus.datacenter.elasticsearch.converters.InstantToStringConverter;
+import plus.datacenter.elasticsearch.converters.ObjectIdToStringConverter;
+import plus.datacenter.elasticsearch.services.ElasticsearchRecordSearcher;
 import plus.datacenter.elasticsearch.services.ElasticsearchFormSearcher;
+import plus.datacenter.elasticsearch.services.ElasticsearchRecordService;
+
+import java.util.Arrays;
 
 @EnableConfigurationProperties(DatacenterElasticsearchProperties.class)
 @Configuration
@@ -23,32 +26,35 @@ public class DatacenterElasticsearchConfiguration {
 
     @Bean
     @ConditionalOnBean(ReactiveElasticsearchOperations.class)
-    public ElasticsearchFormSearcher elasticsearchFormSearcher(@Autowired ReactiveElasticsearchOperations operations) {
-        return new ElasticsearchFormSearcher(operations);
+    public ElasticsearchFormSearcher elasticsearchFormSearcher(@Autowired ReactiveElasticsearchOperations operations,
+                                                               @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchFormSearcher(operations, properties.getFormPrefix());
     }
 
     @Bean
     @ConditionalOnBean(ReactiveElasticsearchOperations.class)
-    public ElasticsearchFormRecordService elasticsearchFormRecordService(@Autowired ReactiveElasticsearchOperations operations,
-                                                                         @Autowired DatacenterElasticsearchProperties properties) {
-        return new ElasticsearchFormRecordService(operations, properties.getRecordPrefix());
+    public ElasticsearchRecordSearcher elasticsearchFormRecordSearcher(@Autowired ReactiveElasticsearchOperations operations,
+                                                                       @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchRecordSearcher(operations, properties.getRecordPrefix());
     }
 
     @Bean
     @ConditionalOnBean(ReactiveElasticsearchOperations.class)
-    public ElasticsearchFormRecordSearcher elasticsearchFormRecordSearcher(@Autowired ReactiveElasticsearchOperations operations,
-                                                                           @Autowired DatacenterElasticsearchProperties properties) {
-        return new ElasticsearchFormRecordSearcher(operations, properties.getRecordPrefix());
+    public ElasticsearchRecordService elasticsearchRecordService(@Autowired ReactiveElasticsearchOperations operations,
+                                                                 @Autowired DatacenterElasticsearchProperties properties) {
+        return new ElasticsearchRecordService(operations, properties.getRecordPrefix());
     }
 
     @Bean
     @Primary
-    public ElasticsearchConverter dcElasticsearchConverter(SimpleElasticsearchMappingContext mappingContext,
-                                                         ElasticsearchCustomConversions elasticsearchCustomConversions) {
+    public ElasticsearchConverter dcElasticsearchConverter(SimpleElasticsearchMappingContext mappingContext) {
         DefaultConversionService conversionService = new DefaultConversionService();
-        conversionService.addConverter(new LongToInstantConverter());
+        conversionService.addConverter(new InstantToStringConverter());
+        conversionService.addConverter(new ObjectIdToStringConverter());
         MappingElasticsearchConverter converter = new MappingElasticsearchConverter(mappingContext, conversionService);
-        converter.setConversions(elasticsearchCustomConversions);
+        converter.setConversions(new ElasticsearchCustomConversions(Arrays.asList(new InstantToStringConverter(),
+                new ObjectIdToStringConverter())));
         return converter;
     }
+
 }

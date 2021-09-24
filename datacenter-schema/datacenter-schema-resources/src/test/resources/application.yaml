@@ -1,0 +1,4 @@
+plus:
+  datacenter:
+    schema:
+      prefix: https://example.com/schemas

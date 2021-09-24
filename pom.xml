@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <groupId>plus.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
-    <version>0.0.3-alpha-2-SNAPSHOT</version>
+    <version>0.0.6-alpha-SNAPSHOT</version>
     <description>PLUS 数据中心服务</description>
 
     <properties>
@@ -23,25 +23,55 @@
         <spring-boot.version>2.5.2</spring-boot.version>
         <springdoc.version>1.5.9</springdoc.version>
 
-        <auth.version>1.1.0-alpha-1-SNAPSHOT</auth.version>
+        <auth.version>1.1.1-alpha-SNAPSHOT</auth.version>
         <storage.version>0.0.5</storage.version>
+
+        <gson-javatime-serialisers.version>1.1.1</gson-javatime-serialisers.version>
     </properties>
 
     <modules>
+        <module>datacenter-schema</module>
         <module>datacenter-core</module>
         <module>datacenter-elasticsearch</module>
         <module>datacenter-mongo</module>
+        <module>datacenter-amqp</module>
         <module>datacenter-service</module>
+        <module>tools/es2mongo</module>
+        <module>tools/mongotest</module>
+        <module>tools/amqptest</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring 依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- 子模块 -->
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-resources</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-schema-adapter</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -56,12 +86,28 @@
             </dependency>
             <dependency>
                 <groupId>plus.datacenter</groupId>
+                <artifactId>datacenter-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>plus.datacenter</groupId>
                 <artifactId>datacenter-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>es2mongo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.datacenter</groupId>
+                <artifactId>mongotest</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -73,6 +119,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Swagger -->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-ui</artifactId>
@@ -82,6 +129,12 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-core</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fatboyindustrial.gson-javatime-serialisers</groupId>
+                <artifactId>gson-javatime-serialisers</artifactId>
+                <version>${gson-javatime-serialisers.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -249,49 +302,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-    <profiles>
-        <profile>
-            <id>native</id>
-            <properties>
-                <repackage.classifier>exec</repackage.classifier>
-                <native-buildtools.version>0.9.1</native-buildtools.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>junit-platform-native</artifactId>
-                    <version>${native-buildtools.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <version>${native-buildtools.version}</version>
-                        <executions>
-                            <execution>
-                                <id>test-native</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>build-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <developers>
         <developer>

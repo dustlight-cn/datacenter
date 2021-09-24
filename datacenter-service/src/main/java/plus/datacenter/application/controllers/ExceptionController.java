@@ -26,7 +26,7 @@ public class ExceptionController {
         var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         logger.error(String.format("Error on path: %s, remote ip: %s", request.getURI(), request.getRemoteAddress()), e);
-        return Mono.just(logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNKNOWN.getDetails());
+        return Mono.just(logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e) : ErrorEnum.UNKNOWN.getDetails());
     }
 
     @ExceptionHandler(DatacenterException.class)
@@ -58,7 +58,7 @@ public class ExceptionController {
         var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.FORBIDDEN);
         logger.debug(e.getMessage(), e);
-        return Mono.just(ErrorEnum.UNAUTHORIZED.details(e.getMessage()));
+        return Mono.just(ErrorEnum.UNAUTHORIZED.details(e));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -67,7 +67,7 @@ public class ExceptionController {
         var request = exchange.getRequest();
         response.setStatusCode(HttpStatus.FORBIDDEN);
         logger.debug(e.getMessage(), e);
-        return Mono.just(ErrorEnum.ACCESS_DENIED.details(e.getMessage()));
+        return Mono.just(ErrorEnum.ACCESS_DENIED.details(e));
     }
 
 }

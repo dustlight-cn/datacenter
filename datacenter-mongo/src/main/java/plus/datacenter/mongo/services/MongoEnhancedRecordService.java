@@ -136,6 +136,8 @@ public class MongoEnhancedRecordService implements EnhancedRecordService {
                                         String path = kv.getKey();
                                         Object newVal = getMapItem(path, _data, 0);
                                         putMapItem(path, data, 0, (obj) -> {
+                                            if(!(obj instanceof ObjectId))
+                                                return obj;
                                             if (newVal == null)
                                                 return null;
                                             if (obj == null)

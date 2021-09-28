@@ -10,6 +10,7 @@ import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.entities.QueryResult;
 import plus.auth.resources.core.AuthPrincipal;
 import plus.datacenter.application.ClientUtils;
+import plus.datacenter.application.services.FormSchemaFiller;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormSearcher;
 import plus.datacenter.core.services.FormService;
@@ -28,6 +29,9 @@ public class FormController {
     @Autowired
     private FormSearcher formSearcher;
 
+    @Autowired
+    private FormSchemaFiller formSchemaFiller;
+
     @PostMapping("form")
     @Operation(summary = "创建表单", description = "创建一个表单，返回创建后的表单。")
     public Mono<Form> createForm(@RequestBody Form form,
@@ -40,7 +44,8 @@ public class FormController {
                     if (principal.getUid() != null)
                         form.setOwner(principal.getUidString());
                     return formService.createForm(form, cid);
-                });
+                })
+                .map(form1 -> formSchemaFiller.fill(form1));
     }
 
     @GetMapping("form")
@@ -50,7 +55,8 @@ public class FormController {
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formService.getLatestForm(name, cid));
+                .flatMap(cid -> formService.getLatestForm(name, cid))
+                .map(form1 -> formSchemaFiller.fill(form1));
     }
 
     @GetMapping("forms")
@@ -67,7 +73,12 @@ public class FormController {
                 .flatMap(cid -> StringUtils.hasText(name) ?
                         formSearcher.search(cid, query, name, page, size) :
                         formSearcher.search(cid, query, page, size)
-                );
+                )
+                .map(formQueryResult -> {
+                    if(formQueryResult != null && formQueryResult.getData() != null)
+                        formQueryResult.setData(formSchemaFiller.fill(formQueryResult.getData()));
+                    return formQueryResult;
+                });
     }
 
     @PutMapping("form")
@@ -83,7 +94,8 @@ public class FormController {
                     form.setOwner(principal.getUidString());
                     form.setClientId(cid);
                     return formService.updateForm(form, cid);
-                });
+                })
+                .map(form1 -> formSchemaFiller.fill(form1));
     }
 
     @DeleteMapping("forms")
@@ -103,7 +115,8 @@ public class FormController {
                                   ReactiveAuthClient reactiveAuthClient,
                                   AuthPrincipal principal) {
         return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
-                .flatMap(cid -> formService.getForm(id, cid));
+                .flatMap(cid -> formService.getForm(id, cid))
+                .map(form1 -> formSchemaFiller.fill(form1));
     }
 
 }

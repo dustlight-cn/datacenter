@@ -38,6 +38,12 @@ data:
           uri: http://auth-service.auth/v1/token/validity
           token-type: jwt
       datacenter:
+        form:
+          schema-additional:
+            - key: $id
+              value: ${plus.datacenter.schema.parameters.endpoint}/${plus.datacenter.schema.parameters.prefix}/
+            - key: $schema
+              value: ${plus.datacenter.schema.parameters.endpoint}/${plus.datacenter.schema.parameters.prefix}${plus.datacenter.schema.adapter.form-schema}
         authorization-endpoint: "https://accounts.wgv.ink/authorize"
         mongo:
           form-collection: form

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import plus.datacenter.schema.Schemas;
@@ -25,6 +26,12 @@ public class SchemaResourcesConfiguration implements WebFluxConfigurer {
     private SchemaResourceProperties properties;
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping(properties.getMapping())
+                .allowedOrigins("*");
+    }
 
     @SneakyThrows
     @Override

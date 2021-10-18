@@ -33,7 +33,7 @@ plus:
       parameters:
         prefix: v1/schemas
         endpoint: http://localhost:8080
-      mapping: ${plus.datacenter.schema.parameters.prefix}/**
+      mapping: /${plus.datacenter.schema.parameters.prefix}/**
       adapter:
         meta-schema: /schema
         form-schema: /form

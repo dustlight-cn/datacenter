@@ -58,7 +58,7 @@ data:
           parameters:
             prefix: v1/schemas
             endpoint: https://api.json-schema.cloud
-          mapping: ${plus.datacenter.schema.parameters.prefix}/**
+          mapping: /${plus.datacenter.schema.parameters.prefix}/**
           adapter:
             meta-schema: /schema
             form-schema: /form

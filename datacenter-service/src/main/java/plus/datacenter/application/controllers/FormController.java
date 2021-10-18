@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/v1/")
 @SecurityRequirement(name = "auth")
-@CrossOrigin
+@CrossOrigin("*")
 public class FormController {
 
     @Autowired

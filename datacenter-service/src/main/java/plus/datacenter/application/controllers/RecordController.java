@@ -35,7 +35,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/v1/")
 @SecurityRequirement(name = "auth")
-@CrossOrigin
+@CrossOrigin("*")
 public class RecordController {
 
     @Autowired

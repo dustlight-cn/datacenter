@@ -15,7 +15,7 @@ import plus.datacenter.core.DatacenterException;
 import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
-@CrossOrigin
+@CrossOrigin("*")
 public class ExceptionController {
 
     protected final Log logger = LogFactory.getLog(this.getClass());

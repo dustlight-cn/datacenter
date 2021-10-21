@@ -25,7 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RecordsApi = exports.RecordsApiFactory = exports.RecordsApiFp = exports.RecordsApiAxiosParamCreator = exports.FormsApi = exports.FormsApiFactory = exports.FormsApiFp = exports.FormsApiAxiosParamCreator = exports.UserItemTypeEnum = exports.TermAggregationOptEnum = exports.SumAggregationOptEnum = exports.StringItemTypeEnum = exports.SelectItemTypeEnum = exports.MinAggregationOptEnum = exports.MaxAggregationOptEnum = exports.MatchQueryOptEnum = exports.IntItemTypeEnum = exports.InQueryOptEnum = exports.HistogramAggregationOptEnum = exports.FormItemTypeEnum = exports.FileItemTypeEnum = exports.EqualQueryOptEnum = exports.ElasticItemTypeEnum = exports.DoubleItemTypeEnum = exports.DateItemTypeEnum = exports.DateHistogramAggregationUnitEnum = exports.DateHistogramAggregationOptEnum = exports.CountAggregationOptEnum = exports.BooleanItemTypeEnum = exports.BetweenQueryOptEnum = exports.AvgAggregationOptEnum = void 0;
+exports.RecordsApi = exports.RecordsApiFactory = exports.RecordsApiFp = exports.RecordsApiAxiosParamCreator = exports.FormsApi = exports.FormsApiFactory = exports.FormsApiFp = exports.FormsApiAxiosParamCreator = exports.TermAggregationOptEnum = exports.SumAggregationOptEnum = exports.MinAggregationOptEnum = exports.MaxAggregationOptEnum = exports.MatchQueryOptEnum = exports.InQueryOptEnum = exports.HistogramAggregationOptEnum = exports.EqualQueryOptEnum = exports.DateHistogramAggregationUnitEnum = exports.DateHistogramAggregationOptEnum = exports.CountAggregationOptEnum = exports.BetweenQueryOptEnum = exports.AvgAggregationOptEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -58,23 +58,6 @@ var BetweenQueryOptEnum;
     BetweenQueryOptEnum["In"] = "IN";
     BetweenQueryOptEnum["Between"] = "BETWEEN";
 })(BetweenQueryOptEnum = exports.BetweenQueryOptEnum || (exports.BetweenQueryOptEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var BooleanItemTypeEnum;
-(function (BooleanItemTypeEnum) {
-    BooleanItemTypeEnum["Int"] = "INT";
-    BooleanItemTypeEnum["Double"] = "DOUBLE";
-    BooleanItemTypeEnum["String"] = "STRING";
-    BooleanItemTypeEnum["Date"] = "DATE";
-    BooleanItemTypeEnum["Boolean"] = "BOOLEAN";
-    BooleanItemTypeEnum["Form"] = "FORM";
-    BooleanItemTypeEnum["File"] = "FILE";
-    BooleanItemTypeEnum["Select"] = "SELECT";
-    BooleanItemTypeEnum["User"] = "USER";
-    BooleanItemTypeEnum["Elastic"] = "ELASTIC";
-})(BooleanItemTypeEnum = exports.BooleanItemTypeEnum || (exports.BooleanItemTypeEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -124,57 +107,6 @@ var DateHistogramAggregationUnitEnum;
     * @export
     * @enum {string}
     */
-var DateItemTypeEnum;
-(function (DateItemTypeEnum) {
-    DateItemTypeEnum["Int"] = "INT";
-    DateItemTypeEnum["Double"] = "DOUBLE";
-    DateItemTypeEnum["String"] = "STRING";
-    DateItemTypeEnum["Date"] = "DATE";
-    DateItemTypeEnum["Boolean"] = "BOOLEAN";
-    DateItemTypeEnum["Form"] = "FORM";
-    DateItemTypeEnum["File"] = "FILE";
-    DateItemTypeEnum["Select"] = "SELECT";
-    DateItemTypeEnum["User"] = "USER";
-    DateItemTypeEnum["Elastic"] = "ELASTIC";
-})(DateItemTypeEnum = exports.DateItemTypeEnum || (exports.DateItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var DoubleItemTypeEnum;
-(function (DoubleItemTypeEnum) {
-    DoubleItemTypeEnum["Int"] = "INT";
-    DoubleItemTypeEnum["Double"] = "DOUBLE";
-    DoubleItemTypeEnum["String"] = "STRING";
-    DoubleItemTypeEnum["Date"] = "DATE";
-    DoubleItemTypeEnum["Boolean"] = "BOOLEAN";
-    DoubleItemTypeEnum["Form"] = "FORM";
-    DoubleItemTypeEnum["File"] = "FILE";
-    DoubleItemTypeEnum["Select"] = "SELECT";
-    DoubleItemTypeEnum["User"] = "USER";
-    DoubleItemTypeEnum["Elastic"] = "ELASTIC";
-})(DoubleItemTypeEnum = exports.DoubleItemTypeEnum || (exports.DoubleItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var ElasticItemTypeEnum;
-(function (ElasticItemTypeEnum) {
-    ElasticItemTypeEnum["Int"] = "INT";
-    ElasticItemTypeEnum["Double"] = "DOUBLE";
-    ElasticItemTypeEnum["String"] = "STRING";
-    ElasticItemTypeEnum["Date"] = "DATE";
-    ElasticItemTypeEnum["Boolean"] = "BOOLEAN";
-    ElasticItemTypeEnum["Form"] = "FORM";
-    ElasticItemTypeEnum["File"] = "FILE";
-    ElasticItemTypeEnum["Select"] = "SELECT";
-    ElasticItemTypeEnum["User"] = "USER";
-    ElasticItemTypeEnum["Elastic"] = "ELASTIC";
-})(ElasticItemTypeEnum = exports.ElasticItemTypeEnum || (exports.ElasticItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
 var EqualQueryOptEnum;
 (function (EqualQueryOptEnum) {
     EqualQueryOptEnum["Equal"] = "EQUAL";
@@ -182,40 +114,6 @@ var EqualQueryOptEnum;
     EqualQueryOptEnum["In"] = "IN";
     EqualQueryOptEnum["Between"] = "BETWEEN";
 })(EqualQueryOptEnum = exports.EqualQueryOptEnum || (exports.EqualQueryOptEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var FileItemTypeEnum;
-(function (FileItemTypeEnum) {
-    FileItemTypeEnum["Int"] = "INT";
-    FileItemTypeEnum["Double"] = "DOUBLE";
-    FileItemTypeEnum["String"] = "STRING";
-    FileItemTypeEnum["Date"] = "DATE";
-    FileItemTypeEnum["Boolean"] = "BOOLEAN";
-    FileItemTypeEnum["Form"] = "FORM";
-    FileItemTypeEnum["File"] = "FILE";
-    FileItemTypeEnum["Select"] = "SELECT";
-    FileItemTypeEnum["User"] = "USER";
-    FileItemTypeEnum["Elastic"] = "ELASTIC";
-})(FileItemTypeEnum = exports.FileItemTypeEnum || (exports.FileItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var FormItemTypeEnum;
-(function (FormItemTypeEnum) {
-    FormItemTypeEnum["Int"] = "INT";
-    FormItemTypeEnum["Double"] = "DOUBLE";
-    FormItemTypeEnum["String"] = "STRING";
-    FormItemTypeEnum["Date"] = "DATE";
-    FormItemTypeEnum["Boolean"] = "BOOLEAN";
-    FormItemTypeEnum["Form"] = "FORM";
-    FormItemTypeEnum["File"] = "FILE";
-    FormItemTypeEnum["Select"] = "SELECT";
-    FormItemTypeEnum["User"] = "USER";
-    FormItemTypeEnum["Elastic"] = "ELASTIC";
-})(FormItemTypeEnum = exports.FormItemTypeEnum || (exports.FormItemTypeEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -242,23 +140,6 @@ var InQueryOptEnum;
     InQueryOptEnum["In"] = "IN";
     InQueryOptEnum["Between"] = "BETWEEN";
 })(InQueryOptEnum = exports.InQueryOptEnum || (exports.InQueryOptEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var IntItemTypeEnum;
-(function (IntItemTypeEnum) {
-    IntItemTypeEnum["Int"] = "INT";
-    IntItemTypeEnum["Double"] = "DOUBLE";
-    IntItemTypeEnum["String"] = "STRING";
-    IntItemTypeEnum["Date"] = "DATE";
-    IntItemTypeEnum["Boolean"] = "BOOLEAN";
-    IntItemTypeEnum["Form"] = "FORM";
-    IntItemTypeEnum["File"] = "FILE";
-    IntItemTypeEnum["Select"] = "SELECT";
-    IntItemTypeEnum["User"] = "USER";
-    IntItemTypeEnum["Elastic"] = "ELASTIC";
-})(IntItemTypeEnum = exports.IntItemTypeEnum || (exports.IntItemTypeEnum = {}));
 /**
     * @export
     * @enum {string}
@@ -304,40 +185,6 @@ var MinAggregationOptEnum;
     * @export
     * @enum {string}
     */
-var SelectItemTypeEnum;
-(function (SelectItemTypeEnum) {
-    SelectItemTypeEnum["Int"] = "INT";
-    SelectItemTypeEnum["Double"] = "DOUBLE";
-    SelectItemTypeEnum["String"] = "STRING";
-    SelectItemTypeEnum["Date"] = "DATE";
-    SelectItemTypeEnum["Boolean"] = "BOOLEAN";
-    SelectItemTypeEnum["Form"] = "FORM";
-    SelectItemTypeEnum["File"] = "FILE";
-    SelectItemTypeEnum["Select"] = "SELECT";
-    SelectItemTypeEnum["User"] = "USER";
-    SelectItemTypeEnum["Elastic"] = "ELASTIC";
-})(SelectItemTypeEnum = exports.SelectItemTypeEnum || (exports.SelectItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var StringItemTypeEnum;
-(function (StringItemTypeEnum) {
-    StringItemTypeEnum["Int"] = "INT";
-    StringItemTypeEnum["Double"] = "DOUBLE";
-    StringItemTypeEnum["String"] = "STRING";
-    StringItemTypeEnum["Date"] = "DATE";
-    StringItemTypeEnum["Boolean"] = "BOOLEAN";
-    StringItemTypeEnum["Form"] = "FORM";
-    StringItemTypeEnum["File"] = "FILE";
-    StringItemTypeEnum["Select"] = "SELECT";
-    StringItemTypeEnum["User"] = "USER";
-    StringItemTypeEnum["Elastic"] = "ELASTIC";
-})(StringItemTypeEnum = exports.StringItemTypeEnum || (exports.StringItemTypeEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
 var SumAggregationOptEnum;
 (function (SumAggregationOptEnum) {
     SumAggregationOptEnum["Avg"] = "AVG";
@@ -364,23 +211,6 @@ var TermAggregationOptEnum;
     TermAggregationOptEnum["Histogram"] = "HISTOGRAM";
     TermAggregationOptEnum["DateHistogram"] = "DATE_HISTOGRAM";
 })(TermAggregationOptEnum = exports.TermAggregationOptEnum || (exports.TermAggregationOptEnum = {}));
-/**
-    * @export
-    * @enum {string}
-    */
-var UserItemTypeEnum;
-(function (UserItemTypeEnum) {
-    UserItemTypeEnum["Int"] = "INT";
-    UserItemTypeEnum["Double"] = "DOUBLE";
-    UserItemTypeEnum["String"] = "STRING";
-    UserItemTypeEnum["Date"] = "DATE";
-    UserItemTypeEnum["Boolean"] = "BOOLEAN";
-    UserItemTypeEnum["Form"] = "FORM";
-    UserItemTypeEnum["File"] = "FILE";
-    UserItemTypeEnum["Select"] = "SELECT";
-    UserItemTypeEnum["User"] = "USER";
-    UserItemTypeEnum["Elastic"] = "ELASTIC";
-})(UserItemTypeEnum = exports.UserItemTypeEnum || (exports.UserItemTypeEnum = {}));
 /**
  * FormsApi - axios parameter creator
  * @export

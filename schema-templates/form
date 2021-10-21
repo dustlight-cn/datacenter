@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "$schema": {
-      "const": "${endpoint}/${prefix}/schema"
+      "const": "${endpoint}/${prefix}/form"
     },
     "$id": {
       "type": "string",

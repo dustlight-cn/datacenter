@@ -25,7 +25,9 @@ public class Form implements Serializable {
 
     private String primaryKey;
 
-    private Map<String,Object> schema;
+    private Map<String, Object> schema;
+
+    private String additional;
 
     @Hidden
     @JsonIgnore

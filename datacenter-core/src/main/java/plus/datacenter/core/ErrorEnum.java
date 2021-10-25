@@ -8,6 +8,7 @@ public enum ErrorEnum {
     ACCESS_DENIED(2, "Access denied"),
 
     INPUT_INVALID(1000, "Input invalid"),
+    RECORD_INVALID(1001, "Record invalid"),
 
     RESOURCE_NOT_FOUND(2000, "Resource not found"),
     FORM_NOT_FOUND(2001, "Form not found"),

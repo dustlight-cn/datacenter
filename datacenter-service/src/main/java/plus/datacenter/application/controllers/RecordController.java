@@ -184,6 +184,20 @@ public class RecordController {
                 .flatMap(cid -> recordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
     }
 
+    @PostMapping("validation")
+    @Operation(summary = "验证表单记录", description = "验证一条表单记录。")
+    public Mono<Void> verify(@RequestBody Record record,
+                             @RequestParam(name = "cid", required = false) String clientId,
+                             ReactiveAuthClient reactiveAuthClient,
+                             AuthPrincipal principal) {
+        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+                .flatMap(cid -> recordService.verifyRecord(record, cid)
+                        .onErrorMap(throwable -> throwable instanceof DatacenterException ?
+                                throwable :
+                                ErrorEnum.RECORD_INVALID.details(throwable).getException()));
+
+    }
+
     @Getter
     @Setter
     public static class AggregationQuery implements Serializable {

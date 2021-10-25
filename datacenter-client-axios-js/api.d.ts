@@ -1102,6 +1102,15 @@ export declare const RecordsApiAxiosParamCreator: (configuration?: Configuration
      * @throws {RequiredError}
      */
     updateRecord: (id: string, record: Record, cid?: string, options?: any) => Promise<RequestArgs>;
+    /**
+     * 验证一条表单记录。
+     * @summary 验证表单记录
+     * @param {Record} record
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verify: (record: Record, cid?: string, options?: any) => Promise<RequestArgs>;
 };
 /**
  * RecordsApi - functional programming interface
@@ -1178,6 +1187,15 @@ export declare const RecordsApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     updateRecord(id: string, record: Record, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 验证一条表单记录。
+     * @summary 验证表单记录
+     * @param {Record} record
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verify(record: Record, cid?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
 };
 /**
  * RecordsApi - factory interface
@@ -1254,6 +1272,15 @@ export declare const RecordsApiFactory: (configuration?: Configuration, basePath
      * @throws {RequiredError}
      */
     updateRecord(id: string, record: Record, cid?: string, options?: any): AxiosPromise<void>;
+    /**
+     * 验证一条表单记录。
+     * @summary 验证表单记录
+     * @param {Record} record
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verify(record: Record, cid?: string, options?: any): AxiosPromise<void>;
 };
 /**
  * RecordsApi - object-oriented interface
@@ -1339,4 +1366,14 @@ export declare class RecordsApi extends BaseAPI {
      * @memberof RecordsApi
      */
     updateRecord(id: string, record: Record, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 验证一条表单记录。
+     * @summary 验证表单记录
+     * @param {Record} record
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    verify(record: Record, cid?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
 }

@@ -60,6 +60,19 @@ public abstract class AbstractRecordService implements RecordService {
     }
 
     @Override
+    public Mono<Void> verifyRecord(Record origin, String clientId) {
+        return verifyRecords(Arrays.asList(origin), clientId);
+    }
+
+    @Override
+    public Mono<Void> verifyRecords(Collection<Record> origin, String clientId) {
+        if (origin == null || origin.size() == 0)
+            return Mono.error(ErrorEnum.RECORD_INVALID.details("Can't not be empty").getException());
+        return joinValidator(origin, clientId)
+                .then();
+    }
+
+    @Override
     public Mono<Record> getRecord(String id, String clientId) {
         return doGet(Arrays.asList(id), clientId)
                 .singleOrEmpty()
@@ -201,10 +214,10 @@ public abstract class AbstractRecordService implements RecordService {
             if (formName == null)
                 formName = record.getFormName();
             else if (!formName.equals(record.getFormName())) // 表单名必须相同
-                throw ErrorEnum.UPDATE_RECORD_FAILED.details("Record's form name must be same").getException();
+                throw ErrorEnum.RECORD_INVALID.details("Record's form name must be same").getException();
         }
         if (!StringUtils.hasText(formName))
-            throw ErrorEnum.UPDATE_RECORD_FAILED.details("All of Record's form name is empty or null").getException();
+            throw ErrorEnum.RECORD_INVALID.details("All of Record's form name is empty or null").getException();
         return formName;
     }
 

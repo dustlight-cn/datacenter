@@ -27,4 +27,8 @@ public interface RecordService {
 
     Mono<Void> deleteRecords(Collection<String> ids, String clientId);
 
+    Mono<Void> verifyRecord(Record origin, String clientId);
+
+    Mono<Void> verifyRecords(Collection<Record> origin, String clientId);
+
 }

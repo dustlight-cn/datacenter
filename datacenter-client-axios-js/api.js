@@ -1007,6 +1007,43 @@ const RecordsApiAxiosParamCreator = function (configuration) {
                 options: localVarRequestOptions,
             };
         }),
+        /**
+         * 验证一条表单记录。
+         * @summary 验证表单记录
+         * @param {Record} record
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        verify: (record, cid, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // verify required parameter 'record' is not null or undefined
+            common_1.assertParamExists('verify', 'record', record);
+            const localVarPath = `/v1/validation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign(Object.assign({ method: 'POST' }, baseOptions), options);
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            // authentication auth required
+            // oauth required
+            yield common_1.setOAuthToObject(localVarHeaderParameter, "auth", [], configuration);
+            if (cid !== undefined) {
+                localVarQueryParameter['cid'] = cid;
+            }
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
+            localVarRequestOptions.data = common_1.serializeDataIfNeeded(record, localVarRequestOptions, configuration);
+            return {
+                url: common_1.toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        }),
     };
 };
 exports.RecordsApiAxiosParamCreator = RecordsApiAxiosParamCreator;
@@ -1122,6 +1159,20 @@ const RecordsApiFp = function (configuration) {
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
+        /**
+         * 验证一条表单记录。
+         * @summary 验证表单记录
+         * @param {Record} record
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        verify(record, cid, options) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.verify(record, cid, options);
+                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+            });
+        },
     };
 };
 exports.RecordsApiFp = RecordsApiFp;
@@ -1215,6 +1266,17 @@ const RecordsApiFactory = function (configuration, basePath, axios) {
          */
         updateRecord(id, record, cid, options) {
             return localVarFp.updateRecord(id, record, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 验证一条表单记录。
+         * @summary 验证表单记录
+         * @param {Record} record
+         * @param {string} [cid]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        verify(record, cid, options) {
+            return localVarFp.verify(record, cid, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1316,6 +1378,18 @@ class RecordsApi extends base_1.BaseAPI {
      */
     updateRecord(id, record, cid, options) {
         return exports.RecordsApiFp(this.configuration).updateRecord(id, record, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 验证一条表单记录。
+     * @summary 验证表单记录
+     * @param {Record} record
+     * @param {string} [cid]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RecordsApi
+     */
+    verify(record, cid, options) {
+        return exports.RecordsApiFp(this.configuration).verify(record, cid, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.RecordsApi = RecordsApi;

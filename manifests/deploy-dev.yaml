@@ -223,11 +223,3 @@ spec:
             backend:
               serviceName: datacenter-service
               servicePort: 80
-    - host: api.datacenter.wgv
-      http:
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend:
-              serviceName: datacenter-service
-              servicePort: 80

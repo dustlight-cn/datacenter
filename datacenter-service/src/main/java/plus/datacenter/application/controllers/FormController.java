@@ -8,8 +8,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.entities.QueryResult;
+import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
-import plus.datacenter.application.ClientUtils;
 import plus.datacenter.application.services.FormSchemaFiller;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormSearcher;
@@ -38,7 +38,7 @@ public class FormController {
                                  @RequestParam(name = "cid", required = false) String clientId,
                                  ReactiveAuthClient reactiveAuthClient,
                                  AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     form.setClientId(cid);
                     if (principal.getUid() != null)
@@ -54,7 +54,7 @@ public class FormController {
                                     @RequestParam(name = "cid", required = false) String clientId,
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> formService.getLatestForm(name, cid))
                 .map(form1 -> formSchemaFiller.fill(form1));
     }
@@ -69,7 +69,7 @@ public class FormController {
                                             @RequestParam(name = "cid", required = false) String clientId,
                                             ReactiveAuthClient reactiveAuthClient,
                                             AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> StringUtils.hasText(name) ?
                         formSearcher.search(cid, query, name, page, size) :
                         formSearcher.search(cid, query, page, size)
@@ -87,7 +87,7 @@ public class FormController {
                                  @RequestParam(name = "cid", required = false) String clientId,
                                  ReactiveAuthClient reactiveAuthClient,
                                  AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     if (principal.getUid() != null)
                         form.setOwner(principal.getUidString());
@@ -104,7 +104,7 @@ public class FormController {
                                  @RequestParam(name = "cid", required = false) String clientId,
                                  ReactiveAuthClient reactiveAuthClient,
                                  AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> formService.deleteForm(name, cid));
     }
 
@@ -114,7 +114,7 @@ public class FormController {
                                   @RequestParam(name = "cid", required = false) String clientId,
                                   ReactiveAuthClient reactiveAuthClient,
                                   AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> formService.getForm(id, cid))
                 .map(form1 -> formSchemaFiller.fill(form1));
     }

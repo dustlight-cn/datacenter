@@ -13,8 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import plus.auth.client.reactive.ReactiveAuthClient;
 import plus.auth.entities.QueryResult;
+import plus.auth.resources.AuthPrincipalUtil;
 import plus.auth.resources.core.AuthPrincipal;
-import plus.datacenter.application.ClientUtils;
 import plus.datacenter.core.DatacenterException;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.forms.Record;
@@ -55,7 +55,7 @@ public class RecordController {
                                      @RequestParam(name = "cid", required = false) String clientId,
                                      ReactiveAuthClient reactiveAuthClient,
                                      AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.createRecord(record, cid)
                         .onErrorMap(throwable -> throwable instanceof DatacenterException ?
                                 throwable :
@@ -69,7 +69,7 @@ public class RecordController {
                                   @RequestParam(name = "cid", required = false) String clientId,
                                   ReactiveAuthClient reactiveAuthClient,
                                   AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.getRecord(id, cid));
     }
 
@@ -79,7 +79,7 @@ public class RecordController {
                                    @RequestParam(name = "cid", required = false) String clientId,
                                    ReactiveAuthClient reactiveAuthClient,
                                    AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.deleteRecord(id, cid));
     }
 
@@ -89,7 +89,7 @@ public class RecordController {
                                     @RequestParam(name = "cid", required = false) String clientId,
                                     ReactiveAuthClient reactiveAuthClient,
                                     AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.deleteRecords(ids, cid));
     }
 
@@ -103,7 +103,7 @@ public class RecordController {
         if (record == null)
             return Mono.error(ErrorEnum.UPDATE_RECORD_FAILED.getException());
         record.setId(id);
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.updateRecord(record, cid))
                 .onErrorMap(throwable -> throwable instanceof DatacenterException ?
                         throwable :
@@ -122,7 +122,7 @@ public class RecordController {
                                                  @RequestParam(name = "cid", required = false) String clientId,
                                                  ReactiveAuthClient reactiveAuthClient,
                                                  AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> {
                     if (StringUtils.hasText(query)) {
                         return formService.getLatestForm(name, cid)
@@ -180,7 +180,7 @@ public class RecordController {
                              @RequestParam(name = "cid", required = false) String clientId,
                              ReactiveAuthClient reactiveAuthClient,
                              AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordSearcher.aggregate(cid, name, query.getFilter(), query.getAggs()));
     }
 
@@ -190,7 +190,7 @@ public class RecordController {
                              @RequestParam(name = "cid", required = false) String clientId,
                              ReactiveAuthClient reactiveAuthClient,
                              AuthPrincipal principal) {
-        return ClientUtils.obtainClientId(reactiveAuthClient, clientId, principal)
+        return AuthPrincipalUtil.obtainClientId(reactiveAuthClient, clientId, principal)
                 .flatMap(cid -> recordService.verifyRecord(record, cid)
                         .onErrorMap(throwable -> throwable instanceof DatacenterException ?
                                 throwable :

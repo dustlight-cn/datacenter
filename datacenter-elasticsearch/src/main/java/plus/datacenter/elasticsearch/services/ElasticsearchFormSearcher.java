@@ -7,6 +7,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -33,14 +37,26 @@ public class ElasticsearchFormSearcher implements FormSearcher {
                                 new MultiMatchQueryBuilder(query, "name", "schema.title", "schema.description") :
                                 new MatchAllQueryBuilder())
                 .filter(new MatchQueryBuilder("clientId", clientId));
-        Query nsq = new NativeSearchQuery(bq).setPageable(Pageable.ofSize(size).withPage(page));
+        NativeSearchQuery nsq = new NativeSearchQueryBuilder()
+                .withQuery(bq)
+                .withPageable(Pageable.ofSize(size).withPage(page))
+                .withSort(new FieldSortBuilder("version").order(SortOrder.DESC))
+                .withSort(new FieldSortBuilder("createdAt").order(SortOrder.DESC))
+                .withCollapseField("name.keyword")
+                .addAggregation(new CardinalityAggregationBuilder("count").field("name.keyword"))
+                .build();
         IndexCoordinates indexCoordinates = IndexCoordinates.of(indexPrefix);
         return operations.searchForPage(nsq
                         , Form.class, indexCoordinates)
                 .map(searchHits ->
-                        new QueryResult((int) searchHits.getTotalElements(),
-                                searchHits.getContent().stream().map(formSearchHit ->
-                                        formSearchHit.getContent()).collect(Collectors.toList())));
+                {
+                    long count = searchHits.getSearchHits().getAggregations().get("count") instanceof ParsedCardinality ?
+                            ((ParsedCardinality) searchHits.getSearchHits().getAggregations().get("count")).getValue() :
+                            searchHits.getTotalElements();
+                    return new QueryResult((int) count,
+                            searchHits.getContent().stream().map(formSearchHit ->
+                                    formSearchHit.getContent()).collect(Collectors.toList()));
+                });
     }
 
     public Mono<QueryResult<Form>> search(String clientId, String query, String name, int page, int size) {
@@ -50,7 +66,11 @@ public class ElasticsearchFormSearcher implements FormSearcher {
                                 new MatchAllQueryBuilder())
                 .filter(new MatchQueryBuilder("clientId", clientId))
                 .filter(new MatchQueryBuilder("name", name));
-        Query nsq = new NativeSearchQuery(bq).setPageable(Pageable.ofSize(size).withPage(page));
+        NativeSearchQuery nsq = new NativeSearchQueryBuilder()
+                .withQuery(bq)
+                .withPageable(Pageable.ofSize(size).withPage(page))
+                .withSort(new FieldSortBuilder("createdAt").order(SortOrder.DESC))
+                .build();
         IndexCoordinates indexCoordinates = IndexCoordinates.of(indexPrefix);
         return operations.searchForPage(nsq
                         , Form.class, indexCoordinates)

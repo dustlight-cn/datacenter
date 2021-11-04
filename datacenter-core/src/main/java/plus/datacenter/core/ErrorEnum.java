@@ -9,6 +9,7 @@ public enum ErrorEnum {
 
     INPUT_INVALID(1000, "Input invalid"),
     RECORD_INVALID(1001, "Record invalid"),
+    SCHEMA_INVALID(1002, "Schema invalid"),
 
     RESOURCE_NOT_FOUND(2000, "Resource not found"),
     FORM_NOT_FOUND(2001, "Form not found"),

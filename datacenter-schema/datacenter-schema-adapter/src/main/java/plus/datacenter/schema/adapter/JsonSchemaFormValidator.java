@@ -6,6 +6,7 @@ import com.networknt.schema.ValidationMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.DatacenterPrincipal;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.AbstractFormValidator;
@@ -23,7 +24,7 @@ public class JsonSchemaFormValidator extends AbstractFormValidator {
     private JsonSchema formSchema;
 
     @Override
-    public Mono<Collection<Form>> validate(Collection<Form> forms, DatacenterPrincipal principal, String clientId) {
+    public Mono<Collection<Form>> doValidate(Collection<Form> forms, DatacenterPrincipal principal, String clientId) {
         for (Form form : forms) {
             JsonNode formNode = FormUtils.transformMapToJsonNode(form.getSchema());
             Set<ValidationMessage> msgs = formSchema.validate(formNode);
@@ -32,7 +33,7 @@ public class JsonSchemaFormValidator extends AbstractFormValidator {
                 form.getSchema().remove("$schema");
             }
             if (msgs != null && msgs.size() != 0)
-                return Mono.error(ValidationExceptionUtil.getException(msgs));
+                return Mono.error(ErrorEnum.SCHEMA_INVALID.details(ValidationExceptionUtil.getException(msgs)).getException());
         }
         return Mono.just(forms);
     }

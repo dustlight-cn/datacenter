@@ -56,12 +56,7 @@ springdoc:
 spring:
   data:
     mongodb:
-      host: mongodb.svc
-      username: my-user
-      password: MTIzNDU2
-      authentication-database: admin
-      database: datacenter
-#      replica-set-name: example-mongodb
+      uri: mongodb://my-user:MTIzNDU2@mongodb.svc:27017/datacenter?authSource=admin&appname=datacenter&directConnection=true
     elasticsearch:
       client:
         reactive:

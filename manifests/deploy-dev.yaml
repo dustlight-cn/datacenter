@@ -81,12 +81,7 @@ data:
     spring:
       data:
         mongodb:
-          host: example-mongodb-svc.database
-          username: my-user
-          password: MTIzNDU2
-          authentication-database: admin
-          database: datacenter
-          replica-set-name: example-mongodb
+          uri: mongodb://my-user:MTIzNDU2@example-mongodb-0.example-mongodb-svc.database:27017,example-mongodb-1.example-mongodb-svc.database:27017,example-mongodb-2.example-mongodb-svc.database:27017/datacenter?authSource=admin&appname=datacenter&replicaSet=example-mongodb
         elasticsearch:
           client:
             reactive:

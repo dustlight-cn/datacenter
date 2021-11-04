@@ -156,11 +156,11 @@ spec:
         - name: init-elasticsearch
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', "until nc -z elasticsearch-master.default 9200; do echo waiting for elasticsearch; sleep 2; done"]
+          command: ['sh', '-c', "until nc -z elasticsearch-master.zeebe 9200; do echo waiting for elasticsearch; sleep 2; done"]
         - name: init-database
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', "until nc -z database-mongodb.database 27017; do echo waiting for mongodb; sleep 2; done"]
+          command: ['sh', '-c', "until nc -z example-mongodb-svc.database 27017; do echo waiting for mongodb; sleep 2; done"]
         - name: init-mq
           image: busybox
           imagePullPolicy: IfNotPresent

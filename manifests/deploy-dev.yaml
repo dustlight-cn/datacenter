@@ -211,6 +211,14 @@ spec:
         - api.json-schema.cloud
       secretName: json-schema-cloud-tls
   rules:
+    - host: api.datacenter.wgv.ink
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              serviceName: datacenter-service
+              servicePort: 80
     - host: api.json-schema.cloud
       http:
         paths:

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.datacenter.schema.resources.SchemaResourcesConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.dustlight.datacenter.schema.resources.SchemaResourcesConfiguration

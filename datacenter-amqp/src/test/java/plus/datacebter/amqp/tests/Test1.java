@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import plus.datacenter.amqp.AmqpEventHandler;
+import cn.dustlight.datacenter.amqp.AmqpEventHandler;
 
 @SpringBootTest
 public class Test1 {

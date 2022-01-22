@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.datacenter.amqp.AmqpConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.dustlight.datacenter.amqp.AmqpConfiguration

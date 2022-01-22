@@ -38,7 +38,7 @@ public class AmqpConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "plus.datacenter.amqp.sync", name = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dustlight.datacenter.amqp.sync", name = "enabled", matchIfMissing = true)
     public SyncDaemon syncDaemon(@Autowired ConnectionFactory factory,
                                  @Autowired AmqpProperties properties) {
         return new SyncDaemon(factory,

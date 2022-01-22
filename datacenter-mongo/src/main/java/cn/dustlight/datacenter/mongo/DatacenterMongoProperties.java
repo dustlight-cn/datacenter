@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.mongo")
+@ConfigurationProperties(prefix = "dustlight.datacenter.mongo")
 public class DatacenterMongoProperties {
 
     /**

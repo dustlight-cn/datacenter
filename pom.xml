@@ -24,7 +24,6 @@
         <springdoc.version>1.5.9</springdoc.version>
 
         <auth.version>1.1.1-alpha-4</auth.version>
-        <storage.version>0.0.5</storage.version>
 
         <gson-javatime-serialisers.version>1.1.1</gson-javatime-serialisers.version>
     </properties>

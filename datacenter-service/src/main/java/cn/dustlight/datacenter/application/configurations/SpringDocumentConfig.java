@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "提供表单管理、表单记录增删改查等服务。",
                 contact = @Contact(
                         name = "Hansin",
-                        email = "hansin@goodvoice.com"
+                        email = "hansin@dustlight.cn"
                 ),
                 version = "v1"
         )
@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
         scheme = "Bearer",
         flows = @OAuthFlows(
                 implicit = @OAuthFlow(
-                        authorizationUrl = "${plus.datacenter.authorization-endpoint}")
+                        authorizationUrl = "${dustlight.datacenter.authorization-endpoint}")
         )
 )
 )

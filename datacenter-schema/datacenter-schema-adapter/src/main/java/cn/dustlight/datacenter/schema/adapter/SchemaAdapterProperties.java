@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.schema.adapter")
+@ConfigurationProperties(prefix = "dustlight.datacenter.schema.adapter")
 public class SchemaAdapterProperties {
 
     private String metaSchema;

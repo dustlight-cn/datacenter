@@ -1,4 +1,4 @@
-package plus.datacebter.amqp.tests;
+package cn.dustlight.datacebter.amqp.tests;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

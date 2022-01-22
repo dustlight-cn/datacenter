@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.amqp.sync")
+@ConfigurationProperties(prefix = "dustlight.datacenter.amqp.sync")
 public class SyncProperties {
 
     private boolean enabled = true;

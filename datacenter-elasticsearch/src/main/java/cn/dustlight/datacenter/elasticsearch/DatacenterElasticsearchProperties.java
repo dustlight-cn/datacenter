@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.elasticsearch")
+@ConfigurationProperties(prefix = "dustlight.datacenter.elasticsearch")
 public class DatacenterElasticsearchProperties {
 
     private String formPrefix = "datacenter.form";

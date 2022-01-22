@@ -1,4 +1,4 @@
-package plus.datacebter.amqp;
+package cn.dustlight.datacebter.amqp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

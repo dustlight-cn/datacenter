@@ -23,7 +23,7 @@ public class FormResourceConfiguration {
 
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = "plus.datacenter.form")
+    @ConfigurationProperties(prefix = "dustlight.datacenter.form")
     public static class FormSchemaProperties {
 
         public KeyValue<String,Object>[] schemaAdditional;

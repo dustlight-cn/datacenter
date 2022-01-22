@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.amqp")
+@ConfigurationProperties(prefix = "dustlight.datacenter.amqp")
 public class AmqpProperties {
 
     private String exchange = "datacenter";

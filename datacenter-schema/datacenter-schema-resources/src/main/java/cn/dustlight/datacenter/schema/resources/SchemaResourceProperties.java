@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "plus.datacenter.schema")
+@ConfigurationProperties(prefix = "dustlight.datacenter.schema")
 public class SchemaResourceProperties {
 
     private String mapping = "schemas/**";

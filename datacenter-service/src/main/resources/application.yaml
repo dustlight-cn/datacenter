@@ -56,14 +56,14 @@ springdoc:
 spring:
   data:
     mongodb:
-      uri: mongodb://my-user:MTIzNDU2@mongodb.svc:27017/datacenter?authSource=admin&appname=datacenter&directConnection=true
+      uri: mongodb://my-user:MTIzNDU2@localhost:27017/datacenter?authSource=admin&appname=datacenter&directConnection=true
     elasticsearch:
       client:
         reactive:
           endpoints:
-            - elasticsearch.svc
+            - localhost
   rabbitmq:
-    addresses: rabbitmq.svc
+    addresses: localhost
     port: 5672
     username: datacenter
     password: datacenter

@@ -68,7 +68,7 @@ spring:
       client:
         reactive:
           endpoints:
-            - localhost
+            - localhost:9200
   rabbitmq:
     addresses: localhost
     port: 5672

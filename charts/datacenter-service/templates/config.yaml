@@ -53,8 +53,8 @@ data:
             non-validation-keywords:
               - form
         elasticsearch:
-          record-prefix: datacenter-{{ .Release.Name }}.form_record
-          form-prefix: datacenter-{{ .Release.Name }}.form
+          record-prefix: {{ .Values.config.mongodb.database }}.form_record
+          form-prefix: {{ .Values.config.mongodb.database }}.form
     # SpringDoc 配置
     springdoc:
       api-docs:

@@ -1,18 +1,24 @@
-# OAuth 配置
+client:
+  id: "test"
+  secret: "e6423085f5165a58f8949e763c6691ffe44e2f86"
+  apiEndpoint: "https://api.dustlight.cn"
+  tokenUri: "https://api.dustlight.cn/v1/oauth/token"
+  checkTokenUri: "https://api.dustlight.cn/v1/token/validity"
+  jwkSetUri: "https://api.dustlight.cn/v1/jwk"
+
 dustlight:
   auth:
     oauth2:
       client:
-        client-id: 877ce1dd5030000
-        client-secret: 1283d148237af330152929cfe05ec045b0a4e92d
-        api-endpoint: http://api.wgv.ink
-        token-uri: http://api.wgv.ink/v1/oauth/token
+        client-id: ${client.id}
+        client-secret: ${client.secret}
+        api-endpoint: ${client.apiEndpoint}
+        token-uri: ${client.tokenUri}
       resource-server:
-        jwk-set-uri: http://api.wgv.ink/v1/jwk
-        client-secret: none
-        client-id: none
-        uri: http://api.wgv.ink/v1/token/validity
-        token-type: jwt
+        client-id: ${client.id}
+        client-secret: ${client.secret}
+        uri: ${client.checkTokenUri}
+        jwk-set-uri: ${client.jwkSetUri}
   datacenter:
     form:
       schema-additional:
@@ -20,7 +26,7 @@ dustlight:
           value: ${dustlight.datacenter.schema.parameters.endpoint}/${dustlight.datacenter.schema.parameters.prefix}/
         - key: $schema
           value: ${dustlight.datacenter.schema.parameters.endpoint}/${dustlight.datacenter.schema.parameters.prefix}${dustlight.datacenter.schema.adapter.form-schema}
-    authorization-endpoint: "http://accounts.wgv.ink/authorize"
+    authorization-endpoint: "https://accounts.dustlight.cn/authorize"
     mongo:
       form-collection: form
       record-collection: form_record
@@ -51,7 +57,7 @@ springdoc:
   swagger-ui:
     path: /doc.html
     oauth:
-      client-id: 86c3e34e2030000
+      client-id: ${client.id}
       additional-query-string-params:
         jwt: true
 spring:

@@ -7,7 +7,6 @@ import cn.dustlight.datacenter.mongo.services.MongoFormService;
 import cn.dustlight.datacenter.mongo.services.MongoRecordService;
 import com.mongodb.reactivestreams.client.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,6 @@ import cn.dustlight.datacenter.core.services.RecordValidator;
 public class DatacenterMongoConfiguration {
 
     @Bean
-    @ConditionalOnBean(value = {ReactiveMongoOperations.class, PrincipalHolder.class})
     public MongoFormService mongoFormService(@Autowired DatacenterMongoProperties properties,
                                              @Autowired ReactiveMongoOperations operations,
                                              @Autowired MongoClient mongoClient,
@@ -38,7 +36,6 @@ public class DatacenterMongoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(value = {ReactiveMongoOperations.class, PrincipalHolder.class})
     public MongoRecordService mongoFormRecordService(@Autowired DatacenterMongoProperties properties,
                                                      @Autowired ReactiveMongoOperations operations,
                                                      @Autowired MongoClient mongoClient,
@@ -59,7 +56,6 @@ public class DatacenterMongoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(value = {ReactiveMongoOperations.class})
     public MongoEnhancedRecordService mongoEnhancedRecordService(@Autowired DatacenterMongoProperties properties,
                                                                  @Autowired ReactiveMongoOperations operations) {
         return new MongoEnhancedRecordService(operations, properties.getRecordCollection(), properties.getFormCollection());

@@ -17,9 +17,9 @@ dustlight:
     form:
       schema-additional:
         - key: $id
-          value: ${plus.datacenter.schema.parameters.endpoint}/${plus.datacenter.schema.parameters.prefix}/
+          value: ${dustlight.datacenter.schema.parameters.endpoint}/${dustlight.datacenter.schema.parameters.prefix}/
         - key: $schema
-          value: ${plus.datacenter.schema.parameters.endpoint}/${plus.datacenter.schema.parameters.prefix}${plus.datacenter.schema.adapter.form-schema}
+          value: ${dustlight.datacenter.schema.parameters.endpoint}/${dustlight.datacenter.schema.parameters.prefix}${dustlight.datacenter.schema.adapter.form-schema}
     authorization-endpoint: "http://accounts.wgv.ink/authorize"
     mongo:
       form-collection: form
@@ -34,7 +34,7 @@ dustlight:
       parameters:
         prefix: v1/schemas
         endpoint: http://localhost:8080
-      mapping: /${plus.datacenter.schema.parameters.prefix}/**
+      mapping: /${dustlight.datacenter.schema.parameters.prefix}/**
       adapter:
         meta-schema: /schema
         form-schema: /form

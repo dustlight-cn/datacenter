@@ -16,7 +16,7 @@ import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperatio
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.util.StringUtils;
-import plus.auth.entities.QueryResult;
+import cn.dustlight.auth.entities.QueryResult;
 import plus.datacenter.core.entities.forms.Form;
 import plus.datacenter.core.services.FormSearcher;
 import reactor.core.publisher.Mono;

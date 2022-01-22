@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>plus.datacenter</groupId>
+        <groupId>cn.dustlight.datacenter</groupId>
         <artifactId>datacenter-parent</artifactId>
         <version>0.0.6-alpha-2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -58,36 +58,36 @@
         </dependency>
 
         <dependency>
-            <groupId>plus.auth</groupId>
+            <groupId>cn.dustlight.auth</groupId>
             <artifactId>auth-resource-server-reactive</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.auth</groupId>
+            <groupId>cn.dustlight.auth</groupId>
             <artifactId>auth-client-reactive</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-schema-resources</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-schema-adapter</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-mongo</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-amqp</artifactId>
         </dependency>
         <dependency>
-            <groupId>plus.datacenter</groupId>
+            <groupId>cn.dustlight.datacenter</groupId>
             <artifactId>datacenter-elasticsearch</artifactId>
         </dependency>
     </dependencies>

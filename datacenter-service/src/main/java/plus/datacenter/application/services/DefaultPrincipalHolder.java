@@ -2,8 +2,8 @@ package plus.datacenter.application.services;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
-import plus.auth.resources.AuthPrincipalUtil;
-import plus.auth.resources.core.AuthPrincipal;
+import cn.dustlight.auth.resources.AuthPrincipalUtil;
+import cn.dustlight.auth.resources.core.AuthPrincipal;
 import plus.datacenter.core.ErrorEnum;
 import plus.datacenter.core.entities.DatacenterPrincipal;
 import plus.datacenter.core.services.PrincipalHolder;

@@ -1,6 +1,6 @@
 package plus.datacenter.core.services;
 
-import plus.auth.entities.QueryResult;
+import cn.dustlight.auth.entities.QueryResult;
 import plus.datacenter.core.entities.forms.Form;
 import reactor.core.publisher.Mono;
 

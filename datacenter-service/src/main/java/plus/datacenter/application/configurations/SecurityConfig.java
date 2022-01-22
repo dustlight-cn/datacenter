@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import plus.auth.resources.AuthSecurityWebFilterChainConfiguration;
+import cn.dustlight.auth.resources.AuthSecurityWebFilterChainConfiguration;
 import plus.datacenter.schema.resources.SchemaResourceProperties;
 
 @EnableReactiveMethodSecurity

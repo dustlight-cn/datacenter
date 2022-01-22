@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import plus.auth.entities.QueryResult;
+import cn.dustlight.auth.entities.QueryResult;
 import plus.datacenter.core.entities.forms.Record;
 import plus.datacenter.core.entities.queries.Aggregation;
 import plus.datacenter.core.entities.queries.Query;

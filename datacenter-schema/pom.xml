@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <parent>
-        <groupId>plus.datacenter</groupId>
+        <groupId>cn.dustlight.datacenter</groupId>
         <artifactId>datacenter-parent</artifactId>
         <version>0.0.6-alpha-2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -26,17 +26,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>plus.datacenter</groupId>
+                <groupId>cn.dustlight.datacenter</groupId>
                 <artifactId>datacenter-schema-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>plus.datacenter</groupId>
+                <groupId>cn.dustlight.datacenter</groupId>
                 <artifactId>datacenter-schema-resources</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>plus.datacenter</groupId>
+                <groupId>cn.dustlight.datacenter</groupId>
                 <artifactId>datacenter-schema-adapter</artifactId>
             </dependency>
             <dependency>

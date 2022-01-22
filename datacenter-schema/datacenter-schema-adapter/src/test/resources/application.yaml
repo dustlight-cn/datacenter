@@ -1,8 +1,0 @@
-plus:
-  datacenter:
-    schema:
-      adapter:
-        meta-schema: /schema
-        form-schema: /form
-        non-validation-keywords:
-          - form

@@ -4,17 +4,6 @@ kind: Namespace
 metadata:
   name: datacenter
 ---
-# 创建镜像拉取密钥
-kind: Secret
-apiVersion: v1
-metadata:
-  name: aliyun-docker-secret
-  namespace: datacenter
-data:
-  .dockerconfigjson: >-
-    eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1oYW5nemhvdS5hbGl5dW5jcy5jb20iOnsidXNlcm5hbWUiOiJoYW5zaW5AMTcwOTc4NDEzMDAwOTU4MCIsInBhc3N3b3JkIjoibGI4NDU2MTI1MDAiLCJhdXRoIjoiYUdGdWMybHVRREUzTURrM09EUXhNekF3TURrMU9EQTZiR0k0TkRVMk1USTFNREE9In19fQ==
-type: kubernetes.io/dockerconfigjson
----
 # 创建 datacenter-service 配置文件
 apiVersion: v1
 kind: ConfigMap
@@ -115,8 +104,6 @@ spec:
         app: datacenter-service
     spec:
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-        - name: aliyun-docker-secret
       containers:
         - name: datacenter-service
           image: ${SERVICE_IMAGE}

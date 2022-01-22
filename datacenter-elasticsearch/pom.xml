@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>datacenter-elasticsearch</artifactId>
-    <description>PLUS 数据中心服务 - Elasticsearch 模块</description>
+    <description>数据中心服务 - Elasticsearch 模块</description>
 
     <properties>
         <java.version>11</java.version>

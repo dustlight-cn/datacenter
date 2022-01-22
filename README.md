@@ -19,7 +19,7 @@
 
 ## 使用
 ```shell
-npm install @plus/datacenter-client-axios
+npm install @dustlight/datacenter-client-axios
 ```
 查看 [ SDK 文档](datacenter-client-axios/README.md)
 

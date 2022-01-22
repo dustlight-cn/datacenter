@@ -6,7 +6,7 @@
     <groupId>cn.dustlight.datacenter</groupId>
     <artifactId>datacenter-parent</artifactId>
     <version>0.0.6-alpha-2-SNAPSHOT</version>
-    <description>PLUS 数据中心服务</description>
+    <description>数据中心服务</description>
 
     <properties>
         <java.version>11</java.version>

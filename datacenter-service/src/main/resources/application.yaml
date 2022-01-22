@@ -70,4 +70,4 @@ spring:
     password: datacenter
 logging:
   level:
-    plus.datacenter.*: debug
+    cn.dustlight.datacenter.*: debug

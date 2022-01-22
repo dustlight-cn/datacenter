@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>datacenter-schema-resources</artifactId>
-    <description>PLUS 数据中心服务 - JSON Schema Resources 模块</description>
+    <description>数据中心服务 - JSON Schema Resources 模块</description>
 
     <properties>
         <java.version>11</java.version>

@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>datacenter-service</artifactId>
-    <description>PLUS 消息服务</description>
+    <description>数据服务</description>
 
     <dependencies>
         <dependency>

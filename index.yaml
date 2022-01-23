@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   datacenter-service:
   - apiVersion: v2
+    appVersion: 0.0.6-alpha-2
+    created: "2022-01-23T16:41:10.976931607Z"
+    description: Datacenter service
+    digest: 4059a9b74ca42c2a49607f4ad6d9afff33ac357d05802a080ad50fb97910bffa
+    name: datacenter-service
+    type: application
+    urls:
+    - https://github.com/dustlight-cn/datacenter/releases/download/datacenter-service-0.0.2/datacenter-service-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
     appVersion: 0.0.6-alpha-2-SNAPSHOT
     created: "2022-01-22T20:49:23.290641164Z"
     description: Datacenter service
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/dustlight-cn/datacenter/releases/download/datacenter-service-0.0.1/datacenter-service-0.0.1.tgz
     version: 0.0.1
-generated: "2022-01-22T20:49:23.290646664Z"
+generated: "2022-01-23T16:41:10.976958808Z"

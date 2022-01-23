@@ -29,7 +29,7 @@
     },
     "company": {
       "$ref": "record",
-      "$form": "company"
+      "form": "company"
     }
   },
   "additionalProperties": false,
@@ -39,22 +39,10 @@
 
 ### 客户信息
 
-使用 companyId：
 ```json
 {
   "name": "Hansin",
-  "company": "COMPANY_ID_HERE",
-  "birth": "2022-1-23"
-}
-```
-
-新建 company：
-```json
-{
-  "name": "Hansin",
-  "company": {
-    "name": "Dustlight"
-  },
-  "birth": "2022-1-23"
+  "company": "61ed3107e90b7406deb51211",
+  "birth": "2022-01-01"
 }
 ```

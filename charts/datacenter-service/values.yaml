@@ -8,7 +8,7 @@ ingress:
   className: "nginx"
   host: "datacenter.dustlight.cn"
   tls:
-    enabled: true
+    enabled: false
     crt: ""
     key: ""
 

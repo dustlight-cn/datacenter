@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,7 +21,6 @@ import cn.dustlight.datacenter.amqp.properties.SyncProperties;
 public class AmqpConfiguration {
 
     @Bean
-    @ConditionalOnBean(ConnectionFactory.class)
     @ConditionalOnMissingBean
     public AmqpEventHandler amqpEventHandler(@Autowired ConnectionFactory factory,
                                              @Autowired AmqpProperties properties) {

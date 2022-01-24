@@ -20,7 +20,7 @@ Data service based on JSON Schema
     helm repo add datacenter https://dustlight-cn.github.io/datacenter
 
 若您已经添加仓库，执行命令 `helm repo update` 获取最新的包。
-您可以通过命令 `helm search repo fun` 来查看他们的 charts。
+您可以通过命令 `helm search repo datacenter` 来查看他们的 charts。
 
 创建配置文件 values.yaml：
 ```yaml

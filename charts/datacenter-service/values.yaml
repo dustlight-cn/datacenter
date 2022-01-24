@@ -19,7 +19,7 @@ monstache:
 config:
   elasticsearch:
     endpoints:
-      - "elasticsearch-master"
+      - "elasticsearch-master:9200"
   mongodb:
     uri: ""
     database: "datacenter"

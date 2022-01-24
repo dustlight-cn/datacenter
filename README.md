@@ -49,11 +49,11 @@ config:
     clientSecret: "e6423085f5165a58f8949e763c6691ffe44e2f86" #替换为自己的 ClientSecret
 ```
 
-安装 Fun：
+安装：
 
     helm install -f values.yaml my-dc datacenter/datacenter-service
 
-卸载 Fun：
+卸载：
 
     helm delete my-dc
 

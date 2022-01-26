@@ -11,6 +11,7 @@ Data service based on JSON Schema
 
 ## 部署
 > 此服务依赖 Elasticsearch、MongoDB 以及 RabbitMQ。
+
 ### Helm 部署
 选择此部署方式必须先安装 [Helm](https://helm.sh)。  
 请查看 Helm 的 [文档](https://helm.sh/docs) 获取更多信息。
@@ -67,3 +68,19 @@ config:
 * form
 * form_meta
 * form_record
+
+
+## 依赖
+
+### RabbitMQ
+
+[RabbitMQ 部署文档](https://www.rabbitmq.com/kubernetes/operator/operator-overview.html)
+
+### MongoDB
+
+[MongoDB 部署文档](https://github.com/mongodb/mongodb-kubernetes-operator)
+
+
+### Elasticsearch
+
+[Elasticsearch 部署文档](https://github.com/elastic/helm-charts/tree/main/elasticsearch)

@@ -1,7 +1,17 @@
 # DataCenter
+[使用](#使用) | [部署](#部署) | [Schema 说明](SCHEMA.md)
+
+Data service based on JSON Schema
+
+## 使用
+
+查看 [ API 文档](http://datacenter.dustlight.cn/doc.html)
+
+
 
 ## 部署
 > 此服务依赖 Elasticsearch、MongoDB 以及 RabbitMQ。
+
 ### Helm 部署
 选择此部署方式必须先安装 [Helm](https://helm.sh)。  
 请查看 Helm 的 [文档](https://helm.sh/docs) 获取更多信息。
@@ -11,7 +21,7 @@
     helm repo add datacenter https://dustlight-cn.github.io/datacenter
 
 若您已经添加仓库，执行命令 `helm repo update` 获取最新的包。
-您可以通过命令 `helm search repo fun` 来查看他们的 charts。
+您可以通过命令 `helm search repo datacenter` 来查看他们的 charts。
 
 创建配置文件 values.yaml：
 ```yaml
@@ -40,11 +50,11 @@ config:
     clientSecret: "e6423085f5165a58f8949e763c6691ffe44e2f86" #替换为自己的 ClientSecret
 ```
 
-安装 Fun：
+安装：
 
     helm install -f values.yaml my-dc datacenter/datacenter-service
 
-卸载 Fun：
+卸载：
 
     helm delete my-dc
 
@@ -58,3 +68,19 @@ config:
 * form
 * form_meta
 * form_record
+
+
+## 依赖
+
+### RabbitMQ
+
+[RabbitMQ 部署文档](https://www.rabbitmq.com/kubernetes/operator/operator-overview.html)
+
+### MongoDB
+
+[MongoDB 部署文档](https://github.com/mongodb/mongodb-kubernetes-operator)
+
+
+### Elasticsearch
+
+[Elasticsearch 部署文档](https://github.com/elastic/helm-charts/tree/main/elasticsearch)

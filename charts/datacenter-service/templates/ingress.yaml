@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-datacenter-service
@@ -17,5 +17,7 @@ spec:
           - path: /
             pathType: ImplementationSpecific
             backend:
-              serviceName: {{ .Release.Name }}-datacenter-service
-              servicePort: 80
+              service:
+                name: {{ .Release.Name }}-datacenter-service
+                port:
+                  number: 80
